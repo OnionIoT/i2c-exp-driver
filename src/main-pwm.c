@@ -22,12 +22,16 @@ int main(int argc, char** argv)
 	int verbose 	= 1;
 	int ch;
 
-	int channel, duty, delay;
+	int channel, duty, delay, frequency;
 
-	progname = argv[0];
+	// set the default frequency
+	frequency = PWM_DEFAULT_FREQUENCY;
+
+	// save the program name
+	progname = argv[0];	
 
 	// parse the option arguments
-	while ((ch = getopt(argc, argv, "vqh")) != -1) {
+	while ((ch = getopt(argc, argv, "vqhf:")) != -1) {
 		switch (ch) {
 		case 'v':
 			// verbose output
@@ -36,6 +40,10 @@ int main(int argc, char** argv)
 		case 'q':
 			// quiet output
 			verbose = 0;
+			break;
+		case 'f':
+			// specify the pwm frequency
+			frequency = atoi(optarg);
 			break;
 		default:
 			usage(progname);
@@ -62,6 +70,9 @@ int main(int argc, char** argv)
 		delay 	= (int)strtol(argv[2], NULL, 10);
 	}
 
+	//// PWM
+	// setup the frequency
+	pwmSetFrequency(frequency);
 
 	// setup the driver
 	pwmSetupDriver(channel, duty, delay);

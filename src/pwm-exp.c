@@ -112,46 +112,69 @@ int _pwmSetTime(pwmSetup *setup)
 // calculate the ON and OFF time values
 void _pwmCalculate(int duty, int delay, pwmSetup *setup)
 {
-	// find duty and delay in terms of numbers
-	int 	countOn 	= _dutyToCount(duty);	
-	int 	countDelay 	= _dutyToCount(delay);
+	int 	countOn;
+	int 	countDelay;
 
-	// calculate the time to assert and deassert the signal
-	setup->timeStart	= countDelay;
-	if ( setup->timeStart > 0 ) {
-		setup->timeStart -= 1;
+	// to do: add case for 0 duty / 100 duty,
+	// set the full OFF / full ON bits
+
+	if (duty == 100) {
+		// set LEDs to FULL_ON
+		setup->timeStart 	= LED_FULL_VAL;
+		setup->timeEnd 		= 0;
 	}
+	else if (duty == 0) {
+		// set LEDs to FULL_OFF
+		setup->timeStart 	= 0;
+		setup->timeEnd 		= LED_FULL_VAL;
+	}
+	else {
+		// find duty and delay in terms of numbers
+		countOn 	= _dutyToCount(duty);	
+		countDelay 	= _dutyToCount(delay);
 
-	setup->timeEnd		= setup->timeStart + countOn;
+		// calculate the time to assert and deassert the signal
+		if (countDelay > 0) {
+			// with delayed start
+			setup->timeStart 	= countDelay - 1;
+			setup->timeEnd		= setup->timeStart + countOn;
+		}
+		else {
+			// no delay - start at 0
+			setup->timeStart	= 0;
+			setup->timeEnd 		= countOn - 1;
+		}
 
-	// take care of the case where delay + duty are more than 100
-	if (setup->timeEnd > PULSE_TOTAL_COUNT) {
-		setup->timeEnd 	-= PULSE_TOTAL_COUNT;
+		// take care of the case where delay + duty are more than 100
+		if (setup->timeEnd > PULSE_TOTAL_COUNT) {
+			setup->timeEnd 	-= PULSE_TOTAL_COUNT;
+		}
 	}
 }
 
 // program the prescale value for desired pwm frequency
-int pwmSetFrequency(int freq, pwmSetup *setup)
+int pwmSetFrequency(int freq)
 {
 	int status;
+	int prescale;
 
 	// prescale = round( osc_clk / pulse_count x update_rate ) - 1
-	setup->prescale 	= (int)round( OSCILLATOR_CLOCK/(PULSE_TOTAL_COUNT * freq) ) - 1;
+	prescale 	= (int)round( OSCILLATOR_CLOCK/(PULSE_TOTAL_COUNT * freq) ) - 1;
 
 	// clamp the value
-	if (setup->prescale < PRESCALE_MIN_VALUE) {
-		setup->prescale = PRESCALE_MIN_VALUE;
+	if (prescale < PRESCALE_MIN_VALUE) {
+		prescale = PRESCALE_MIN_VALUE;
 	}
-	else if (setup->prescale > PRESCALE_MAX_VALUE) {
-		setup->prescale = PRESCALE_MAX_VALUE;
+	else if (prescale > PRESCALE_MAX_VALUE) {
+		prescale = PRESCALE_MAX_VALUE;
 	}
 
-	printf("DBG: freq: %d, prescale: 0x%02x\n", freq, setup->prescale);
+	printf("PWM: freq: %d, prescale: 0x%02x\n", freq, prescale);
 
 	status = i2c_writeByte	(	I2C_DEVICE_NUM, 
 								I2C_DEVICE_ADDR, 
 								PWM_EXP_REG_ADDR_PRESCALE, 
-								setup->prescale
+								prescale
 							);
 	
 
@@ -174,8 +197,8 @@ int pwmSetupDriver(int driverNum, int duty, int delay)
 	// find on and off times
 	_pwmCalculate(duty, delay, &setup);
 
-	printf("DBG: duty: %d, delay: %d\n", duty, delay);
-	printf("DBG: start: %d (0x%04x), stop: %d (0x%04x)\n\n", setup.timeStart, setup.timeStart, setup.timeEnd, setup.timeEnd);
+	printf("PWM: duty: %d, delay: %d\n", duty, delay);
+	printf("PWM: start: %d (0x%04x), stop: %d (0x%04x)\n\n", setup.timeStart, setup.timeStart, setup.timeEnd, setup.timeEnd);
 
 	// write on and off times via i2c
 	if (status == EXIT_SUCCESS) {

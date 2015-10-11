@@ -19,13 +19,18 @@
 #define REG_OFFSET_ON_BYTES		0x0
 #define REG_OFFSET_OFF_BYTES	0x2
 
-#define OSCILLATOR_CLOCK		25000
+#define LED_FULL_VAL			0x1000
+
+#define OSCILLATOR_CLOCK		25000000
 #define	PULSE_TOTAL_COUNT		4096
 
 #define PRESCALE_MIN_VALUE		0x03
 #define PRESCALE_MAX_VALUE		0xff
 
 #define PWM_EXP_REG_ADDR_PRESCALE	0xfe
+
+//to do: adjust this
+#define PWM_DEFAULT_FREQUENCY	50
 
 
 
@@ -71,6 +76,7 @@ int 	_pwmSetTime			(pwmSetup *setup);
 
 void 	_pwmCalculate		(int duty, int delay, pwmSetup *setup);
 
+int 	pwmSetFrequency		(int freq);
 int 	pwmSetupDriver		(int driverNum, int duty, int delay);
 
 
