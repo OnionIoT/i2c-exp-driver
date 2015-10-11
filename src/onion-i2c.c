@@ -48,12 +48,12 @@ int _i2c_setDevice(int devHandle, int addr)
 {
 #ifdef I2C_ENABLED
 	// set to 7-bit addr
-	if ( ioctrl(devHandle, I2C_TENBIT, 0) < 0 ) {
+	if ( ioctl(devHandle, I2C_TENBIT, 0) < 0 ) {
 		return EXIT_FAILURE;
 	}
 
 	// set the address
-	if ( ioctrl(devHandle, I2C_SLAVE, addr) < 0 ) {
+	if ( ioctl(devHandle, I2C_SLAVE, addr) < 0 ) {
 		return EXIT_FAILURE;
 	}
 #endif
@@ -66,7 +66,7 @@ int _i2c_setDevice10bit(int devHandle, int addr)
 {
 #ifdef I2C_ENABLED
 	// set to 10-bit addr
-	if ( ioctrl(devHandle, I2C_TENBIT, 1) < 0 ) {
+	if ( ioctl(devHandle, I2C_TENBIT, 1) < 0 ) {
 		return EXIT_FAILURE;
 	}
 
