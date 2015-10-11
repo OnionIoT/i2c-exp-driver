@@ -87,7 +87,7 @@ int i2c_writeByte(int devNum, int devAddr, int addr, int val)
 	int 	fd;
 	char 	buffer[32];
 
-	printf("i2c:: Writing to device 0x%02x: addr = 0x%02x, data = 0x0x%02x\n", devAddr, addr, val);
+	printf("i2c:: Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x\n", devAddr, addr, val);
 
 	// open the file handle
 	status 	= _i2c_getFd(devNum, fd);

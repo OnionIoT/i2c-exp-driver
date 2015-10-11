@@ -9,6 +9,8 @@ void _initPwmSetup(pwmSetup *obj)
 
 	obj->timeStart		= 0;
 	obj->timeEnd 		= 0;
+
+	obj->prescale		= 0;
 }
 
 // return register offset for specified driver/channel
@@ -18,23 +20,23 @@ int _getDriverRegisterOffset (int driverNum, int &addr)
 
 	// define array of register offsets
 	int pwmDriverAddr[17] = {
-		PWM_EXP_DRIVER0,
-		PWM_EXP_DRIVER1,
-		PWM_EXP_DRIVER2,
-		PWM_EXP_DRIVER3,
-		PWM_EXP_DRIVER4,
-		PWM_EXP_DRIVER5,
-		PWM_EXP_DRIVER6,
-		PWM_EXP_DRIVER7,
-		PWM_EXP_DRIVER8,
-		PWM_EXP_DRIVER9,
-		PWM_EXP_DRIVER10,
-		PWM_EXP_DRIVER11,
-		PWM_EXP_DRIVER12,
-		PWM_EXP_DRIVER13,
-		PWM_EXP_DRIVER14,
-		PWM_EXP_DRIVER15,
-		PWM_EXP_DRIVER_ALL
+		PWM_EXP_REG_ADDR_DRIVER0,
+		PWM_EXP_REG_ADDR_DRIVER1,
+		PWM_EXP_REG_ADDR_DRIVER2,
+		PWM_EXP_REG_ADDR_DRIVER3,
+		PWM_EXP_REG_ADDR_DRIVER4,
+		PWM_EXP_REG_ADDR_DRIVER5,
+		PWM_EXP_REG_ADDR_DRIVER6,
+		PWM_EXP_REG_ADDR_DRIVER7,
+		PWM_EXP_REG_ADDR_DRIVER8,
+		PWM_EXP_REG_ADDR_DRIVER9,
+		PWM_EXP_REG_ADDR_DRIVER10,
+		PWM_EXP_REG_ADDR_DRIVER11,
+		PWM_EXP_REG_ADDR_DRIVER12,
+		PWM_EXP_REG_ADDR_DRIVER13,
+		PWM_EXP_REG_ADDR_DRIVER14,
+		PWM_EXP_REG_ADDR_DRIVER15,
+		PWM_EXP_REG_ADDR_DRIVER_ALL
 	};
 
 	// check the input
@@ -42,7 +44,7 @@ int _getDriverRegisterOffset (int driverNum, int &addr)
 
 	// find the address
 	if (driverNum < 0) {
-		addr = PWM_EXP_DRIVER_ALL;
+		addr = PWM_EXP_REG_ADDR_DRIVER_ALL;
 	}
 	if (driverNum < len) {
 		addr = pwmDriverAddr[driverNum];
@@ -115,13 +117,45 @@ void _pwmCalculate(int duty, int delay, pwmSetup *setup)
 	int 	countDelay 	= _dutyToCount(delay);
 
 	// calculate the time to assert and deassert the signal
-	setup->timeStart	= countDelay - 1;
+	setup->timeStart	= countDelay;
+	if ( setup->timeStart > 0 ) {
+		setup->timeStart -= 1;
+	}
+
 	setup->timeEnd		= setup->timeStart + countOn;
 
 	// take care of the case where delay + duty are more than 100
 	if (setup->timeEnd > PULSE_TOTAL_COUNT) {
 		setup->timeEnd 	-= PULSE_TOTAL_COUNT;
 	}
+}
+
+// program the prescale value for desired pwm frequency
+int pwmSetFrequency(int freq, pwmSetup *setup)
+{
+	int status;
+
+	// prescale = round( osc_clk / pulse_count x update_rate ) - 1
+	setup->prescale 	= (int)round( OSCILLATOR_CLOCK/(PULSE_TOTAL_COUNT * freq) ) - 1;
+
+	// clamp the value
+	if (setup->prescale < PRESCALE_MIN_VALUE) {
+		setup->prescale = PRESCALE_MIN_VALUE;
+	}
+	else if (setup->prescale > PRESCALE_MAX_VALUE) {
+		setup->prescale = PRESCALE_MAX_VALUE;
+	}
+
+	printf("DBG: freq: %d, prescale: 0x%02x\n", freq, setup->prescale);
+
+	status = i2c_writeByte	(	I2C_DEVICE_NUM, 
+								I2C_DEVICE_ADDR, 
+								PWM_EXP_REG_ADDR_PRESCALE, 
+								setup->prescale
+							);
+	
+
+	return status;
 }
 
 // perform PWM driver setup based on duty and delay
@@ -140,13 +174,14 @@ int pwmSetupDriver(int driverNum, int duty, int delay)
 	// find on and off times
 	_pwmCalculate(duty, delay, &setup);
 
+	printf("DBG: duty: %d, delay: %d\n", duty, delay);
+	printf("DBG: start: %d (0x%04x), stop: %d (0x%04x)\n\n", setup.timeStart, setup.timeStart, setup.timeEnd, setup.timeEnd);
+
 	// write on and off times via i2c
 	if (status == EXIT_SUCCESS) {
 		status 	= _pwmSetTime(&setup);
 	}
 
-	printf("DBG: duty: %d, delay: %d\n", duty, delay);
-	printf("DBG: start: %d (0x%04x), stop: %d (0x%04x)\n\n", setup.timeStart, setup.timeStart, setup.timeEnd, setup.timeEnd);
 
 	return status;
 }
