@@ -25,14 +25,14 @@
 
 
 
-int _i2c_getFd 				(int adapterNum, int &devHandle);
+int _i2c_getFd 				(int adapterNum, int *devHandle);
 int _i2c_releaseFd			(int devHandle);
 
 int _i2c_setDevice 			(int devHandle, int addr);
 int _i2c_setDevice10bit 	(int devHandle, int addr);
 
 int i2c_writeByte 			(int devNum, int devAddr, int addr, int val);
-int i2c_readByte 			(int devNum, int devAddr, int addr, int &val);
+int i2c_readByte 			(int devNum, int devAddr, int addr, int *val);
 
 
 

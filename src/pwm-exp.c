@@ -2,7 +2,7 @@
 
 
 // initialize the pwm info struct
-void _initPwmSetup(pwmSetup *obj)
+void _initPwmSetup(struct pwmSetup *obj)
 {
 	obj->driverNum 		= -1;
 	obj->regOffset 		= 0;
@@ -14,7 +14,7 @@ void _initPwmSetup(pwmSetup *obj)
 }
 
 // return register offset for specified driver/channel
-int _getDriverRegisterOffset (int driverNum, int &addr)
+int _getDriverRegisterOffset (int driverNum, int *addr)
 {
 	int len; 
 
@@ -44,10 +44,10 @@ int _getDriverRegisterOffset (int driverNum, int &addr)
 
 	// find the address
 	if (driverNum < 0) {
-		addr = PWM_EXP_REG_ADDR_DRIVER_ALL;
+		*addr = PWM_EXP_REG_ADDR_DRIVER_ALL;
 	}
 	if (driverNum < len) {
-		addr = pwmDriverAddr[driverNum];
+		*addr = pwmDriverAddr[driverNum];
 	}
 	else {
 		return EXIT_FAILURE;
@@ -96,7 +96,7 @@ int _writeValue(int addr, int value)
 }
 
 // write ON and OFF time values
-int _pwmSetTime(pwmSetup *setup)
+int _pwmSetTime(struct pwmSetup *setup)
 {
 	int status;
 
@@ -110,7 +110,7 @@ int _pwmSetTime(pwmSetup *setup)
 }
 
 // calculate the ON and OFF time values
-void _pwmCalculate(int duty, int delay, pwmSetup *setup)
+void _pwmCalculate(int duty, int delay, struct pwmSetup *setup)
 {
 	int 	countOn;
 	int 	countDelay;
@@ -184,15 +184,15 @@ int pwmSetFrequency(int freq)
 // perform PWM driver setup based on duty and delay
 int pwmSetupDriver(int driverNum, int duty, int delay)
 {
-	int 		status;
-	pwmSetup 	setup;
+	int 				status;
+	struct pwmSetup 	setup;
 
 	// initialize the setup structure
 	_initPwmSetup(&setup);
 
 	// find driver number and then register offset
 	setup.driverNum 	= driverNum;
-	status 	= _getDriverRegisterOffset(driverNum, setup.regOffset);
+	status 	= _getDriverRegisterOffset( driverNum, &(setup.regOffset) );
 
 	// find on and off times
 	_pwmCalculate(duty, delay, &setup);

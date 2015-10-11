@@ -67,14 +67,14 @@ struct pwmSetup {
 
 
 // helper functions
-void 	_initPwmSetup		(pwmSetup *obj);
+void 	_initPwmSetup		(struct pwmSetup *obj);
 int 	_dutyToCount 		(int duty);
 
-int 	_getDriverRegisterOffset (int driverNum, int &addr);
+int 	_getDriverRegisterOffset (int driverNum, int *addr);
 int 	_writeValue			(int addr, int value);
-int 	_pwmSetTime			(pwmSetup *setup);
+int 	_pwmSetTime			(struct pwmSetup *setup);
 
-void 	_pwmCalculate		(int duty, int delay, pwmSetup *setup);
+void 	_pwmCalculate		(int duty, int delay, struct pwmSetup *setup);
 
 int 	pwmSetFrequency		(int freq);
 int 	pwmSetupDriver		(int driverNum, int duty, int delay);

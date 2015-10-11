@@ -1,7 +1,7 @@
 #include <onion-i2c.h>
 
 // get a file handle to the device
-int _i2c_getFd(int adapterNum, int &devHandle)
+int _i2c_getFd(int adapterNum, int *devHandle)
 {
 	int 	status;
 	char 	pathname[255];
@@ -17,13 +17,13 @@ int _i2c_getFd(int adapterNum, int &devHandle)
 
 	// create a file descriptor for the I2C bus
 #ifdef I2C_ENABLED
-  	devHandle = open(pathname, O_RDWR);
+  	*devHandle = open(pathname, O_RDWR);
 #else
-  	devHandle = 0;
+  	*devHandle = 0;
 #endif
 
   	// check the defvice handle
-  	if (devHandle < 0) {
+  	if (*devHandle < 0) {
   		// add errno
   		return EXIT_FAILURE;
   	}
@@ -90,7 +90,7 @@ int i2c_writeByte(int devNum, int devAddr, int addr, int val)
 	printf("i2c:: Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x\n", devAddr, addr, val);
 
 	// open the file handle
-	status 	= _i2c_getFd(devNum, fd);
+	status 	= _i2c_getFd(devNum, &fd);
 
 	// set the device address
 	if ( status == EXIT_SUCCESS ) {
@@ -129,7 +129,7 @@ int i2c_writeByte(int devNum, int devAddr, int addr, int val)
 }
 
 // read from the i2c bus
-int i2c_readByte(int devNum, int devAddr, int addr, int &val)
+int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 {
 	int 	status;
 	int 	fd;
@@ -138,7 +138,7 @@ int i2c_readByte(int devNum, int devAddr, int addr, int &val)
 	printf("i2c:: Reading from device 0x%02x: addr = 0x%02x\n", devAddr, addr);
 
 	// open the device file handle
-	status 	= _i2c_getFd(devNum, fd);
+	status 	= _i2c_getFd(devNum, &fd);
 
 	// set the device address
 	if ( status == EXIT_SUCCESS ) {
@@ -174,7 +174,7 @@ int i2c_readByte(int devNum, int devAddr, int addr, int &val)
 		// add error checking here!
 
 		//// return the data
-		val = buffer[0];
+		*val = buffer[0];
  	}
 
  	// release the device file handle
