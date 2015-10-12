@@ -1,4 +1,3 @@
-#include <errno.h>
 #include <pwm-exp.h>
 
 void usage(const char* progName) {
@@ -21,6 +20,7 @@ int main(int argc, char** argv)
 	const char *progname;
 	int status;
 	int verbose 	= 1;
+	int init 		= 0;
 	int ch;
 
 	int channel, duty, delay, frequency;
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	progname = argv[0];	
 
 	// parse the option arguments
-	while ((ch = getopt(argc, argv, "vqhf:")) != -1) {
+	while ((ch = getopt(argc, argv, "vqhif:")) != -1) {
 		switch (ch) {
 		case 'v':
 			// verbose output
@@ -41,6 +41,10 @@ int main(int argc, char** argv)
 		case 'q':
 			// quiet output
 			verbose = 0;
+			break;
+		case 'i':
+			// perform PWM init
+			init 	= 1;
 			break;
 		case 'f':
 			// specify the pwm frequency
@@ -72,6 +76,14 @@ int main(int argc, char** argv)
 	}
 
 	//// PWM
+	// perform ini
+	if (init == 1) {
+		status = pwmDriverInit();
+		if (status == EXIT_FAILURE) {
+			printf("main:: pwm init failed!\n");
+		}
+	}
+
 	// setup the frequency
 	status = pwmSetFrequency(frequency);
 	if (status == EXIT_FAILURE) {

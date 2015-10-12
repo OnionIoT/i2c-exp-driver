@@ -116,11 +116,10 @@ int i2c_writeByte(int devNum, int devAddr, int addr, int val)
 #ifdef I2C_ENABLED
 		// write to the i2c device
 		status = write(fd, buffer, size);
+		if (status != size) {
+			printf("i2c:: write issue, errno is %d: %s\n", errno, strerror(errno) );
+		}
 #endif
-
-		printf("i2c:: dbg: write returned status %d\n", status);
-		// add error checking here!
-		printf("errno: %s\n", strerror(errno) );
  	}
 
  	// release the device file handle
@@ -173,6 +172,8 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 
 		printf("i2c:: dbg: read returned status %d\n", status);
 		// add error checking here!
+
+		printf("i2c:: dbg: read value: 0x%02x\n", buffer[0]);
 
 		//// return the data
 		*val = buffer[0];

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <unistd.h>
 
 #include <onion-i2c.h>
 
@@ -13,13 +14,11 @@
 #define I2C_DEVICE_NUM			0
 #define I2C_DEVICE_ADDR			0x5a
 
-#define REG_OFFSET_BYTE0		0x0
-#define REG_OFFSET_BYTE1		0x1
 
-#define REG_OFFSET_ON_BYTES		0x0
-#define REG_OFFSET_OFF_BYTES	0x2
 
 #define LED_FULL_VAL			0x1000
+
+#define PWM_DEFAULT_FREQUENCY	60
 
 #define OSCILLATOR_CLOCK		25000000
 #define	PULSE_TOTAL_COUNT		4096
@@ -27,9 +26,21 @@
 #define PRESCALE_MIN_VALUE		0x03
 #define PRESCALE_MAX_VALUE		0xff
 
+#define PWM_EXP_REG_MODE1			0x00
+#define PWM_EXP_REG_MODE2			0x01
 #define PWM_EXP_REG_ADDR_PRESCALE	0xfe
 
-#define PWM_DEFAULT_FREQUENCY	60
+#define PWM_EXP_REG_MODE1_RESET		0x80
+#define PWM_EXP_REG_MODE1_SLEEP		0x10
+#define PWM_EXP_REG_MODE1_ALLCALL	0x01
+#define PWM_EXP_REG_MODE2_OUTDRV	0x04
+
+
+#define REG_OFFSET_BYTE0		0x0
+#define REG_OFFSET_BYTE1		0x1
+
+#define REG_OFFSET_ON_BYTES		0x0
+#define REG_OFFSET_OFF_BYTES	0x2
 
 
 
@@ -75,6 +86,7 @@ int 	_pwmSetTime			(struct pwmSetup *setup);
 
 void 	_pwmCalculate		(int duty, int delay, struct pwmSetup *setup);
 
+int 	pwmDriverInit 		();
 int 	pwmSetFrequency		(int freq);
 int 	pwmSetupDriver		(int driverNum, int duty, int delay);
 
