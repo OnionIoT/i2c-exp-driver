@@ -46,10 +46,11 @@ int _getDriverRegisterOffset (int driverNum, int *addr)
 	if (driverNum < 0) {
 		*addr = PWM_EXP_REG_ADDR_DRIVER_ALL;
 	}
-	if (driverNum < len) {
+	else if (driverNum < len - 1) { // want to avoid driverNum = 16 using all
 		*addr = pwmDriverAddr[driverNum];
 	}
 	else {
+		printf("pwm:: invalid driver selection, %d\n", driverNum);
 		return EXIT_FAILURE;
 	}
 

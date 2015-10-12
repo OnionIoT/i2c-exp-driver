@@ -1,10 +1,13 @@
 #include <pwm-exp.h>
 
-void usage(const char* progName) {
+void usage(const char* progName) 
+{
 	printf("\n");
 	printf("Usage: pwm-exp [-qv] CHANNEL DUTY [DELAY]\n");
 	printf("\n");
 	printf("CHANNEL is the specified PWM channel on the Expansion\n");
+	printf("\tcan be: 0-15  to control a single channel\n");
+	printf("\tcan be: 'all' to control all channels simultaneously\n");
 	printf("DUTY is the signal duty cycle, expressed 1-100\n");
 	printf("DELAY is the delay before signal asserts, optional\n");
 	printf("\n");
@@ -13,6 +16,41 @@ void usage(const char* progName) {
 	printf(" -v 		verbose: lots of output\n");
 	printf(" -h 		help: show this prompt\n");
 	printf("\n");
+}
+
+int validateArguments(int channel, int duty, int delay) 
+{
+	int status = EXIT_SUCCESS;
+
+	if (channel < -1 || channel > 15) {
+		printf("ERROR: invalid CHANNEL selection\n");
+		printf("Accepted values are:\n");
+		printf("\t0-15\n");
+		printf("\tall\n");
+		printf("\n");
+
+		status = EXIT_FAILURE;
+	}
+
+	if (duty < 0 || duty > 100) {
+		printf("ERROR: invalid DUTY selection\n");
+		printf("Accepted values are:\n");
+		printf("\t0 - 100\n");
+		printf("\n");
+
+		status = EXIT_FAILURE;
+	}
+
+	if (delay < 0 || delay > 100) {
+		printf("ERROR: invalid DELAY selection\n");
+		printf("Accepted values are:\n");
+		printf("\t0 - 100\n");
+		printf("\n");
+
+		status = EXIT_FAILURE;
+	}
+
+	return status;
 }
 
 int main(int argc, char** argv)
@@ -31,7 +69,7 @@ int main(int argc, char** argv)
 	// save the program name
 	progname = argv[0];	
 
-	// parse the option arguments
+	//// parse the option arguments
 	while ((ch = getopt(argc, argv, "vqhif:")) != -1) {
 		switch (ch) {
 		case 'v':
@@ -66,17 +104,35 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
-	//// parse the arguments
-	channel 	= (int)strtol(argv[0], NULL, 10);
-	duty 		= (int)strtol(argv[1], NULL, 10);
-	delay 		= 0;	// default value
 
+	//// parse the arguments
+	// first arg - channel
+	if (strcmp(argv[0], "all") == 0 ) {
+		channel = -1;	// all drivers
+	}
+	else {
+		channel 	= (int)strtol(argv[0], NULL, 10);
+	}
+
+	// second arg - duty cycle
+	duty 		= (int)strtol(argv[1], NULL, 10);
+
+	// third arg, optional - delay value 
+	delay 		= 0;	// default value
 	if (argc == 3) {
 		delay 	= (int)strtol(argv[2], NULL, 10);
 	}
 
+	// validate the arguments
+	status 	= validateArguments(channel, duty, delay);
+	if (status == EXIT_FAILURE) {
+		return 0;
+	}
+
+
+
 	//// PWM
-	// perform ini
+	// perform initialization
 	if (init == 1) {
 		status = pwmDriverInit();
 		if (status == EXIT_FAILURE) {
