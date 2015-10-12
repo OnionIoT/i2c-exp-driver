@@ -11,7 +11,7 @@
 
 
 #define I2C_DEVICE_NUM			0
-#define I2C_DEVICE_ADDR			0x00
+#define I2C_DEVICE_ADDR			0x5a
 
 #define REG_OFFSET_BYTE0		0x0
 #define REG_OFFSET_BYTE1		0x1
@@ -29,8 +29,7 @@
 
 #define PWM_EXP_REG_ADDR_PRESCALE	0xfe
 
-//to do: adjust this
-#define PWM_DEFAULT_FREQUENCY	50
+#define PWM_DEFAULT_FREQUENCY	60
 
 
 
