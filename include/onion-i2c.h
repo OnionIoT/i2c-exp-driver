@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 
 #define I2C_DEV_PATH		"/dev/i2c-%d"
 

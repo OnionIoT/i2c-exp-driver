@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <pwm-exp.h>
 
 void usage(const char* progName) {
@@ -72,10 +73,16 @@ int main(int argc, char** argv)
 
 	//// PWM
 	// setup the frequency
-	pwmSetFrequency(frequency);
+	status = pwmSetFrequency(frequency);
+	if (status == EXIT_FAILURE) {
+		printf("main:: pwm set frequency failed!\n");
+	}
 
 	// setup the driver
-	pwmSetupDriver(channel, duty, delay);
+	status = pwmSetupDriver(channel, duty, delay);
+	if (status == EXIT_FAILURE) {
+		printf("main:: driver setup failed!\n");
+	}
 
 
 	return 0;

@@ -120,6 +120,7 @@ int i2c_writeByte(int devNum, int devAddr, int addr, int val)
 
 		printf("i2c:: dbg: write returned status %d\n", status);
 		// add error checking here!
+		printf("errno: %s\n", strerror(errno) );
  	}
 
  	// release the device file handle
