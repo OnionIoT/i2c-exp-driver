@@ -20,7 +20,7 @@
 
 #define PWM_DEFAULT_FREQUENCY	50.0f
 
-#define OSCILLATOR_CLOCK		25000000
+#define OSCILLATOR_CLOCK		25000000.0f
 #define	PULSE_TOTAL_COUNT		4096
 
 #define PRESCALE_MIN_VALUE		0x03
@@ -83,6 +83,10 @@ int 	_dutyToCount 		(float duty);
 int 	_getDriverRegisterOffset (int driverNum, int *addr);
 int 	_writeValue			(int addr, int value);
 int 	_pwmSetTime			(struct pwmSetup *setup);
+
+int 	_pwmSetReset 		(void);
+int 	_pwmSetSleepMode 	(int bSleepMode);
+
 
 void 	_pwmCalculate		(float duty, float delay, struct pwmSetup *setup);
 

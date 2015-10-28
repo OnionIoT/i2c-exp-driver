@@ -153,12 +153,96 @@ void _pwmCalculate(float duty, float delay, struct pwmSetup *setup)
 	}
 }
 
+// i2c register writes to set sleep mode
+int _pwmSetSleepMode (int bSleepMode)
+{
+	int status;
+	int addr, val;
+
+	// read MODE1 register
+	addr 	= PWM_EXP_REG_MODE1;
+	status 	= i2c_readByte	(	I2C_DEVICE_NUM, 
+								I2C_DEVICE_ADDR, 
+								addr, 
+								&val
+							);
+	if (status == EXIT_FAILURE) {
+		printf("_pwmSetSleepMode:: read MODE1 failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// set desired sleep mode
+	if (bSleepMode == 0) {
+		// disable SLEEP mode
+		val 	&= ~PWM_EXP_REG_MODE1_SLEEP;
+	}
+	else {
+		// enable SLEEP mode
+		val 	|= PWM_EXP_REG_MODE1_SLEEP; 
+	} 
+
+	// write to MODE1 register
+	status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
+								I2C_DEVICE_ADDR, 
+								addr, 
+								val
+							);
+	if (status == EXIT_FAILURE) {
+		printf("_pwmSetSleepMode:: write to MODE1 failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// wait for the oscillator
+	usleep(1000);
+
+	return EXIT_SUCCESS;
+}
+
+// i2c register writes to set sw reset
+int _pwmSetReset ()
+{
+	int status;
+	int addr, val;
+
+	// read MODE1 register
+	addr 	= PWM_EXP_REG_MODE1;
+	status 	= i2c_readByte	(	I2C_DEVICE_NUM, 
+								I2C_DEVICE_ADDR, 
+								addr, 
+								&val
+							);
+	if (status == EXIT_FAILURE) {
+		printf("_pwmSetReset:: read MODE1 register failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// enable reset
+	val 	|= PWM_EXP_REG_MODE1_RESET; 
+	status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
+								I2C_DEVICE_ADDR, 
+								addr, 
+								val
+							);
+	if (status == EXIT_FAILURE) {
+		printf("_pwmSetReset:: write to MODE1 register failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// wait for the oscillator
+	usleep(1000);
+
+	return EXIT_SUCCESS;
+}
+
 // run the initial oscillator setup
 int pwmDriverInit () {
 	int status;
 	int addr, val;
 
 	printf("init:: setting up PWM driver\n");
+
+	// set all channels to 0
+	pwmSetupDriver(-1, 0, 0);
 
 	// set PWM drivers to totem pole
 	addr 	= PWM_EXP_REG_MODE2;
@@ -190,47 +274,19 @@ int pwmDriverInit () {
 	usleep(1000);
 
 	//// reset MODE1 (without sleep)
-	// read MODE1 register
-	addr 	= PWM_EXP_REG_MODE1;
-	status 	= i2c_readByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
-								addr, 
-								&val
-							);
-	if (status == EXIT_FAILURE) {
-		printf("init:: read MODE1 failed\n");
-		return EXIT_FAILURE;
-	}
-
 	// disable SLEEP mode
-	val 	= val & ~PWM_EXP_REG_MODE1_SLEEP;
-	status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
-								addr, 
-								val
-							);
+	status 	= _pwmSetSleepMode(0);
 	if (status == EXIT_FAILURE) {
-		printf("init:: write to MODE2 failed\n");
+		printf("init:: disabling SLEEP mode failed\n");
 		return EXIT_FAILURE;
 	}
-
-	// wait for the oscillator
-	usleep(1000);
 
 	// enable the reset
-	val 	= val & PWM_EXP_REG_MODE1_RESET;
-	status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
-								addr, 
-								val
-							);
+	status 	= _pwmSetReset();
 	if (status == EXIT_FAILURE) {
-		printf("init:: write to MODE2 failed\n");
+		printf("init:: reset failed\n");
 		return EXIT_FAILURE;
 	}
-
-	// wait for the oscillator
-	usleep(1000);
 
 	return EXIT_SUCCESS;
 }
@@ -240,7 +296,9 @@ int pwmSetFrequency(float freq)
 {
 	int status;
 	int prescale;
+	int addr, val;
 
+	//// calculate the prescale value
 	// prescale = round( osc_clk / pulse_count x update_rate ) - 1
 	prescale 	= (int)round( (float)OSCILLATOR_CLOCK/((float)PULSE_TOTAL_COUNT * freq) ) - 1;
 
@@ -254,12 +312,52 @@ int pwmSetFrequency(float freq)
 
 	printf("PWM: freq: %0.2f Hz, prescale: 0x%02x\n", freq, prescale);
 
-	status = i2c_writeByte	(	I2C_DEVICE_NUM, 
+	//// Go to sleep
+	// read MODE1 register
+	addr 	= PWM_EXP_REG_MODE1;
+	status 	= i2c_readByte	(	I2C_DEVICE_NUM, 
 								I2C_DEVICE_ADDR, 
-								PWM_EXP_REG_ADDR_PRESCALE, 
+								addr, 
+								&val
+							);
+	if (status == EXIT_FAILURE) {
+		printf("pwmSetFreq:: read MODE1 failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// enable sleep mode to disable the oscillator
+	status  = _pwmSetSleepMode(1);
+	if (status == EXIT_FAILURE) {
+		printf("pwmSetFreq:: disabling SLEEP mode failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// set the prescale value
+	addr 	= PWM_EXP_REG_ADDR_PRESCALE;
+	status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
+								I2C_DEVICE_ADDR, 
+								addr, 
 								prescale
 							);
-	
+	if (status == EXIT_FAILURE) {
+		printf("pwmSetFreq:: setting prescale value failed\n");
+		return EXIT_FAILURE;
+	}
+
+	//// wake up - reset sleep
+	// disable sleep mode to enable the oscillator
+	status  = _pwmSetSleepMode(0);
+	if (status == EXIT_FAILURE) {
+		printf("pwmSetFreq:: disabling SLEEP mode failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// reset 
+	status 	= _pwmSetReset();
+	if (status == EXIT_FAILURE) {
+		printf("pwmSetFreq:: reset failed\n");
+		return EXIT_FAILURE;
+	}	
 
 	return status;
 }
