@@ -3,7 +3,7 @@
 void usage(const char* progName) 
 {
 	printf("\n");
-	printf("Usage: pwm-exp [-qv] CHANNEL DUTY [DELAY]\n");
+	printf("Usage: pwm-exp [-qvi] CHANNEL DUTY [DELAY]\n");
 	printf("\n");
 	printf("CHANNEL is the specified PWM channel on the Expansion\n");
 	printf("\tcan be: 0-15  to control a single channel\n");
@@ -11,10 +11,20 @@ void usage(const char* progName)
 	printf("DUTY is the signal duty cycle, expressed 1-100\n");
 	printf("DELAY is the delay before signal asserts, optional\n");
 	printf("\n");
+	printf("FUNCTIONALITY:\n");
+	printf("\tProgram the CHANNEL to the specified duty cycle");
+	printf("\n");
 	printf("OPTIONS:\n");
 	printf(" -q 		quiet: no output\n");
 	printf(" -v 		verbose: lots of output\n");
 	printf(" -h 		help: show this prompt\n");
+	printf(" -i 		initialize the pwm chip (must be done after power-up)\n");
+	printf("\n\n");
+	printf("Usage: pwm-exp -i\n");
+	printf("\n");
+	printf("FUNCTIONALITY:\n");
+	printf("\tOnly initialize the pwm chip\n");
+	printf("\n");
 	printf("\n");
 }
 
@@ -99,7 +109,14 @@ int main(int argc, char** argv)
 	argv	+= optind;
 
 	// ensure correct number of arguments
-	if ( argc != 2 && argc != 3 ) {
+	if ( argc == 0 && init == 1 ) {
+		status = pwmDriverInit();
+		if (status == EXIT_FAILURE) {
+			printf("main:: pwm init failed!\n");
+		}
+		return 0;
+	}
+	else if ( argc != 2 && argc != 3 ) {
 		usage(progname);
 		return 0;
 	}
