@@ -1,6 +1,6 @@
 #include <onion-i2c.h>
 
-// get a file handle to the device
+// get a file handle to the device 
 int _i2c_getFd(int adapterNum, int *devHandle)
 {
 	int 	status;
