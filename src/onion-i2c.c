@@ -168,10 +168,11 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 #ifdef I2C_ENABLED
 		// read from the i2c device
 		status = read(fd, buffer, 1);
-#endif
-
 		I2C_PRINT("i2c:: dbg: read returned status %d\n", status);
 		// to do: add error checking here!
+#else
+		buffer[0] 	= 0x0;
+#endif
 
 		I2C_PRINT("i2c:: dbg: read value: 0x%02x\n", buffer[0]);
 
