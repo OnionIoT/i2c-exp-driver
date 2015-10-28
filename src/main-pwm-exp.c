@@ -12,7 +12,7 @@ void usage(const char* progName)
 	printf("DELAY is the delay before signal asserts, optional\n");
 	printf("\n");
 	printf("FUNCTIONALITY:\n");
-	printf("\tProgram the CHANNEL to the specified duty cycle");
+	printf("\tProgram the CHANNEL to the specified duty cycle\n");
 	printf("\n");
 	printf("OPTIONS:\n");
 	printf(" -q 		quiet: no output\n");
@@ -71,7 +71,8 @@ int main(int argc, char** argv)
 	int init 		= 0;
 	int ch;
 
-	int channel, duty, delay, frequency;
+	int channel;
+	float duty, delay, frequency;
 
 	// set the default frequency
 	frequency = PWM_DEFAULT_FREQUENCY;
@@ -96,7 +97,7 @@ int main(int argc, char** argv)
 			break;
 		case 'f':
 			// specify the pwm frequency
-			frequency = atoi(optarg);
+			frequency = atof(optarg);
 			break;
 		default:
 			usage(progname);
@@ -132,12 +133,12 @@ int main(int argc, char** argv)
 	}
 
 	// second arg - duty cycle
-	duty 		= (int)strtol(argv[1], NULL, 10);
+	duty 		= strtof(argv[1], NULL);
 
 	// third arg, optional - delay value 
-	delay 		= 0;	// default value
+	delay 		= 0.0f;	// default value
 	if (argc == 3) {
-		delay 	= (int)strtol(argv[2], NULL, 10);
+		delay 	= strtof(argv[2], NULL);
 	}
 
 	// validate the arguments

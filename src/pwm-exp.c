@@ -57,14 +57,14 @@ int _getDriverRegisterOffset (int driverNum, int *addr)
 	return EXIT_SUCCESS;
 }
 
-// find time count based on duty (1-100)
-int _dutyToCount (int duty)
+// find time count based on duty percentage (0-100)
+int _dutyToCount (float duty)
 {
 	int 	count;
-	float 	dutyF 	= (float)duty / 100.0f;
+	float 	dutyDecimal 	= duty / 100.0f;
 
 	// convert duty to count
-	count 	= (int)round(dutyF * (float)PULSE_TOTAL_COUNT);
+	count 	= (int)round(dutyDecimal * (float)PULSE_TOTAL_COUNT);
 
 	// check for negatives
 	if (count < 0) {
@@ -111,7 +111,7 @@ int _pwmSetTime(struct pwmSetup *setup)
 }
 
 // calculate the ON and OFF time values
-void _pwmCalculate(int duty, int delay, struct pwmSetup *setup)
+void _pwmCalculate(float duty, float delay, struct pwmSetup *setup)
 {
 	int 	countOn;
 	int 	countDelay;
@@ -236,13 +236,13 @@ int pwmDriverInit () {
 }
 
 // program the prescale value for desired pwm frequency
-int pwmSetFrequency(int freq)
+int pwmSetFrequency(float freq)
 {
 	int status;
 	int prescale;
 
 	// prescale = round( osc_clk / pulse_count x update_rate ) - 1
-	prescale 	= (int)round( OSCILLATOR_CLOCK/(PULSE_TOTAL_COUNT * freq) ) - 1;
+	prescale 	= (int)round( (float)OSCILLATOR_CLOCK/((float)PULSE_TOTAL_COUNT * freq) ) - 1;
 
 	// clamp the value
 	if (prescale < PRESCALE_MIN_VALUE) {
@@ -252,7 +252,7 @@ int pwmSetFrequency(int freq)
 		prescale = PRESCALE_MAX_VALUE;
 	}
 
-	printf("PWM: freq: %d, prescale: 0x%02x\n", freq, prescale);
+	printf("PWM: freq: %0.2f Hz, prescale: 0x%02x\n", freq, prescale);
 
 	status = i2c_writeByte	(	I2C_DEVICE_NUM, 
 								I2C_DEVICE_ADDR, 
@@ -265,7 +265,7 @@ int pwmSetFrequency(int freq)
 }
 
 // perform PWM driver setup based on duty and delay
-int pwmSetupDriver(int driverNum, int duty, int delay)
+int pwmSetupDriver(int driverNum, float duty, float delay)
 {
 	int 				status;
 	struct pwmSetup 	setup;
@@ -280,7 +280,7 @@ int pwmSetupDriver(int driverNum, int duty, int delay)
 	// find on and off times
 	_pwmCalculate(duty, delay, &setup);
 
-	printf("PWM: duty: %d, delay: %d\n", duty, delay);
+	printf("PWM: duty: %0.2f, delay: %0.2f\n", duty, delay);
 	printf("PWM: start: %d (0x%04x), stop: %d (0x%04x)\n\n", setup.timeStart, setup.timeStart, setup.timeEnd, setup.timeEnd);
 
 	// write on and off times via i2c

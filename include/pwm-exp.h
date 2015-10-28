@@ -18,7 +18,7 @@
 
 #define LED_FULL_VAL			0x1000
 
-#define PWM_DEFAULT_FREQUENCY	60
+#define PWM_DEFAULT_FREQUENCY	50.0f
 
 #define OSCILLATOR_CLOCK		25000000
 #define	PULSE_TOTAL_COUNT		4096
@@ -78,17 +78,17 @@ struct pwmSetup {
 
 // helper functions
 void 	_initPwmSetup		(struct pwmSetup *obj);
-int 	_dutyToCount 		(int duty);
+int 	_dutyToCount 		(float duty);
 
 int 	_getDriverRegisterOffset (int driverNum, int *addr);
 int 	_writeValue			(int addr, int value);
 int 	_pwmSetTime			(struct pwmSetup *setup);
 
-void 	_pwmCalculate		(int duty, int delay, struct pwmSetup *setup);
+void 	_pwmCalculate		(float duty, float delay, struct pwmSetup *setup);
 
 int 	pwmDriverInit 		();
-int 	pwmSetFrequency		(int freq);
-int 	pwmSetupDriver		(int driverNum, int duty, int delay);
+int 	pwmSetFrequency		(float freq);
+int 	pwmSetupDriver		(int driverNum, float duty, float delay);
 
 
 #endif // _PWM_EXP_H_
