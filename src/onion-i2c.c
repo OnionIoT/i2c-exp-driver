@@ -117,7 +117,7 @@ int i2c_writeByte(int devNum, int devAddr, int addr, int val)
 		// write to the i2c device
 		status = write(fd, buffer, size);
 		if (status != size) {
-			printf("i2c:: write issue, errno is %d: %s\n", errno, strerror(errno) );
+			printf("i2c:: write issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
 		}
 #endif
  	}
@@ -158,7 +158,7 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 		// write to the i2c device
 		status = write(fd, buffer, size);
 		if (status != size) {
-			printf("i2c:: write issue, errno is %d: %s\n", errno, strerror(errno) );
+			printf("i2c:: write issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
 		}
 #endif
 
@@ -168,14 +168,16 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 
 #ifdef I2C_ENABLED
 		// read from the i2c device
-		status = read(fd, buffer, 1);
-		I2C_PRINT("i2c:: dbg: read returned status %d\n", status);
-		// to do: add error checking here!
+		size 	= 1
+		status 	= read(fd, buffer, 1);
+		if (status != size) {
+			printf("i2c:: read issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
+		}
 #else
 		buffer[0] 	= 0x0;
 #endif
 
-		I2C_PRINT("i2c:: dbg: read value: 0x%02x\n", buffer[0]);
+		I2C_PRINT("\tread value: 0x%02x\n", buffer[0]);
 
 		//// return the data
 		*val = buffer[0];
