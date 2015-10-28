@@ -131,7 +131,7 @@ int i2c_writeByte(int devNum, int devAddr, int addr, int val)
 // read from the i2c bus
 int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 {
-	int 	status;
+	int 	status, size;
 	int 	fd;
 	char 	buffer[32];
 
@@ -152,10 +152,11 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 		memset( buffer, 0, sizeof(buffer) );
 		// push the address and data values into the buffer
 		buffer[0]	= (addr & 0xff);
+		size 		= 1;
 
 #ifdef I2C_ENABLED
 		// write to the i2c device
-		status = write(fd, buffer, 1);
+		status = write(fd, buffer, size);
 		if (status != size) {
 			printf("i2c:: write issue, errno is %d: %s\n", errno, strerror(errno) );
 		}
