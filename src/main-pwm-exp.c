@@ -1,8 +1,18 @@
 #include <pwm-exp.h>
 
+typedef enum e_PwmExpMode {
+	MAIN_PWM_EXP_DUTY_MODE = 0,
+	MAIN_PWM_EXP_PERIOD_MODE = 1
+}	eProgramMode;
+
 void usage(const char* progName) 
 {
 	printf("\n");
+	printf("Usage: pwm-exp -i\n");
+	printf("\n");
+	printf("FUNCTIONALITY:\n");
+	printf("\tOnly initialize the pwm chip\n");
+	printf("\n\n");
 	printf("Usage: pwm-exp [-qvi] CHANNEL DUTY [DELAY]\n");
 	printf("\n");
 	printf("CHANNEL is the specified PWM channel on the Expansion\n");
@@ -20,15 +30,30 @@ void usage(const char* progName)
 	printf(" -h 		help: show this prompt\n");
 	printf(" -i 		initialize the pwm chip (must be done after power-up)\n");
 	printf("\n\n");
-	printf("Usage: pwm-exp -i\n");
+	printf("Usage: pwm-exp -p CHANNEL ON_PERIOD TOTAL_PERIOD\n");
 	printf("\n");
-	printf("FUNCTIONALITY:\n");
-	printf("\tOnly initialize the pwm chip\n");
-	printf("\n");
+	printf("CHANNEL is the specified PWM channel on the Expansion\n");
+	printf("ON_PERIOD is the pulse width in ms\n");
+	printf("TOTAL_PERIOD is the total period in ms\n");
+	
 	printf("\n");
 }
 
-int validateArguments(int channel, int duty, int delay) 
+int readChannelArgument (char* channelArgument) 
+{
+	int channel 	= PWM_EXP_NUM_CHANNELS;		// default value is invalid
+	
+	if (strcmp(channelArgument, "all") == 0 ) {
+		channel 	= -1;	// all drivers
+	}
+	else {
+		channel 	= (int)strtol(channelArgument, NULL, 10);
+	}
+
+	return channel;
+}
+
+int validateChannelArgument (int channel)
 {
 	int status = EXIT_SUCCESS;
 
@@ -42,7 +67,16 @@ int validateArguments(int channel, int duty, int delay)
 		status = EXIT_FAILURE;
 	}
 
-	if (duty < 0 || duty > 100) {
+	return status;
+}
+
+int validateArgumentsDutyMode(int channel, float duty, float delay) 
+{
+	int status = EXIT_SUCCESS;
+
+	status = validateChannelArgument(channel);
+
+	if (duty < 0.0f || duty > 100.0f) {
 		printf("ERROR: invalid DUTY selection\n");
 		printf("Accepted values are:\n");
 		printf("\t0 - 100\n");
@@ -51,10 +85,47 @@ int validateArguments(int channel, int duty, int delay)
 		status = EXIT_FAILURE;
 	}
 
-	if (delay < 0 || delay > 100) {
+	if (delay < 0.0f || delay > 100.0f) {
 		printf("ERROR: invalid DELAY selection\n");
 		printf("Accepted values are:\n");
 		printf("\t0 - 100\n");
+		printf("\n");
+
+		status = EXIT_FAILURE;
+	}
+
+	return status;
+}
+
+int validateArgumentsPeriodMode(int channel, float periodOn, float periodTotal, float frequency) 
+{
+	int status = EXIT_SUCCESS;
+
+	status = validateChannelArgument(channel);
+
+	if (periodOn < 0.0f || periodOn > periodTotal) {
+		printf("ERROR: invalid PERIOD_ON selection\n");
+		printf("Must fulfill the following conditions:\n");
+		printf("\tbe greater than 0\n");
+		printf("\tbe less than or equal to the total period\n");
+		printf("\n");
+
+		status = EXIT_FAILURE;
+	}
+
+	if (periodTotal < 0.0f) {
+		printf("ERROR: invalid PERIOD_TOTAL selection\n");
+		printf("Must be greater than 0\n");
+		printf("\n");
+
+		status = EXIT_FAILURE;
+	}
+
+	if (frequency < PWM_FREQUENCY_MIN || frequency > PWM_FREQUENCY_MAX) {
+		printf("ERROR: invalid PERIOD_TOTAL selection\n");
+		printf("Period corresponds to frequency of %0.2f Hz\n", frequency);
+		printf("Period must correspond to frequency between:\n");
+		printf("\t%d Hz - %d Hz", (int)PWM_FREQUENCY_MIN, (int)PWM_FREQUENCY_MAX);
 		printf("\n");
 
 		status = EXIT_FAILURE;
@@ -67,21 +138,24 @@ int main(int argc, char** argv)
 {
 	const char *progname;
 	int status;
+	int mode 		= MAIN_PWM_EXP_DUTY_MODE;
 	int verbose 	= 1;
 	int init 		= 0;
 	int ch;
 
 	int channel;
 	float duty, delay, frequency;
+	float periodOn, periodTotal;
 
-	// set the default frequency
-	frequency = PWM_DEFAULT_FREQUENCY;
+	// set the defaults
+	frequency 	= PWM_FREQUENCY_DEFAULT;
+	delay 		= 0.0f;	// default value
 
 	// save the program name
 	progname = argv[0];	
 
 	//// parse the option arguments
-	while ((ch = getopt(argc, argv, "vqhif:")) != -1) {
+	while ((ch = getopt(argc, argv, "vqhipf:")) != -1) {
 		switch (ch) {
 		case 'v':
 			// verbose output
@@ -94,6 +168,10 @@ int main(int argc, char** argv)
 		case 'i':
 			// perform PWM init
 			init 	= 1;
+			break;
+		case 'p':
+			// enabled period mode
+			mode 	= MAIN_PWM_EXP_PERIOD_MODE;
 			break;
 		case 'f':
 			// specify the pwm frequency
@@ -109,7 +187,7 @@ int main(int argc, char** argv)
 	argc 	-= optind;
 	argv	+= optind;
 
-	// ensure correct number of arguments
+	// check if just initialization
 	if ( argc == 0 && init == 1 ) {
 		status = pwmDriverInit();
 		if (status == EXIT_FAILURE) {
@@ -117,34 +195,66 @@ int main(int argc, char** argv)
 		}
 		return 0;
 	}
-	else if ( argc != 2 && argc != 3 ) {
-		usage(progname);
-		return 0;
+
+	if (mode == MAIN_PWM_EXP_DUTY_MODE)
+	{
+		// ensure correct number of arguments
+		if ( argc != 2 && argc != 3 ) {
+			usage(progname);
+			printf("ERROR: invalid amount of arguments!\n");
+			return 0;
+		}
+
+
+		//// parse the arguments
+		// first arg - channel
+		channel 	= readChannelArgument(argv[0]);
+
+		// second arg - duty cycle
+		duty 		= strtof(argv[1], NULL);
+
+		// third arg, optional - delay value 
+		if (argc == 3) {
+			delay 	= strtof(argv[2], NULL);
+		}
+
+		// validate the arguments
+		status 	= validateArgumentsDutyMode(channel, duty, delay);
+		if (status == EXIT_FAILURE) {
+			return 0;
+		}
 	}
+	else if (mode == MAIN_PWM_EXP_PERIOD_MODE)
+	{
+		// ensure correct number of arguments
+		if ( argc != 3 ) {
+			usage(progname);
+			printf("ERROR: invalid amount of arguments!\n");
+			return 0;
+		}
 
 
-	//// parse the arguments
-	// first arg - channel
-	if (strcmp(argv[0], "all") == 0 ) {
-		channel = -1;	// all drivers
-	}
-	else {
-		channel 	= (int)strtol(argv[0], NULL, 10);
-	}
+		//// parse the arguments
+		// first arg - channel
+		channel 	= readChannelArgument(argv[0]);
 
-	// second arg - duty cycle
-	duty 		= strtof(argv[1], NULL);
+		// second arg - pulse width
+		periodOn	= strtof(argv[1], NULL);
 
-	// third arg, optional - delay value 
-	delay 		= 0.0f;	// default value
-	if (argc == 3) {
-		delay 	= strtof(argv[2], NULL);
-	}
+		// third arg - total period
+		periodTotal	= strtof(argv[2], NULL);
 
-	// validate the arguments
-	status 	= validateArguments(channel, duty, delay);
-	if (status == EXIT_FAILURE) {
-		return 0;
+		// convert periods to duty
+		duty 		= (periodOn / periodTotal) * 100.0f;
+
+		// convert total period to frequency
+		frequency 	= ( 1.0f / (periodTotal / 1000.0f) );
+
+		// validate the arguments
+		status 	= validateArgumentsPeriodMode(channel, periodOn, periodTotal, frequency);
+		if (status == EXIT_FAILURE) {
+			return 0;
+		}
 	}
 
 

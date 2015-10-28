@@ -18,7 +18,9 @@
 
 #define LED_FULL_VAL			0x1000
 
-#define PWM_DEFAULT_FREQUENCY	50.0f
+#define PWM_FREQUENCY_DEFAULT	50.0f
+#define PWM_FREQUENCY_MIN		24.0f
+#define PWM_FREQUENCY_MAX		1526.0f
 
 #define OSCILLATOR_CLOCK		25000000.0f
 #define	PULSE_TOTAL_COUNT		4096
@@ -42,7 +44,7 @@
 #define REG_OFFSET_ON_BYTES		0x0
 #define REG_OFFSET_OFF_BYTES	0x2
 
-
+#define PWM_EXP_NUM_CHANNELS	16
 
 // type definitions
 typedef enum e_PwmDriverAddr {
