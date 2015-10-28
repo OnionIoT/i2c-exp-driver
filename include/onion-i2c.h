@@ -25,6 +25,14 @@
 #endif
 
 
+//#define I2C_DEBUG
+#ifdef I2C_DEBUG
+	#define I2C_PRINT(a,...)
+#else
+	#define I2C_PRINT(a,...)		printf (a,##__VA_ARGS__)
+#endif
+
+
 
 int _i2c_getFd 				(int adapterNum, int *devHandle);
 int _i2c_releaseFd			(int devHandle);
