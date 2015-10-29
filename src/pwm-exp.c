@@ -77,14 +77,14 @@ int _writeValue(int addr, int value)
 	wrAddr 	= addr + REG_OFFSET_BYTE0;
 	byte 	= (value & 0xff);
 
-	printf("Writing to addr: 0x%02x, data: 0x%02x\n", wrAddr, byte);
+	//printf("Writing to addr: 0x%02x, data: 0x%02x\n", wrAddr, byte);
 	status 	= i2c_writeByte(I2C_DEVICE_NUM, I2C_DEVICE_ADDR, wrAddr, byte);
 
 	// write second byte to H
 	wrAddr 	= addr + REG_OFFSET_BYTE1;
 	byte 	= ((value >> 8) & 0xff);
 	
-	printf("Writing to addr: 0x%02x, data: 0x%02x\n", wrAddr, byte);
+	//printf("Writing to addr: 0x%02x, data: 0x%02x\n", wrAddr, byte);
 	status 	|= i2c_writeByte(I2C_DEVICE_NUM, I2C_DEVICE_ADDR, wrAddr, byte);
 
 	return status;

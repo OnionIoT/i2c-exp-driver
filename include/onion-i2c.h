@@ -27,9 +27,9 @@
 
 //#define I2C_DEBUG
 #ifdef I2C_DEBUG
-	#define I2C_PRINT(a,...)
-#else
 	#define I2C_PRINT(a,...)		printf (a,##__VA_ARGS__)
+#else
+	#define I2C_PRINT(a,...)
 #endif
 
 
