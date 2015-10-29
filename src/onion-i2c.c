@@ -168,7 +168,7 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 
 #ifdef I2C_ENABLED
 		// read from the i2c device
-		size 	= 1
+		size 	= 1;
 		status 	= read(fd, buffer, 1);
 		if (status != size) {
 			printf("i2c:: read issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );

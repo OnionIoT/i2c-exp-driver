@@ -30,10 +30,10 @@ void usage(const char* progName)
 	printf(" -h 		help: show this prompt\n");
 	printf(" -i 		initialize the pwm chip (must be done after power-up)\n");
 	printf("\n\n");
-	printf("Usage: pwm-exp -p CHANNEL ON_PERIOD TOTAL_PERIOD\n");
+	printf("Usage: pwm-exp -p CHANNEL PULSE_WIDTH TOTAL_PERIOD\n");
 	printf("\n");
 	printf("CHANNEL is the specified PWM channel on the Expansion\n");
-	printf("ON_PERIOD is the pulse width in ms\n");
+	printf("PULSE_WIDTH is the time in ms while the pulse is high\n");
 	printf("TOTAL_PERIOD is the total period in ms\n");
 	
 	printf("\n");
