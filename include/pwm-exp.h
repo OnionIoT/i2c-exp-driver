@@ -11,8 +11,8 @@
 
 
 
-#define I2C_DEVICE_NUM			0
-#define I2C_DEVICE_ADDR			0x5a
+#define PWM_I2C_DEVICE_NUM			0
+#define PWM_I2C_DEVICE_ADDR			0x5a
 
 
 
@@ -91,6 +91,7 @@ int 	_pwmSetSleepMode 	(int bSleepMode);
 
 
 void 	_pwmCalculate		(float duty, float delay, struct pwmSetup *setup);
+
 
 int 	pwmDriverInit 		();
 int 	pwmSetFrequency		(float freq);

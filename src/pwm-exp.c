@@ -78,14 +78,14 @@ int _writeValue(int addr, int value)
 	byte 	= (value & 0xff);
 
 	//printf("Writing to addr: 0x%02x, data: 0x%02x\n", wrAddr, byte);
-	status 	= i2c_writeByte(I2C_DEVICE_NUM, I2C_DEVICE_ADDR, wrAddr, byte);
+	status 	= i2c_writeByte(PWM_I2C_DEVICE_NUM, PWM_I2C_DEVICE_ADDR, wrAddr, byte);
 
 	// write second byte to H
 	wrAddr 	= addr + REG_OFFSET_BYTE1;
 	byte 	= ((value >> 8) & 0xff);
 	
 	//printf("Writing to addr: 0x%02x, data: 0x%02x\n", wrAddr, byte);
-	status 	|= i2c_writeByte(I2C_DEVICE_NUM, I2C_DEVICE_ADDR, wrAddr, byte);
+	status 	|= i2c_writeByte(PWM_I2C_DEVICE_NUM, PWM_I2C_DEVICE_ADDR, wrAddr, byte);
 
 	return status;
 }
@@ -155,8 +155,8 @@ int _pwmSetSleepMode (int bSleepMode)
 
 	// read MODE1 register
 	addr 	= PWM_EXP_REG_MODE1;
-	status 	= i2c_readByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
+	status 	= i2c_readByte	(	PWM_I2C_DEVICE_NUM, 
+								PWM_I2C_DEVICE_ADDR, 
 								addr, 
 								&val
 							);
@@ -176,8 +176,8 @@ int _pwmSetSleepMode (int bSleepMode)
 	} 
 
 	// write to MODE1 register
-	status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
+	status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
+								PWM_I2C_DEVICE_ADDR, 
 								addr, 
 								val
 							);
@@ -200,8 +200,8 @@ int _pwmSetReset ()
 
 	// read MODE1 register
 	addr 	= PWM_EXP_REG_MODE1;
-	status 	= i2c_readByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
+	status 	= i2c_readByte	(	PWM_I2C_DEVICE_NUM, 
+								PWM_I2C_DEVICE_ADDR, 
 								addr, 
 								&val
 							);
@@ -212,8 +212,8 @@ int _pwmSetReset ()
 
 	// enable reset
 	val 	|= PWM_EXP_REG_MODE1_RESET; 
-	status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
+	status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
+								PWM_I2C_DEVICE_ADDR, 
 								addr, 
 								val
 							);
@@ -241,8 +241,8 @@ int pwmDriverInit () {
 	// set PWM drivers to totem pole
 	addr 	= PWM_EXP_REG_MODE2;
 	val 	= PWM_EXP_REG_MODE2_OUTDRV & 0xff;
-	status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
+	status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
+								PWM_I2C_DEVICE_ADDR, 
 								addr, 
 								val
 							);
@@ -254,8 +254,8 @@ int pwmDriverInit () {
 	// enable all call
 	addr 	= PWM_EXP_REG_MODE1;
 	val 	= PWM_EXP_REG_MODE1_ALLCALL & 0xff;
-	status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
+	status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
+								PWM_I2C_DEVICE_ADDR, 
 								addr, 
 								val
 							);
@@ -308,8 +308,8 @@ int pwmSetFrequency(float freq)
 
 	// read current prescale value
 	addr 	= PWM_EXP_REG_ADDR_PRESCALE;
-	status 	= i2c_readByte	(	I2C_DEVICE_NUM, 
-								I2C_DEVICE_ADDR, 
+	status 	= i2c_readByte	(	PWM_I2C_DEVICE_NUM, 
+								PWM_I2C_DEVICE_ADDR, 
 								addr, 
 								&val
 							);
@@ -324,8 +324,8 @@ int pwmSetFrequency(float freq)
 		//// Go to sleep
 		// read MODE1 register
 		addr 	= PWM_EXP_REG_MODE1;
-		status 	= i2c_readByte	(	I2C_DEVICE_NUM, 
-									I2C_DEVICE_ADDR, 
+		status 	= i2c_readByte	(	PWM_I2C_DEVICE_NUM, 
+									PWM_I2C_DEVICE_ADDR, 
 									addr, 
 									&val
 								);
@@ -343,8 +343,8 @@ int pwmSetFrequency(float freq)
 
 		// set the prescale value
 		addr 	= PWM_EXP_REG_ADDR_PRESCALE;
-		status 	= i2c_writeByte	(	I2C_DEVICE_NUM, 
-									I2C_DEVICE_ADDR, 
+		status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
+									PWM_I2C_DEVICE_ADDR, 
 									addr, 
 									prescale
 								);

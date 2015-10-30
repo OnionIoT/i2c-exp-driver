@@ -30,13 +30,24 @@ SOURCE0 := $(SRCDIR)/main-$(APP0).$(SRCEXT)
 OBJECT0 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE0:.$(SRCEXT)=.o))
 TARGET0 := $(BINDIR)/$(APP0)
 
-all: $(TARGET0)
+APP1 := relay-exp
+SOURCE1 := $(SRCDIR)/main-$(APP1).$(SRCEXT)
+OBJECT1 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE1:.$(SRCEXT)=.o))
+TARGET1 := $(BINDIR)/$(APP1)
+
+all: $(TARGET0) $(TARGET1)
 
 $(TARGET0): $(OBJECTS) $(OBJECT0)
 	@echo " Compiling $(APP0)"
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
 	@echo " $(CC) $^ -o $(TARGET0) $(LIB)"; $(CC) $^ -o $(TARGET0) $(LIB)
+
+$(TARGET1): $(OBJECTS) $(OBJECT1)
+	@echo " Compiling $(APP1)"
+	@mkdir -p $(BINDIR)
+	@echo " Linking..."
+	@echo " $(CC) $^ -o $(TARGET1) $(LIB)"; $(CC) $^ -o $(TARGET1) $(LIB)
 
 # generic: build any object file required
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)

@@ -57,7 +57,7 @@ int validateChannelArgument (int channel)
 {
 	int status = EXIT_SUCCESS;
 
-	if (channel < -1 || channel > 15) {
+	if (channel < -1 || channel >= PWM_EXP_NUM_CHANNELS) {
 		printf("ERROR: invalid CHANNEL selection\n");
 		printf("Accepted values are:\n");
 		printf("\t0-15\n");
@@ -166,7 +166,7 @@ int main(int argc, char** argv)
 			verbose = 0;
 			break;
 		case 'i':
-			// perform PWM init
+			// perform init sequence
 			init 	= 1;
 			break;
 		case 'p':
@@ -191,7 +191,7 @@ int main(int argc, char** argv)
 	if ( argc == 0 && init == 1 ) {
 		status = pwmDriverInit();
 		if (status == EXIT_FAILURE) {
-			printf("main:: pwm init failed!\n");
+			printf("main-pwm-exp:: pwm init failed!\n");
 		}
 		return 0;
 	}
@@ -264,20 +264,20 @@ int main(int argc, char** argv)
 	if (init == 1) {
 		status = pwmDriverInit();
 		if (status == EXIT_FAILURE) {
-			printf("main:: pwm init failed!\n");
+			printf("main-pwm-exp:: pwm init failed!\n");
 		}
 	}
 
 	// setup the frequency
 	status = pwmSetFrequency(frequency);
 	if (status == EXIT_FAILURE) {
-		printf("main:: pwm set frequency failed!\n");
+		printf("main-pwm-exp:: pwm set frequency failed!\n");
 	}
 
 	// setup the driver
 	status = pwmSetupDriver(channel, duty, delay);
 	if (status == EXIT_FAILURE) {
-		printf("main:: driver setup failed!\n");
+		printf("main-pwm-exp:: driver setup failed!\n");
 	}
 
 
