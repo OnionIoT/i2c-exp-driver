@@ -208,6 +208,8 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		buffer[0]	= (addr & 0xff);
 		size 		= 1;
 
+		printf("before write: status is %d \n", status);
+
 #ifdef I2C_ENABLED
 		// write to the i2c device
 		status = write(fd, buffer, size);
@@ -215,7 +217,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 			printf("i2c:: write issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
 		}
 #endif
-		printf("after read: status is %d \n", status);
+		printf("after write: status is %d \n", status);
 
 		//// read data
 		// clear the buffer
