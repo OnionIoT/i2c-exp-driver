@@ -95,12 +95,6 @@ int _i2c_writebuffer(int devNum, int devAddr, int addr, char buffer[], int size)
 
 	// perform the write
 	if ( status == EXIT_SUCCESS ) {
-		// dbg
-		for (index = 0; index < size; index++) {
-			printf("i2c:: buffer[%d] = 0x%02x \n", index, buffer[index]);
-		}
-		printf("\tsize is %d\n", size);
-
 #ifdef I2C_ENABLED
 		// write to the i2c device
 		status = write(fd, buffer, size);
@@ -229,12 +223,16 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 			status 	= EXIT_FAILURE;
 		}
 #else
+		buffer[0]	= 0x0;
+		size 		= 1;
+		/*
+		// for debug
 		printf("Setting buffer... it has length of %d\n", strlen(buffer) );
 		buffer[0] 	= 0x34;
 		buffer[1] 	= 0x12;
 		size = 2;
 		printf("Done setting buffer... it has length of %d\n", strlen(buffer) );
-		printf("size is %d\n", size);
+		printf("size is %d\n", size);*/
 #endif		
 
 		//// return the data
@@ -247,13 +245,11 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		}
 		I2C_PRINT("\n");
 
-		printf("data is 0x%x\n", data);
 		*val 	= data;
  	}
 
  	// release the device file handle
  	status 	= _i2c_releaseFd(fd);
- 	printf("releasedFd, status is %d, data is 0x%x, val is: 0x%x \n", status, data, *val);
 
 	return (status);
 }
@@ -269,8 +265,6 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 							val,
 							1
 						);
-
-	printf("readByte: status is %d, value is 0x%x\n", status, *val);
 
 	return (status);
 }
