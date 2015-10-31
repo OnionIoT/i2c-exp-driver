@@ -262,6 +262,7 @@ int main(int argc, char** argv)
 						&channel,
 						1
 					);
+		printf("READ 0x%x \n", channel);
 
 		printf("DBG!!\n");
 		i2c_read	(	PWM_I2C_DEVICE_NUM, 
@@ -270,6 +271,7 @@ int main(int argc, char** argv)
 						&channel,
 						2
 					);
+		printf("READ 0x%x \n", channel);
 
 		printf("DBG!!\n");
 		i2c_read	(	PWM_I2C_DEVICE_NUM, 
@@ -278,6 +280,7 @@ int main(int argc, char** argv)
 						&channel,
 						3
 					);
+		printf("READ 0x%x \n", channel);
 
 		printf("DBG!!\n");
 		i2c_read	(	PWM_I2C_DEVICE_NUM, 
@@ -286,6 +289,7 @@ int main(int argc, char** argv)
 						&channel,
 						4
 					);
+		printf("READ 0x%x \n", channel);
 
 		return 0;
 	}
