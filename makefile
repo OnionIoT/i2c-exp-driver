@@ -22,6 +22,9 @@ ifneq ($(UNAME_S),Darwin)
 	# only add this when compiling in buildroot
 	LIB := -l m
 endif
+ifeq ($(CC),mips-openwrt-linux-uclibc-gcc)
+	CUSTFLAGS := -fPIC
+endif
 #LIB := -pthread -lmongoclient -L lib -lboost_thread-mt -lboost_filesystem-mt -lboost_system-mt
 INC := $(shell find $(INCDIR) -maxdepth 1 -type d -exec echo -I {}  \;)
 
@@ -77,7 +80,7 @@ $(TARGET1): $(OBJECT1)
 # generic: build any object file required
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
-	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@echo " $(CC) $(CFLAGS) $(CUSTFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(CUSTFLAGS) $(INC) -c -o $@ $<
 
 clean:
 	@echo " Cleaning..."; 
