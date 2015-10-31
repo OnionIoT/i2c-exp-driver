@@ -240,12 +240,12 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		I2C_PRINT("\n");
 
 		sscanf(buffer, "%d", &data);
-		*val 	= data
+		*val 	= data;
  	}
 
  	// release the device file handle
  	status 	= _i2c_releaseFd(fd);
- 	printf("releasedFd, status is %d, val is: 0x%x \n", status, *val);
+ 	printf("releasedFd, status is %d, data is 0x%x, val is: 0x%x \n", status, data, *val);
 
 	return (status);
 }
