@@ -13,7 +13,7 @@ void usage(const char* progName)
 	printf("FUNCTIONALITY:\n");
 	printf("\tOnly initialize the pwm chip\n");
 	printf("\n\n");
-	printf("Usage: pwm-exp [-qvi] CHANNEL DUTY [DELAY]\n");
+	printf("Usage: pwm-exp [-qvi] [-f <freq>] CHANNEL DUTY [DELAY]\n");
 	printf("\n");
 	printf("CHANNEL is the specified PWM channel on the Expansion\n");
 	printf("\tcan be: 0-15  to control a single channel\n");
@@ -29,6 +29,7 @@ void usage(const char* progName)
 	printf(" -v 		verbose: lots of output\n");
 	printf(" -h 		help: show this prompt\n");
 	printf(" -i 		initialize the pwm chip (must be done after power-up)\n");
+	printf(" -f <freq>	set pwm signal frequency\n");
 	printf("\n\n");
 	printf("Usage: pwm-exp -p CHANNEL PULSE_WIDTH TOTAL_PERIOD\n");
 	printf("\n");
