@@ -258,9 +258,11 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 	status	= i2c_read	(	devNum, 
 							devAddr, 
 							addr, 
-							*val,
+							val,
 							1
 						);
+
+	printf("readByte: value is %d", *val);
 
 	return (status);
 }
