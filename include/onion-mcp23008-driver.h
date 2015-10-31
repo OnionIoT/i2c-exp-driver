@@ -8,7 +8,7 @@
 
 
 #define MCP23008_I2C_DEVICE_NUM		0
-#define MCP23008_I2C_DEVICE_ADDR	0x27
+#define MCP23008_I2C_DEVICE_ADDR	0x20
 
 #define MCP23008_NUM_GPIOS			8
 
@@ -26,40 +26,55 @@
 #define MCP23008_REG_OLAT			0x0A
 
 
+// note on device addr and hw:
+//	device addr is 0x20 when A[2:0] pins are driven to 0
+//
+//	increment in binary when A[2:0] pins are driven:	
+//		A[2:0]		device addr
+//		000 		0x20
+//		001 		0x21
+//		010 		0x22
+//		011 		0x23
+//		100 		0x24
+//		101 		0x25
+//		110 		0x26
+//		111 		0x27
+
 
 // helper functions
 void 		_SetBit			(int* regVal, int bitNum, int value);
 int 		_GetBit			(int regVal, int bitNum);
 
-int 		_SetReg			(int addr, int val);
-int 		_ReadReg		(int addr, int* val);
-
-int 		_SetRegBit 		(int addr, int bitNum, int bitVal);
-
 int 		_ValidateGpio 	(int gpio);
 
-int 		_SetAttribute 	(int gpio, int addr, int val);
-int 		_GetAttribute	(int gpio, int addr, int* val);
+
+int 		_SetReg			(int devAddr, int addr, int val);
+int 		_ReadReg		(int devAddr, int addr, int* val);
+
+int 		_SetRegBit 		(int devAddr, int addr, int bitNum, int bitVal);
+
+int 		_SetAttribute 	(int devAddr, int gpio, int addr, int val);
+int 		_GetAttribute	(int devAddr, int gpio, int addr, int* val);
 
 
 // functions to set a single GPIO's attributes
-int 		mcp_setDirection			(int gpio, int bInput);
-int 		mcp_setInputPolarity		(int gpio, int bActiveLow);
-int 		mcp_setPullup				(int gpio, int bPullUp);
-int 		mcp_setGpio					(int gpio, int value);
+int 		mcp_setDirection			(int devAddr, int gpio, int bInput);
+int 		mcp_setInputPolarity		(int devAddr, int gpio, int bActiveLow);
+int 		mcp_setPullup				(int devAddr, int gpio, int bPullUp);
+int 		mcp_setGpio					(int devAddr, int gpio, int value);
 
 // functions to set attributes for all GPIOs
 //	expecting 8-bit values
-int 		mcp_setAllDirection			(int bInput);
-int 		mcp_setAllInputPolarity 	(int bActiveLow);
-int 		mcp_setAllPullup			(int bPullUp);
-int 		mcp_setAllGpio				(int value);
+int 		mcp_setAllDirection			(int devAddr, int bInput);
+int 		mcp_setAllInputPolarity 	(int devAddr, int bActiveLow);
+int 		mcp_setAllPullup			(int devAddr, int bPullUp);
+int 		mcp_setAllGpio				(int devAddr, int value);
 
 // functions to read a single GPIO's attributes
-int 		mcp_getDirection			(int gpio, int* bInput);
-int 		mcp_getInputPolarity		(int gpio, int* bActiveLow);
-int 		mcp_getPullup				(int gpio, int* bPullUp);
-int 		mcp_getGpio					(int gpio, int* value);
+int 		mcp_getDirection			(int devAddr, int gpio, int* bInput);
+int 		mcp_getInputPolarity		(int devAddr, int gpio, int* bActiveLow);
+int 		mcp_getPullup				(int devAddr, int gpio, int* bPullUp);
+int 		mcp_getGpio					(int devAddr, int gpio, int* value);
 
 
 

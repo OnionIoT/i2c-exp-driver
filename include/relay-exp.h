@@ -17,11 +17,11 @@ typedef enum e_RelayDriverChannels {
 } ePwmDriverAddr;
 
 
-int 	relayDriverInit 		();
-int 	relayCheckInit 			(int *bInitialized);
+int 	relayDriverInit 		(int addr);
+int 	relayCheckInit 			(int addr, int *bInitialized);
 
-int 	relaySetChannel			(int channel, int state);
-int 	relaySetAllChannels		(int state);
+int 	relaySetChannel			(int addr, int channel, int state);
+int 	relaySetAllChannels		(int addr, int state);
 
 
 #endif // _RELAY_EXP_H_
