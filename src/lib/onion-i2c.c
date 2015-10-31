@@ -185,7 +185,7 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 // read a byte from the i2c bus
 int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 {
-	int 	status, size, index, data;
+	int 	status, size, index, data, tmp;
 	int 	fd;
 	char 	buffer[32];
 
@@ -229,17 +229,25 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 			status 	= EXIT_FAILURE;
 		}
 #else
-		buffer[0] 	= 0x0;
+		printf("Setting buffer... it has length of %d\n", strlen(buffer) );
+		buffer[0] 	= 0x34;
+		buffer[1] 	= 0x12;
+		size = 2;
+		printf("Done setting buffer... it has length of %d\n", strlen(buffer) );
+		printf("size is %d\n", size);
 #endif		
 
 		//// return the data
+		data 	= 0;
 		I2C_PRINT("\tread %d bytes, value: 0x", size);
 		for (index = (size-1); index >= 0; index--) {
 			I2C_PRINT("%02x", buffer[index]);
+			tmp = (int)buffer[index];
+			data |= ((tmp & 0xff) << (8*index));
 		}
 		I2C_PRINT("\n");
 
-		sscanf(buffer, "%d", &data);
+		printf("data is 0x%x\n", data);
 		*val 	= data;
  	}
 
@@ -262,7 +270,7 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 							1
 						);
 
-	printf("readByte: status is %d, value is %d", status, *val);
+	printf("readByte: status is %d, value is 0x%x\n", status, *val);
 
 	return (status);
 }
