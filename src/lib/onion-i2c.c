@@ -234,10 +234,13 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 
 		//// return the data
 		data 	= 0x0;
+		printf("status is %d, data is: 0x%x \n", status, data);
 		I2C_PRINT("\tread %d bytes, value: 0x", size);
 		for (index = (size-1); index >= 0; index--) {
 			I2C_PRINT("%02x", buffer[index]);
 			data 	&= ((buffer[index] & 0xff) << (8*index) );
+
+			printf("data is: 0x%x \n", data);
 		}
 		I2C_PRINT("\n");
 
@@ -245,7 +248,9 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
  	}
 
  	// release the device file handle
+ 	printf("status is %d, val is: 0x%x \n", status, *val);
  	status 	|= _i2c_releaseFd(fd);
+ 	printf("releasedFd, status is %d, val is: 0x%x \n", status, *val);
 
 	return (status);
 }
@@ -262,7 +267,7 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 							1
 						);
 
-	printf("readByte: value is %d", *val);
+	printf("readByte: status is %d, value is %d", status, *val);
 
 	return (status);
 }
