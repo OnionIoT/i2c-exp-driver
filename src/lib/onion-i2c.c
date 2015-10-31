@@ -118,12 +118,13 @@ int i2c_writeByte(int devNum, int devAddr, int addr, int val)
 		status = write(fd, buffer, size);
 		if (status != size) {
 			printf("i2c:: write issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
+			status 	= EXIT_FAILURE;
 		}
 #endif
  	}
 
  	// release the device file handle
- 	status 	= _i2c_releaseFd(fd);
+ 	status 	|= _i2c_releaseFd(fd);
 
 	return (status);
 }
@@ -172,6 +173,7 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 		status 	= read(fd, buffer, 1);
 		if (status != size) {
 			printf("i2c:: read issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
+			status 	= EXIT_FAILURE;
 		}
 #else
 		buffer[0] 	= 0x0;
@@ -184,7 +186,7 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
  	}
 
  	// release the device file handle
- 	status 	= _i2c_releaseFd(fd);
+ 	status 	|= _i2c_releaseFd(fd);
 
 	return (status);
 }

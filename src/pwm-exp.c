@@ -52,6 +52,7 @@ int _getDriverRegisterOffset (int driverNum, int *addr)
 }
 
 // find time count based on duty percentage (0-100)
+// 	return value: the count
 int _dutyToCount (float duty)
 {
 	int 	count;
