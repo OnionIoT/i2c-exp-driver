@@ -215,6 +215,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 			printf("i2c:: write issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
 		}
 #endif
+		printf("after read: status is %d \n", status);
 
 		//// read data
 		// clear the buffer
@@ -238,7 +239,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		I2C_PRINT("\tread %d bytes, value: 0x", size);
 		for (index = (size-1); index >= 0; index--) {
 			I2C_PRINT("%02x", buffer[index]);
-			data 	&= ((buffer[index] & 0xff) << (8*index) );
+			data 	&= (((int)buffer[index] & 0xff) << (8*index) );
 
 			printf("data is: 0x%x \n", data);
 		}
