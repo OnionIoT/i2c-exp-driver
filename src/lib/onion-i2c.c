@@ -185,9 +185,10 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 // read a byte from the i2c bus
 int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 {
-	int 	status, size, index, data;
+	int 	status, size, index;
 	int 	fd;
 	char 	buffer[32];
+	char	convert[32];
 
 	I2C_PRINT("i2c:: Reading %d bytes from device 0x%02x: addr = 0x%02x\n", numBytes, devAddr, addr);
 
@@ -208,8 +209,6 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		buffer[0]	= (addr & 0xff);
 		size 		= 1;
 
-		printf("before write: status is %d \n", status);
-
 #ifdef I2C_ENABLED
 		// write to the i2c device
 		status = write(fd, buffer, size);
@@ -217,7 +216,6 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 			printf("i2c:: write issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
 		}
 #endif
-		printf("after write: status is %d \n", status);
 
 		//// read data
 		// clear the buffer
@@ -236,19 +234,17 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 #endif		
 
 		//// return the data
-		data 	= 0x0;
-		printf("status is %d, data is: 0x%x \n", status, data);
-		I2C_PRINT("\tread %d bytes, value: 0x", size);
+		I2C_PRINT("\tread %d bytes, buffer: %s, value: 0x", buffer, size);
 		for (index = (size-1); index >= 0; index--) {
 			I2C_PRINT("%02x", buffer[index]);
 		}
 		I2C_PRINT("\n");
 
-		*val 	= atoi(buffer);
+		sprintf(convert, "%s", buffer);
+		*val 	= atoi(convert);
  	}
 
  	// release the device file handle
- 	printf("status is %d, val is: 0x%x \n", status, *val);
  	status 	= _i2c_releaseFd(fd);
  	printf("releasedFd, status is %d, val is: 0x%x \n", status, *val);
 
