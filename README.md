@@ -1,2 +1,2 @@
-# pwm-expansion-driver
-Driver to program PWM Expansion via I2C interface
+# i2c-exp-driver
+Project for drivers to program I2C Interface based Expansions
