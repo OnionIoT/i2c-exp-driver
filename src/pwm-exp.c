@@ -79,14 +79,14 @@ int _writeValue(int addr, int value)
 	byte 	= (value & 0xff);
 
 	//printf("Writing to addr: 0x%02x, data: 0x%02x\n", wrAddr, byte);
-	status 	= i2c_writeByte(PWM_I2C_DEVICE_NUM, PWM_I2C_DEVICE_ADDR, wrAddr, byte);
+	status 	= i2c_write(PWM_I2C_DEVICE_NUM, PWM_I2C_DEVICE_ADDR, wrAddr, byte);
 
 	// write second byte to H
 	wrAddr 	= addr + REG_OFFSET_BYTE1;
 	byte 	= ((value >> 8) & 0xff);
 	
 	//printf("Writing to addr: 0x%02x, data: 0x%02x\n", wrAddr, byte);
-	status 	|= i2c_writeByte(PWM_I2C_DEVICE_NUM, PWM_I2C_DEVICE_ADDR, wrAddr, byte);
+	status 	|= i2c_write(PWM_I2C_DEVICE_NUM, PWM_I2C_DEVICE_ADDR, wrAddr, byte);
 
 	return status;
 }
@@ -177,11 +177,11 @@ int _pwmSetSleepMode (int bSleepMode)
 	} 
 
 	// write to MODE1 register
-	status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
-								PWM_I2C_DEVICE_ADDR, 
-								addr, 
-								val
-							);
+	status 	= i2c_write	(	PWM_I2C_DEVICE_NUM, 
+							PWM_I2C_DEVICE_ADDR, 
+							addr, 
+							val
+						);
 	if (status == EXIT_FAILURE) {
 		printf("pwm-exp:_pwmSetSleepMode:: write to MODE1 failed\n");
 		return EXIT_FAILURE;
@@ -213,11 +213,11 @@ int _pwmSetReset ()
 
 	// enable reset
 	val 	|= PWM_EXP_REG_MODE1_RESET; 
-	status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
-								PWM_I2C_DEVICE_ADDR, 
-								addr, 
-								val
-							);
+	status 	= i2c_write	(	PWM_I2C_DEVICE_NUM, 
+							PWM_I2C_DEVICE_ADDR, 
+							addr, 
+							val
+						);
 	if (status == EXIT_FAILURE) {
 		printf("pwm-exp:_pwmSetReset:: write to MODE1 register failed\n");
 		return EXIT_FAILURE;
@@ -242,11 +242,11 @@ int pwmDriverInit () {
 	// set PWM drivers to totem pole
 	addr 	= PWM_EXP_REG_MODE2;
 	val 	= PWM_EXP_REG_MODE2_OUTDRV & 0xff;
-	status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
-								PWM_I2C_DEVICE_ADDR, 
-								addr, 
-								val
-							);
+	status 	= i2c_write	(	PWM_I2C_DEVICE_NUM, 
+							PWM_I2C_DEVICE_ADDR, 
+							addr, 
+							val
+						);
 	if (status == EXIT_FAILURE) {
 		printf("pwm-exp:init:: write to MODE2 failed\n");
 		return EXIT_FAILURE;
@@ -255,11 +255,11 @@ int pwmDriverInit () {
 	// enable all call
 	addr 	= PWM_EXP_REG_MODE1;
 	val 	= PWM_EXP_REG_MODE1_ALLCALL & 0xff;
-	status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
-								PWM_I2C_DEVICE_ADDR, 
-								addr, 
-								val
-							);
+	status 	= i2c_write	(	PWM_I2C_DEVICE_NUM, 
+							PWM_I2C_DEVICE_ADDR, 
+							addr, 
+							val
+						);
 	if (status == EXIT_FAILURE) {
 		printf("pwm-exp:init:: write to MODE2 failed\n");
 		return EXIT_FAILURE;
@@ -344,11 +344,11 @@ int pwmSetFrequency(float freq)
 
 		// set the prescale value
 		addr 	= PWM_EXP_REG_ADDR_PRESCALE;
-		status 	= i2c_writeByte	(	PWM_I2C_DEVICE_NUM, 
-									PWM_I2C_DEVICE_ADDR, 
-									addr, 
-									prescale
-								);
+		status 	= i2c_write	(	PWM_I2C_DEVICE_NUM, 
+								PWM_I2C_DEVICE_ADDR, 
+								addr, 
+								prescale
+							);
 		if (status == EXIT_FAILURE) {
 			printf("pwm-exp:pwmSetFreq:: setting prescale value failed\n");
 			return EXIT_FAILURE;
@@ -396,7 +396,6 @@ int pwmSetupDriver(int driverNum, float duty, float delay)
 	if (status == EXIT_SUCCESS) {
 		status 	= _pwmSetTime(&setup);
 	}
-
 
 	return status;
 }

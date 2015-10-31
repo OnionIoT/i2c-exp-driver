@@ -25,7 +25,7 @@
 #endif
 
 
-//#define I2C_DEBUG
+#define I2C_DEBUG
 #ifdef I2C_DEBUG
 	#define I2C_PRINT(a,...)		printf (a,##__VA_ARGS__)
 #else
@@ -34,16 +34,19 @@
 
 
 
-int _i2c_getFd 				(int adapterNum, int *devHandle);
-int _i2c_releaseFd			(int devHandle);
+int 	_i2c_getFd 				(int adapterNum, int *devHandle);
+int 	_i2c_releaseFd			(int devHandle);
 
-int _i2c_setDevice 			(int devHandle, int addr);
-int _i2c_setDevice10bit 	(int devHandle, int addr);
+int 	_i2c_setDevice 			(int devHandle, int addr);
+int 	_i2c_setDevice10bit 	(int devHandle, int addr);
 
-int i2c_writeByte 			(int devNum, int devAddr, int addr, int val);
-int i2c_readByte 			(int devNum, int devAddr, int addr, int *val);
+int 	_i2c_writebuffer		(int devNum, int devAddr, int addr, char buffer[], int size);
 
+int 	i2c_write	 			(int devNum, int devAddr, int addr, int val);
+int 	i2c_writeBytes 			(int devNum, int devAddr, int addr, int val, int numBytes);
 
+int 	i2c_read 				(int devNum, int devAddr, int addr, int *val, int numBytes);
+int 	i2c_readByte 			(int devNum, int devAddr, int addr, int *val);
 
 
 #endif // _ONION_I2C_H_
