@@ -252,14 +252,14 @@ int main(int argc, char** argv)
 		// program both relays at once
 		status 	= relaySetAllChannels(devAddr, relayState);
 		if (status == EXIT_FAILURE) {
-			printf("main-pwm-exp:: all relay setup failed!\n");
+			printf("main-relay-exp:: all relay setup failed!\n");
 		}
 	}
 	else {
 		// program just one relay
 		status 	= relaySetChannel(devAddr, channel, relayState);
 		if (status == EXIT_FAILURE) {
-			printf("main-pwm-exp:: relay %d setup failed!\n", channel);
+			printf("main-relay-exp:: relay %d setup failed!\n", channel);
 		}
 	}
 
