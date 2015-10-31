@@ -134,7 +134,23 @@ int main(int argc, char** argv)
 	channel 	= readChannelArgument(argv[0]);
 
 	// second arg - relay state (on or off)
-	relayState 	= (int)strtol(argv[1], NULL, 10);
+	if 	(	strcmp(argv[1], "off") == 0 ||
+			strcmp(argv[1], "Off") == 0 ||
+			strcmp(argv[1], "OFF") == 0
+		) 
+	{
+		relayState 	= 0;
+	}
+	else if (	strcmp(argv[1], "on") == 0 ||
+				strcmp(argv[1], "On") == 0 ||
+				strcmp(argv[1], "ON") == 0
+		) 
+	{
+		relayState 	= 1;
+	}
+	else {
+		relayState 	= (int)strtol(argv[1], NULL, 10);
+	}
 
 	// validate the arguments
 	status 	= validateArguments(channel, relayState);
