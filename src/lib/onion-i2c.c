@@ -210,7 +210,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		status 	= _i2c_setDevice(fd, devAddr);
 	}
 
-	// perform the read
+	// perform the read 	
 	if ( status == EXIT_SUCCESS ) {
 		//// set addr
 		// clear the buffer

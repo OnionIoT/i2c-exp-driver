@@ -59,4 +59,4 @@ int 	i2c_read 				(int devNum, int devAddr, int addr, int *val, int numBytes);
 int 	i2c_readByte 			(int devNum, int devAddr, int addr, int *val);
 
 
-#endif // _ONION_I2C_H_
+#endif // _ONION_I2C_H_ 

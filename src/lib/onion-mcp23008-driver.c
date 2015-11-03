@@ -77,7 +77,7 @@ int _SetRegBit (int devAddr, int addr, int bitNum, int bitVal)
 	return status;
 }
 
-// validate gpio number
+// validate gpio number 
 int _ValidateGpio (int gpio)
 {
 	int status = EXIT_FAILURE;
