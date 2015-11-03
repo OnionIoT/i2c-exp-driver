@@ -1,7 +1,5 @@
 #include <relay-exp.h>
 
-#define RELAY_EXP_DEFAULT_SWITCH_VAL	"000"
-
 void usage(const char* progName) 
 {
 	printf("\n");
@@ -65,7 +63,7 @@ int processSwitchAddr(char* addrIn, int* addrOut)
 
 	// initialize the output
 	output 	= (char*)malloc(sizeof(char) * 3);
-	strcpy(output, RELAY_EXP_DEFAULT_SWITCH_VAL);
+	strcpy(output, RELAY_EXP_ADDR_SWITCH_DEFAULT_VAL);
 
 	// perform the flip
 	status 	= processSingleSwitch(&output[0], addrIn[2]);
@@ -143,8 +141,8 @@ int main(int argc, char** argv)
 	progname 	= argv[0];	
 
 	// set defaults
-	switchAddr 	= (char*)malloc(sizeof(char) * 3);
-	strcpy(switchAddr, RELAY_EXP_DEFAULT_SWITCH_VAL);
+	switchAddr 	= malloc(RELAY_EXP_ADDR_SWITCH_NUM * sizeof *switchAddr);
+	strcpy(switchAddr, RELAY_EXP_ADDR_SWITCH_DEFAULT_VAL);
 
 	//// parse the option arguments
 	while ((ch = getopt(argc, argv, "vqhis:")) != -1) {
@@ -183,7 +181,7 @@ int main(int argc, char** argv)
 		printf("ERROR: invalid switch address argument!\n");
 		return 0;
 	}
-	if (strcmp(switchAddr, RELAY_EXP_DEFAULT_SWITCH_VAL) != 0) {
+	if (strcmp(switchAddr, RELAY_EXP_ADDR_SWITCH_DEFAULT_VAL) != 0) {
 		printf ("> Switch configuration: %s\n", switchAddr);
 	}
 

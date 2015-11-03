@@ -1,5 +1,22 @@
 #include <onion-i2c.h>
 
+// set verbosity level
+void i2c_setVerbosity(int level)
+{
+	i2cVerbosityLevel 	= level;
+}
+
+void _i2c_print (const char* msg, ...)
+{
+	va_list 	argptr;	
+
+	if (i2cVerbosityLevel > 0) {
+		va_start(argptr, msg);
+		vprintf(msg, argptr);
+		va_end(argptr);
+	}
+}
+
 // get a file handle to the device 
 int _i2c_getFd(int adapterNum, int *devHandle)
 {
@@ -99,7 +116,7 @@ int _i2c_writebuffer(int devNum, int devAddr, int addr, char buffer[], int size)
 		// write to the i2c device
 		status = write(fd, buffer, size);
 		if (status != size) {
-			printf("i2c:: write issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
+			printf("%s write issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, addr, errno, strerror(errno) );
 			status 	= EXIT_FAILURE;
 		}
 #endif
@@ -138,7 +155,7 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 		size++;			// increase the size
 	}
 
-	I2C_PRINT("i2c:: Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", devAddr, addr, val, (size-1) );
+	_i2c_print("Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", devAddr, addr, val, (size-1) );
 
 	// write the buffer
  	status 	= _i2c_writebuffer(devNum, devAddr, addr, buffer, size);
@@ -168,7 +185,7 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 		size++;			// increase the size
 	}
 
-	I2C_PRINT("i2c:: Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", devAddr, addr, val, (size-1) );
+	_i2c_print("%s Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", I2C_PRINT_BANNER, devAddr, addr, val, (size-1) );
 
 	// write the buffer
 	status 	= _i2c_writebuffer(devNum, devAddr, addr, buffer, size);
@@ -183,7 +200,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 	int 	fd;
 	char 	buffer[32];
 
-	I2C_PRINT("i2c:: Reading %d bytes from device 0x%02x: addr = 0x%02x\n", numBytes, devAddr, addr);
+	_i2c_print("%s Reading %d bytes from device 0x%02x: addr = 0x%02x\n", I2C_PRINT_BANNER, numBytes, devAddr, addr);
 
 	// open the device file handle
 	status 	= _i2c_getFd(devNum, &fd);
@@ -206,7 +223,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		// write to the i2c device
 		status = write(fd, buffer, size);
 		if (status != size) {
-			printf("i2c:: write issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
+			printf("%s write issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, addr, errno, strerror(errno) );
 		}
 #endif
 
@@ -219,7 +236,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		size 	= numBytes;
 		status 	= read(fd, buffer, size);
 		if (status != size) {
-			printf("i2c:: read issue for register 0x%02x, errno is %d: %s\n", addr, errno, strerror(errno) );
+			printf("%s read issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, addr, errno, strerror(errno) );
 			status 	= EXIT_FAILURE;
 		}
 #else
@@ -237,13 +254,15 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 
 		//// return the data
 		data 	= 0;
-		I2C_PRINT("\tread %d bytes, value: 0x", size);
+		_i2c_print("\tread %d bytes, value: 0x", size);
+
 		for (index = (size-1); index >= 0; index--) {
-			I2C_PRINT("%02x", buffer[index]);
+			_i2c_print("%02x", buffer[index]);
+
 			tmp = (int)buffer[index];
 			data |= ((tmp & 0xff) << (8*index));
 		}
-		I2C_PRINT("\n");
+		_i2c_print("\n");
 
 		*val 	= data;
  	}

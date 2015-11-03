@@ -57,6 +57,8 @@ int 		_SetAttribute 	(int devAddr, int gpio, int addr, int val);
 int 		_GetAttribute	(int devAddr, int gpio, int addr, int* val);
 
 
+void 		mcp_setVerbosity			(int level);
+
 // functions to set a single GPIO's attributes
 int 		mcp_setDirection			(int devAddr, int gpio, int bInput);
 int 		mcp_setInputPolarity		(int devAddr, int gpio, int bActiveLow);

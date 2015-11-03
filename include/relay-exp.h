@@ -8,6 +8,8 @@
 
 #include <onion-mcp23008-driver.h>
 
+#define RELAY_EXP_ADDR_SWITCH_NUM			3
+#define RELAY_EXP_ADDR_SWITCH_DEFAULT_VAL	"000"
 
 // type definitions
 typedef enum e_RelayDriverChannels {

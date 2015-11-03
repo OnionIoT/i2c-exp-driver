@@ -14,9 +14,11 @@
 #include <fcntl.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <errno.h>
 
 #define I2C_DEV_PATH		"/dev/i2c-%d"
+#define I2C_PRINT_BANNER	"onion-i2c::"
 
 
 // for debugging
@@ -33,6 +35,10 @@
 #endif
 
 
+int 	i2cVerbosityLevel;
+
+// helper functions
+void 	_i2c_print 				(const char* msg, ...);
 
 int 	_i2c_getFd 				(int adapterNum, int *devHandle);
 int 	_i2c_releaseFd			(int devHandle);
@@ -41,6 +47,10 @@ int 	_i2c_setDevice 			(int devHandle, int addr);
 int 	_i2c_setDevice10bit 	(int devHandle, int addr);
 
 int 	_i2c_writebuffer		(int devNum, int devAddr, int addr, char buffer[], int size);
+
+
+// i2c functions
+void 	i2c_setVerbosity 		(int level);
 
 int 	i2c_write	 			(int devNum, int devAddr, int addr, int val);
 int 	i2c_writeBytes 			(int devNum, int devAddr, int addr, int val, int numBytes);
