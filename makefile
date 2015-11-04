@@ -1,7 +1,4 @@
 
-# find the os
-UNAME_S := $(shell uname -s)
-
 # main compiler
 CC := gcc
 # CC := clang --analyze # and comment out the linker last line for sanity
@@ -18,14 +15,6 @@ SRCEXT := c
 SOURCES := $(shell find $(SRCDIR) -maxdepth 1 -type f \( -iname "*.$(SRCEXT)" ! -iname "*main-*.$(SRCEXT)" \) )
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g # -Wall
-ifneq ($(UNAME_S),Darwin)
-	# only add this when compiling in buildroot
-	LIB := -l m
-endif
-ifeq ($(CC),mips-openwrt-linux-uclibc-gcc)
-	CUSTFLAGS := -fPIC
-endif
-#LIB := -pthread -lmongoclient -L lib -lboost_thread-mt -lboost_filesystem-mt -lboost_system-mt
 INC := $(shell find $(INCDIR) -maxdepth 1 -type d -exec echo -I {}  \;)
 
 # define specific binaries to create
@@ -50,7 +39,7 @@ OBJECT_LIB1 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE_LIB1:.$(SRCEXT)=.o)
 TARGET_LIB1 := $(LIBDIR)/$(LIB1).so
 
 
-all: $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET0) $(TARGET1)
+all: resp $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET0) $(TARGET1)
 
 # libraries
 $(TARGET_LIB0): $(OBJECT_LIB0)
@@ -68,19 +57,19 @@ $(TARGET0): $(OBJECT0)
 	@echo " Compiling $(APP0)"
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CC) $^ -o $(TARGET0) $(LIB) -L$(LIBDIR) -lonioni2c"; $(CC) $^ -o $(TARGET0) $(LIB) -L$(LIBDIR) -lonioni2c
+	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) -L$(LIBDIR) -lonioni2c"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) -L$(LIBDIR) -lonioni2c
 
 $(TARGET1): $(OBJECT1)
 	@echo " Compiling $(APP1)"
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CC) $^ -o $(TARGET1) $(LIB)"; $(CC) $^ -o $(TARGET1) $(LIB) -L$(LIBDIR) -lonioni2c -lonionmcp23008
+	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB)"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) -L$(LIBDIR) -lonioni2c -lonionmcp23008
 
 
 # generic: build any object file required
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(dir $@)
-	@echo " $(CC) $(CFLAGS) $(CUSTFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(CUSTFLAGS) $(INC) -c -o $@ $<
+	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 clean:
 	@echo " Cleaning..."; 
@@ -91,6 +80,12 @@ bla:
 	@echo "Target0: $(APP0) $(SOURCE0) $(OBJECT0) $(TARGET0)"
 	@echo "Sources: $(SOURCES)"
 	@echo "Objects: $(OBJECTS)"
+
+resp:
+	@echo "CC: $(CC)"
+	@echo "CFLAGS: $(CFLAGS)"
+	@echo "LDFLAGS: $(LDFLAGS)"
+	@echo "LIB: $(LIB)"
 
 # Tests
 tester:
