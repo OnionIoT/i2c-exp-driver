@@ -34,6 +34,9 @@
 	#define I2C_PRINT(a,...)
 #endif
 
+#ifdef __cplusplus
+extern "C"{
+#endif 
 
 int 	i2cVerbosityLevel;
 
@@ -58,5 +61,7 @@ int 	i2c_writeBytes 			(int devNum, int devAddr, int addr, int val, int numBytes
 int 	i2c_read 				(int devNum, int devAddr, int addr, int *val, int numBytes);
 int 	i2c_readByte 			(int devNum, int devAddr, int addr, int *val);
 
-
+#ifdef __cplusplus
+}
+#endif 
 #endif // _ONION_I2C_H_ 

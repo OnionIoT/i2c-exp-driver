@@ -41,6 +41,10 @@
 //		111 		0x27
 
 
+#ifdef __cplusplus
+extern "C"{
+#endif 
+
 // helper functions
 void 		_SetBit			(int* regVal, int bitNum, int value);
 int 		_GetBit			(int regVal, int bitNum);
@@ -80,5 +84,7 @@ int 		mcp_getGpio					(int devAddr, int gpio, int* value);
 
 
 
-
+#ifdef __cplusplus
+}
+#endif 
 #endif // _ONION_MCP23008_DRIVER_ 
