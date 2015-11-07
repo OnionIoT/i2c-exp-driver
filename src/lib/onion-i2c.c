@@ -119,6 +119,9 @@ int _i2c_writebuffer(int devNum, int devAddr, int addr, char buffer[], int size)
 			printf("%s write issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, addr, errno, strerror(errno) );
 			status 	= EXIT_FAILURE;
 		}
+		else {
+			status	= EXIT_SUCCESS;
+		}
 #endif
  	}
 
@@ -239,6 +242,9 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 			printf("%s read issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, addr, errno, strerror(errno) );
 			status 	= EXIT_FAILURE;
 		}
+		else {
+			status 	= EXIT_SUCCESS;
+		}
 #else
 		buffer[0]	= 0x0;
 		size 		= 1;
@@ -257,7 +263,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		_i2c_print("\tread %d bytes, value: 0x", size);
 
 		for (index = (size-1); index >= 0; index--) {
-			_i2c_print("%02x", buffer[index]);
+			_i2c_print("%02x", (buffer[index] & 0xff) );
 
 			tmp = (int)buffer[index];
 			data |= ((tmp & 0xff) << (8*index));
@@ -268,7 +274,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
  	}
 
  	// release the device file handle
- 	status 	= _i2c_releaseFd(fd);
+ 	status 	|= _i2c_releaseFd(fd);
 
 	return (status);
 }
