@@ -44,7 +44,7 @@ int _getDriverRegisterOffset (int driverNum, int *addr)
 		*addr = pwmDriverAddr[driverNum];
 	}
 	else {
-		printf("pwm-exp:: invalid driver selection, %d\n", driverNum);
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:: invalid driver selection, %d\n", driverNum);
 		return EXIT_FAILURE;
 	}
 
@@ -162,7 +162,7 @@ int _pwmSetSleepMode (int bSleepMode)
 								&val
 							);
 	if (status == EXIT_FAILURE) {
-		printf("pwm-exp:_pwmSetSleepMode:: read MODE1 failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:_pwmSetSleepMode:: read MODE1 failed\n");
 		return EXIT_FAILURE;
 	}
 
@@ -183,7 +183,7 @@ int _pwmSetSleepMode (int bSleepMode)
 							val
 						);
 	if (status == EXIT_FAILURE) {
-		printf("pwm-exp:_pwmSetSleepMode:: write to MODE1 failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:_pwmSetSleepMode:: write to MODE1 failed\n");
 		return EXIT_FAILURE;
 	}
 
@@ -207,7 +207,7 @@ int _pwmSetReset ()
 								&val
 							);
 	if (status == EXIT_FAILURE) {
-		printf("pwm-exp:_pwmSetReset:: read MODE1 register failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:_pwmSetReset:: read MODE1 register failed\n");
 		return EXIT_FAILURE;
 	}
 
@@ -219,7 +219,7 @@ int _pwmSetReset ()
 							val
 						);
 	if (status == EXIT_FAILURE) {
-		printf("pwm-exp:_pwmSetReset:: write to MODE1 register failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:_pwmSetReset:: write to MODE1 register failed\n");
 		return EXIT_FAILURE;
 	}
 
@@ -234,7 +234,7 @@ int pwmDriverInit () {
 	int status;
 	int addr, val;
 
-	printf("> Initializing PWM Expansion chip\n");
+	onionPrint(ONION_SEVERITY_INFO, "> Initializing PWM Expansion chip\n");
 
 	// set all channels to 0
 	pwmSetupDriver(-1, 0, 0);
@@ -248,7 +248,7 @@ int pwmDriverInit () {
 							val
 						);
 	if (status == EXIT_FAILURE) {
-		printf("pwm-exp:init:: write to MODE2 failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:init:: write to MODE2 failed\n");
 		return EXIT_FAILURE;
 	}
 
@@ -261,7 +261,7 @@ int pwmDriverInit () {
 							val
 						);
 	if (status == EXIT_FAILURE) {
-		printf("pwm-exp:init:: write to MODE2 failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:init:: write to MODE2 failed\n");
 		return EXIT_FAILURE;
 	}
 
@@ -272,14 +272,14 @@ int pwmDriverInit () {
 	// disable SLEEP mode
 	status 	= _pwmSetSleepMode(0);
 	if (status == EXIT_FAILURE) {
-		printf("pwm-exp:init:: disabling SLEEP mode failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:init:: disabling SLEEP mode failed\n");
 		return EXIT_FAILURE;
 	}
 
 	// enable the reset
 	status 	= _pwmSetReset();
 	if (status == EXIT_FAILURE) {
-		printf("pwm-exp:init:: reset failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:init:: reset failed\n");
 		return EXIT_FAILURE;
 	}
 
@@ -313,14 +313,14 @@ int pwmSetFrequency(float freq)
 								&val
 							);
 	if (status == EXIT_FAILURE) {
-		printf("pwm-exp:pwmSetFreq:: read PRESCALE failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:pwmSetFreq:: read PRESCALE failed\n");
 		return EXIT_FAILURE;
 	}
 
 	// only program frequency if new frequency is required
 	if (prescale != val)
 	{
-		printf("> Setting signal frequency to %0.2f Hz (prescale: 0x%02x)\n", freq, prescale);
+		onionPrint(ONION_SEVERITY_INFO, "> Setting signal frequency to %0.2f Hz (prescale: 0x%02x)\n", freq, prescale);
 
 		//// Go to sleep
 		// read MODE1 register
@@ -331,14 +331,14 @@ int pwmSetFrequency(float freq)
 									&val
 								);
 		if (status == EXIT_FAILURE) {
-			printf("pwm-exp:pwmSetFreq:: read MODE1 failed\n");
+			onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:pwmSetFreq:: read MODE1 failed\n");
 			return EXIT_FAILURE;
 		}
 
 		// enable sleep mode to disable the oscillator
 		status  = _pwmSetSleepMode(1);
 		if (status == EXIT_FAILURE) {
-			printf("pwm-exp:pwmSetFreq:: disabling SLEEP mode failed\n");
+			onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:pwmSetFreq:: disabling SLEEP mode failed\n");
 			return EXIT_FAILURE;
 		}
 
@@ -350,7 +350,7 @@ int pwmSetFrequency(float freq)
 								prescale
 							);
 		if (status == EXIT_FAILURE) {
-			printf("pwm-exp:pwmSetFreq:: setting prescale value failed\n");
+			onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:pwmSetFreq:: setting prescale value failed\n");
 			return EXIT_FAILURE;
 		}
 
@@ -358,14 +358,14 @@ int pwmSetFrequency(float freq)
 		// disable sleep mode to enable the oscillator
 		status  = _pwmSetSleepMode(0);
 		if (status == EXIT_FAILURE) {
-			printf("pwm-exp:pwmSetFreq:: disabling SLEEP mode failed\n");
+			onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:pwmSetFreq:: disabling SLEEP mode failed\n");
 			return EXIT_FAILURE;
 		}
 
 		// reset 
 		status 	= _pwmSetReset();
 		if (status == EXIT_FAILURE) {
-			printf("pwm-exp:pwmSetFreq:: reset failed\n");
+			onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:pwmSetFreq:: reset failed\n");
 			return EXIT_FAILURE;
 		}
 	}
@@ -389,7 +389,7 @@ int pwmSetupDriver(int driverNum, float duty, float delay)
 	// find on and off times
 	_pwmCalculate(duty, delay, &setup);
 
-	printf("> Generating PWM signal with %0.2f%% duty cycle (%0.2f%% delay)\n", duty, delay);
+	onionPrint(ONION_SEVERITY_INFO, "> Generating PWM signal with %0.2f%% duty cycle (%0.2f%% delay)\n", duty, delay);
 	//printf("PWM: start: %d (0x%04x), stop: %d (0x%04x)\n\n", setup.timeStart, setup.timeStart, setup.timeEnd, setup.timeEnd);
 
 	// write on and off times via i2c

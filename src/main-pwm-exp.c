@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 	const char *progname;
 	int status;
 	int mode 		= MAIN_PWM_EXP_DUTY_MODE;
-	int verbose 	= 1;
+	int verbose 	= ONION_SEVERITY_INFO;
 	int init 		= 0;
 	int ch;
 
@@ -160,11 +160,11 @@ int main(int argc, char** argv)
 		switch (ch) {
 		case 'v':
 			// verbose output
-			verbose = 2;
+			verbose = ONION_SEVERITY_DEBUG;
 			break;
 		case 'q':
 			// quiet output
-			verbose = 0;
+			verbose = ONION_SEVERITY_FATAL;
 			break;
 		case 'i':
 			// perform init sequence
@@ -185,8 +185,7 @@ int main(int argc, char** argv)
 	}
 
 	// set the verbosity
-	// ldemin: fix this, make a debug lib
-	i2c_setVerbosity(verbose-1);
+	onionSetVerbosity(verbose);
 
 
 	// advance past the option arguments
@@ -198,7 +197,7 @@ int main(int argc, char** argv)
 	if ( argc == 0 && init == 1 ) {
 		status = pwmDriverInit();
 		if (status == EXIT_FAILURE) {
-			printf("main-pwm-exp:: pwm init failed!\n");
+			onionPrint(ONION_SEVERITY_FATAL, "main-pwm-exp:: pwm init failed!\n");
 		}
 		return 0;
 	}
@@ -209,7 +208,7 @@ int main(int argc, char** argv)
 		// ensure correct number of arguments
 		if ( argc != 2 && argc != 3 ) {
 			usage(progname);
-			printf("ERROR: invalid amount of arguments!\n");
+			onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid amount of arguments!\n");
 			return 0;
 		}
 
@@ -237,7 +236,7 @@ int main(int argc, char** argv)
 		// ensure correct number of arguments
 		if ( argc != 3 ) {
 			usage(progname);
-			printf("ERROR: invalid amount of arguments!\n");
+			onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid amount of arguments!\n");
 			return 0;
 		}
 
@@ -272,20 +271,20 @@ int main(int argc, char** argv)
 	if (init == 1) {
 		status = pwmDriverInit();
 		if (status == EXIT_FAILURE) {
-			printf("main-pwm-exp:: pwm init failed!\n");
+			onionPrint(ONION_SEVERITY_FATAL, "main-pwm-exp:: pwm init failed!\n");
 		}
 	}
 
 	// setup the frequency
 	status = pwmSetFrequency(frequency);
 	if (status == EXIT_FAILURE) {
-		printf("main-pwm-exp:: pwm set frequency failed!\n");
+		onionPrint(ONION_SEVERITY_FATAL, "main-pwm-exp:: pwm set frequency failed!\n");
 	}
 
 	// setup the driver
 	status = pwmSetupDriver(channel, duty, delay);
 	if (status == EXIT_FAILURE) {
-		printf("main-pwm-exp:: driver setup failed!\n");
+		onionPrint(ONION_SEVERITY_FATAL, "main-pwm-exp:: driver setup failed!\n");
 	}
 
 

@@ -2,32 +2,32 @@
 
 void usage(const char* progName) 
 {
-	printf("\n");
-	printf("Usage: relay-exp -i\n");
-	printf("\n");
-	printf("FUNCTIONALITY:\n");
-	printf("\tJust initialize the Relay chip\n");
-	printf("\n\n");
-	printf("Usage: relay-exp [-qvi] [-s <bbb>] CHANNEL STATE\n");
-	printf("\n");
-	printf("CHANNEL is the specified Relay channel on the Expansion\n");
-	printf("\tcan be: 0-1  to control a single channel\n");
-	printf("\tcan be: 'all' to control all channels simultaneously\n");
-	printf("STATE is the desired operational state of the relay\n");
-	printf("\tcan be: 0  relay switch is OFF\n");
-	printf("\tcan be: 1  relay switch is ON\n");
-	printf("\n");
-	printf("FUNCTIONALITY:\n");
-	printf("\tProgram the CHANNEL to the specified relay state\n");
-	printf("\n");
-	printf("OPTIONS:\n");
-	printf(" -q 		quiet: no output\n");
-	printf(" -v 		verbose: lots of output\n");
-	printf(" -h 		help: show this prompt\n");
-	printf(" -i 		initialize the relay chip\n");
-	printf(" -s <bbb>	dip-switch configuration in binary, not required if 000\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "Usage: relay-exp -i\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "FUNCTIONALITY:\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tJust initialize the Relay chip\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n\n");
+	onionPrint(ONION_SEVERITY_FATAL, "Usage: relay-exp [-qvi] [-s <bbb>] CHANNEL STATE\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "CHANNEL is the specified Relay channel on the Expansion\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tcan be: 0-1  to control a single channel\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tcan be: 'all' to control all channels simultaneously\n");
+	onionPrint(ONION_SEVERITY_FATAL, "STATE is the desired operational state of the relay\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tcan be: 0  relay switch is OFF\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tcan be: 1  relay switch is ON\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "FUNCTIONALITY:\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tProgram the CHANNEL to the specified relay state\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "OPTIONS:\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -q 		quiet: no output\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -v 		verbose: lots of output\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -h 		help: show this prompt\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -i 		initialize the relay chip\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -s <bbb>	dip-switch configuration in binary, not required if 000\n");
 	
-	printf("\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
 }
 
 // flip single char, check for valid input
@@ -98,20 +98,20 @@ int validateArguments(int channel, int state)
 	int status = EXIT_SUCCESS;
 
 	if (channel < -1 || channel >= RELAY_EXP_NUM_CHANNELS) {
-		printf("ERROR: invalid CHANNEL selection\n");
-		printf("Accepted values are:\n");
-		printf("\t0-1\n");
-		printf("\tall\n");
-		printf("\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid CHANNEL selection\n");
+		onionPrint(ONION_SEVERITY_FATAL, "Accepted values are:\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\t0-1\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\tall\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\n");
 
 		status = EXIT_FAILURE;
 	}
 
 	if (state != 0 && state != 1) {
-		printf("ERROR: invalid STATE selection\n");
-		printf("Accepted values are:\n");
-		printf("\t0 or 1\n");
-		printf("\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid STATE selection\n");
+		onionPrint(ONION_SEVERITY_FATAL, "Accepted values are:\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\t0 or 1\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\n");
 
 		status = EXIT_FAILURE;
 	}
@@ -126,7 +126,7 @@ int main(int argc, char** argv)
 	char 	*switchAddr;
 	
 	int 	status;
-	int 	verbose 	= 1;
+	int 	verbose 	= ONION_SEVERITY_INFO;
 	int 	init 		= 0;
 	int 	ch;
 
@@ -149,11 +149,11 @@ int main(int argc, char** argv)
 		switch (ch) {
 		case 'v':
 			// verbose output
-			verbose = 2;
+			verbose = ONION_SEVERITY_DEBUG;
 			break;
 		case 'q':
 			// quiet output
-			verbose = 0;
+			verbose = ONION_SEVERITY_FATAL;
 			break;
 		case 'i':
 			// perform init sequence
@@ -170,8 +170,8 @@ int main(int argc, char** argv)
 	}
 
 	// set the verbosity
-	mcp_setVerbosity(verbose-1);
-	
+	onionSetVerbosity(verbose);
+
 
 	// advance past the option arguments
 	argc 	-= optind;
@@ -182,11 +182,11 @@ int main(int argc, char** argv)
 	status = processSwitchAddr(switchAddr, &devAddr);
 	if (status == EXIT_FAILURE) {
 		usage(progname);
-		printf("ERROR: invalid switch address argument!\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid switch address argument!\n");
 		return 0;
 	}
 	if (strcmp(switchAddr, RELAY_EXP_ADDR_SWITCH_DEFAULT_VAL) != 0) {
-		printf ("> Switch configuration: %s\n", switchAddr);
+		onionPrint(ONION_SEVERITY_INFO, "> Switch configuration: %s\n", switchAddr);
 	}
 
 
@@ -194,7 +194,7 @@ int main(int argc, char** argv)
 	if ( argc == 0 && init == 1 ) {
 		status = relayDriverInit(devAddr);
 		if (status == EXIT_FAILURE) {
-			printf("main-relay-exp:: relay init failed!\n");
+			onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: relay init failed!\n");
 		}
 		return 0;
 	}
@@ -202,7 +202,7 @@ int main(int argc, char** argv)
 	// ensure correct number of arguments
 	if ( argc != 2) {
 		usage(progname);
-		printf("ERROR: invalid amount of arguments!\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid amount of arguments!\n");
 		return 0;
 	}
 
@@ -245,7 +245,7 @@ int main(int argc, char** argv)
 	if (init == 1 || bInitialized == 0) {
 		status 	= relayDriverInit(devAddr);
 		if (status == EXIT_FAILURE) {
-			printf("main-relay-exp:: relay init failed!\n");
+			onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: relay init failed!\n");
 		}
 	}
 
@@ -254,14 +254,14 @@ int main(int argc, char** argv)
 		// program both relays at once
 		status 	= relaySetAllChannels(devAddr, relayState);
 		if (status == EXIT_FAILURE) {
-			printf("main-relay-exp:: all relay setup failed!\n");
+			onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: all relay setup failed!\n");
 		}
 	}
 	else {
 		// program just one relay
 		status 	= relaySetChannel(devAddr, channel, relayState);
 		if (status == EXIT_FAILURE) {
-			printf("main-relay-exp:: relay %d setup failed!\n", channel);
+			onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: relay %d setup failed!\n", channel);
 		}
 	}
 

@@ -5,26 +5,26 @@ int relayDriverInit (int addr)
 {
 	int status; 
 
-	printf("> Initializing Relay Expansion chip\n");
+	onionPrint(ONION_SEVERITY_INFO, "> Initializing Relay Expansion chip\n");
 
 	// set all GPIOs to output
 	status 	= mcp_setAllDirection(addr, 0);
 	if (status == EXIT_FAILURE) {
-		printf("relay-exp:init:: Setting output direction failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "relay-exp:init:: Setting output direction failed\n");
 		return status;
 	}
 
 	// disable all pullup resistors
 	status 	= mcp_setAllPullup(addr, 0);
 	if (status == EXIT_FAILURE) {
-		printf("relay-exp:init:: Disabling pullup resistors failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "relay-exp:init:: Disabling pullup resistors failed\n");
 		return status;
 	}
 
 	// set all GPIOs to 0
 	status 	= mcp_setAllGpio(addr, 0);
 	if (status == EXIT_FAILURE) {
-		printf("relay-exp:init:: Reseting GPIOs failed\n");
+		onionPrint(ONION_SEVERITY_FATAL, "relay-exp:init:: Reseting GPIOs failed\n");
 		return status;
 	}
 
@@ -75,7 +75,7 @@ int relaySetChannel (int addr, int channel, int state)
 	int status;
 
 	// set the relay channel to the specified state
-	printf("> Setting RELAY%d to %s\n", channel, ( state == 1 ? "ON" : "OFF") );
+	onionPrint(ONION_SEVERITY_INFO, "> Setting RELAY%d to %s\n", channel, ( state == 1 ? "ON" : "OFF") );
 	status = mcp_setGpio(addr, channel, state);
 
 	return status;
@@ -86,7 +86,7 @@ int relaySetAllChannels (int addr, int state)
 {
 	int status, val;
 
-	printf("> Setting both RELAYS to %s\n", ( state == 1 ? "ON" : "OFF") );
+	onionPrint(ONION_SEVERITY_INFO, "> Setting both RELAYS to %s\n", ( state == 1 ? "ON" : "OFF") );
 
 	// translate state to register value
 	if (state == 0) {

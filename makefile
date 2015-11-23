@@ -10,6 +10,12 @@ BUILDDIR := build
 BINDIR := bin
 LIBDIR := lib
 
+# add lib directory
+ifeq ($(shell uname -s),Darwin)
+	# only add this when compiling on OS X
+	LIBDIRADD := -L$(LIBDIR)
+endif
+
 # define common variables
 SRCEXT := c
 SOURCES := $(shell find $(SRCDIR) -maxdepth 1 -type f \( -iname "*.$(SRCEXT)" ! -iname "*main-*.$(SRCEXT)" \) )
@@ -28,6 +34,11 @@ SOURCE1 := $(SRCDIR)/main-$(APP1).$(SRCEXT) $(SRCDIR)/$(APP1).$(SRCEXT)
 OBJECT1 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE1:.$(SRCEXT)=.o))
 TARGET1 := $(BINDIR)/$(APP1)
 
+LIBD := liboniondebug
+SOURCE_LIBD := src/lib/onion-debug.$(SRCEXT)
+OBJECT_LIBD := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE_LIBD:.$(SRCEXT)=.o))
+TARGET_LIBD := $(LIBDIR)/$(LIBD).so
+
 LIB0 := libonioni2c
 SOURCE_LIB0 := src/lib/onion-i2c.$(SRCEXT)
 OBJECT_LIB0 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE_LIB0:.$(SRCEXT)=.o))
@@ -39,31 +50,36 @@ OBJECT_LIB1 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE_LIB1:.$(SRCEXT)=.o)
 TARGET_LIB1 := $(LIBDIR)/$(LIB1).so
 
 
-all: resp $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET0) $(TARGET1)
+all: resp $(TARGET_LIBD) $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET0) $(TARGET1)
 
 # libraries
-$(TARGET_LIB0): $(OBJECT_LIB0)
+$(TARGET_LIBD): $(OBJECT_LIBD)
 	@echo " Compiling $@"
 	@mkdir -p $(LIBDIR)
 	$(CC) -shared -o $@  $^
 
+$(TARGET_LIB0): $(OBJECT_LIB0)
+	@echo " Compiling $@"
+	@mkdir -p $(LIBDIR)
+	$(CC) -shared -o $@  $^ $(LIBDIRADD) -loniondebug
+
 $(TARGET_LIB1): $(OBJECT_LIB1)
 	@echo " Compiling $@"
 	@mkdir -p $(LIBDIR)
-	$(CC) -shared -o $@  $^ -L$(LIBDIR) -lonioni2c
+	$(CC) -shared -o $@  $^ $(LIBDIRADD) -loniondebug -lonioni2c
 
 # application binaries
 $(TARGET0): $(OBJECT0)
 	@echo " Compiling $(APP0)"
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) -L$(LIBDIR) -lonioni2c"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) -L$(LIBDIR) -lonioni2c
+	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) $(LIBDIRADD) -loniondebug -lonioni2c"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) $(LIBDIRADD) -loniondebug -lonioni2c
 
 $(TARGET1): $(OBJECT1)
 	@echo " Compiling $(APP1)"
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB)"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) -L$(LIBDIR) -lonioni2c -lonionmcp23008
+	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) $(LIBDIRADD) -loniondebug -lonioni2c -lonionmcp23008"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) $(LIBDIRADD) -loniondebug -lonioni2c -lonionmcp23008
 
 
 # generic: build any object file required

@@ -16,9 +16,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
-
-#include <stdarg.h>
 #include <errno.h>
+
+#include <onion-debug.h>
+
 
 #define I2C_DEV_PATH		"/dev/i2c-%d"
 #define I2C_PRINT_BANNER	"onion-i2c::"

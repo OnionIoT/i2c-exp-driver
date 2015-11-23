@@ -34,7 +34,7 @@ int _SetReg (int devAddr, int addr, int val)
 							val
 						);
 	if (status == EXIT_FAILURE) {
-		printf("mcp-driver:: writing value 0x%02x to addr 0x%02x failed\n", val, addr);
+		onionPrint(ONION_SEVERITY_FATAL, "mcp-driver:: writing value 0x%02x to addr 0x%02x failed\n", val, addr);
 	}
 
 	return status;
@@ -51,7 +51,7 @@ int _ReadReg (int devAddr, int addr, int* val)
 								val
 							);
 	if (status == EXIT_FAILURE) {
-		printf("mcp-driver:: read from addr 0x%02x failed\n", addr);
+		onionPrint(ONION_SEVERITY_FATAL, "mcp-driver:: read from addr 0x%02x failed\n", addr);
 	}
 
 	return status;
