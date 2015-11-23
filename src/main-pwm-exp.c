@@ -184,9 +184,15 @@ int main(int argc, char** argv)
 		}
 	}
 
+	// set the verbosity
+	// ldemin: fix this, make a debug lib
+	i2c_setVerbosity(verbose-1);
+
+
 	// advance past the option arguments
 	argc 	-= optind;
 	argv	+= optind;
+
 
 	// check if just initialization
 	if ( argc == 0 && init == 1 ) {
@@ -197,6 +203,7 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
+	//// parse the real arguments
 	if (mode == MAIN_PWM_EXP_DUTY_MODE)
 	{
 		// ensure correct number of arguments

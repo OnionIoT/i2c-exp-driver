@@ -169,6 +169,10 @@ int main(int argc, char** argv)
 		}
 	}
 
+	// set the verbosity
+	mcp_setVerbosity(verbose-1);
+	
+
 	// advance past the option arguments
 	argc 	-= optind;
 	argv	+= optind;
