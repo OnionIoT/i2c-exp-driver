@@ -12,13 +12,18 @@
 
 #include <sys/ioctl.h>
 #include <fcntl.h>
+
 #include <string.h>
 #include <stdio.h>
+#include <stdint.h>
+
 #include <stdarg.h>
 #include <errno.h>
 
 #define I2C_DEV_PATH		"/dev/i2c-%d"
 #define I2C_PRINT_BANNER	"onion-i2c::"
+
+#define I2C_BUFFER_SIZE		32
 
 
 // for debugging

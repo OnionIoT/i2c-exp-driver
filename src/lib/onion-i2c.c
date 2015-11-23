@@ -140,7 +140,7 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 
 	//// buffer setup
 	// clear the buffer
-	memset( buffer, 0, sizeof(buffer) );
+	memset( buffer, 0, I2C_BUFFER_SIZE );
 	// push the address and data values into the buffer
 	buffer[0]	= (addr & 0xff);
 	buffer[1]	= (val & 0xff);
@@ -171,7 +171,7 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 {
 	int 	status;
 	int 	size, index;
-	uint8_t	buffer[32];
+	uint8_t	buffer[I2C_BUFFER_SIZE];
 
 	//// buffer setup
 	// clear the buffer
@@ -216,7 +216,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 	if ( status == EXIT_SUCCESS ) {
 		//// set addr
 		// clear the buffer
-		memset( buffer, 0, sizeof(buffer) );
+		memset( buffer, 0, I2C_BUFFER_SIZE );
 		// push the address and data values into the buffer
 		buffer[0]	= (addr & 0xff);
 		size 		= 1;
@@ -231,7 +231,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 
 		//// read data
 		// clear the buffer
-		memset( buffer, 0, sizeof(buffer) );
+		memset( buffer, 0, I2C_BUFFER_SIZE );
 
 #ifdef I2C_ENABLED
 		// read from the i2c device
@@ -282,7 +282,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 {
 	int 	status;
-	uint8_t	buffer[32];
+	uint8_t	buffer[I2C_BUFFER_SIZE];
 
 	status	= i2c_read	(	devNum, 
 							devAddr, 
