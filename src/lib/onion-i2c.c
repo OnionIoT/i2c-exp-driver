@@ -291,6 +291,8 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 							1
 						);
 
+	*val 	= (int)(buffer[0]);
+
 	return (status);
 }
 
