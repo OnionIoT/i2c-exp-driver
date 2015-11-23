@@ -158,7 +158,7 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 		size++;			// increase the size
 	}
 
-	_i2c_print("Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", devAddr, addr, val, (size-1) );
+	_i2c_print("%s Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", I2C_PRINT_BANNER, devAddr, addr, val, (size-1) );
 
 	// write the buffer
  	status 	= _i2c_writebuffer(devNum, devAddr, addr, buffer, size);
