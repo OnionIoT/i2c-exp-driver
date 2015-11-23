@@ -97,7 +97,7 @@ int _i2c_setDevice10bit(int devHandle, int addr)
 }
 
 // generic function to write a buffer to the i2c bus
-int _i2c_writebuffer(int devNum, int devAddr, int addr, char buffer[], int size)
+int _i2c_writebuffer(int devNum, int devAddr, int addr, uint8_t *buffer, int size)
 {
 	int 	status;
 	int 	fd, index;
@@ -136,7 +136,7 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 {
 	int 	status;
 	int 	size, tmp, index;
-	char 	buffer[32];
+	uint8_t	buffer[32];
 
 	//// buffer setup
 	// clear the buffer
@@ -150,7 +150,7 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 	tmp 	= (val >> 8);	// start with byte 1
 	index	= 2;
 	while (tmp > 0x00) {
-		buffer[index] = (tmp & 0xff);
+		buffer[index] = (uint8_t)(tmp & 0xff);
 
 		tmp	= tmp >> 8; // advance the tmp data by a byte
 		index++; 		// increment the index
@@ -171,7 +171,7 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 {
 	int 	status;
 	int 	size, index;
-	char 	buffer[32];
+	uint8_t	buffer[32];
 
 	//// buffer setup
 	// clear the buffer
@@ -183,7 +183,7 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 	// add all data bytes to buffer
 	index	= 1;
 	for (index = 0; index < numBytes; index++) {
-		buffer[index+1] = ( (val >> (8*index)) & 0xff );
+		buffer[index+1] = (uint8_t)( (val >> (8*index)) & 0xff );
 
 		size++;			// increase the size
 	}
@@ -197,11 +197,10 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 }
 
 // read a byte from the i2c bus
-int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
+int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 {
 	int 	status, size, index, data, tmp;
 	int 	fd;
-	char 	buffer[32];
 
 	_i2c_print("%s Reading %d bytes from device 0x%02x: addr = 0x%02x\n", I2C_PRINT_BANNER, numBytes, devAddr, addr);
 
@@ -259,7 +258,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 #endif		
 
 		//// return the data
-		data 	= 0;
+		/*data 	= 0;
 		_i2c_print("\tread %d bytes, value: 0x", size);
 
 		for (index = (size-1); index >= 0; index--) {
@@ -270,7 +269,7 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 		}
 		_i2c_print("\n");
 
-		*val 	= data;
+		*val 	= data;*/
  	}
 
  	// release the device file handle
@@ -283,11 +282,12 @@ int i2c_read(int devNum, int devAddr, int addr, int *val, int numBytes)
 int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 {
 	int 	status;
+	uint8_t	buffer[32];
 
 	status	= i2c_read	(	devNum, 
 							devAddr, 
 							addr, 
-							val,
+							buffer,
 							1
 						);
 
