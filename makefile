@@ -11,7 +11,7 @@ BINDIR := bin
 LIBDIR := lib
 
 # add lib directory
-LIB += -L$(LIBDIR)
+LIB := -L$(LIBDIR) $(LIB)
 
 # define common variables
 SRCEXT := c
