@@ -202,7 +202,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 	int 	status, size, index, data, tmp;
 	int 	fd;
 
-	_i2c_print("%s Reading %d byte%s from device 0x%02x: addr = 0x%02x\n", I2C_PRINT_BANNER, numBytes, (numBytes > 1 ? "s": ""), devAddr, addr);
+	_i2c_print("%s Reading %d byte%s from device 0x%02x: addr = 0x%02x", I2C_PRINT_BANNER, numBytes, (numBytes > 1 ? "s": ""), devAddr, addr);
 
 	// open the device file handle
 	status 	= _i2c_getFd(devNum, &fd);
@@ -258,18 +258,12 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 #endif		
 
 		//// print the data
-		//data 	= 0;
-		_i2c_print("\tread %d bytes, value: 0x", size);
+		_i2c_print("\tread %d byte%s, value: 0x", size, (size > 1 ? "s" : "") );
 
 		for (index = (size-1); index >= 0; index--) {
 			_i2c_print("%02x", (buffer[index] & 0xff) );
-
-			//tmp = (int)buffer[index];
-			//data |= ((tmp & 0xff) << (8*index));
 		}
 		_i2c_print("\n");
-
-		//*val 	= data;*/
  	}
 
  	// release the device file handle
