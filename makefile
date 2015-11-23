@@ -11,10 +11,7 @@ BINDIR := bin
 LIBDIR := lib
 
 # add lib directory
-ifeq ($(shell uname -s),Darwin)
-	# only add this when compiling on OS X
-	LIBDIRADD := -L$(LIBDIR)
-endif
+LIB += -L$(LIBDIR)
 
 # define common variables
 SRCEXT := c
@@ -61,25 +58,25 @@ $(TARGET_LIBD): $(OBJECT_LIBD)
 $(TARGET_LIB0): $(OBJECT_LIB0)
 	@echo " Compiling $@"
 	@mkdir -p $(LIBDIR)
-	$(CC) -shared -o $@  $^ $(LIBDIRADD) -loniondebug
+	$(CC) -shared -o $@  $^ $(LIB) -loniondebug
 
 $(TARGET_LIB1): $(OBJECT_LIB1)
 	@echo " Compiling $@"
 	@mkdir -p $(LIBDIR)
-	$(CC) -shared -o $@  $^ $(LIBDIRADD) -loniondebug -lonioni2c
+	$(CC) -shared -o $@  $^ $(LIB) -loniondebug -lonioni2c
 
 # application binaries
 $(TARGET0): $(OBJECT0)
 	@echo " Compiling $(APP0)"
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) $(LIBDIRADD) -loniondebug -lonioni2c"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) $(LIBDIRADD) -loniondebug -lonioni2c
+	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) -loniondebug -lonioni2c"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) -loniondebug -lonioni2c
 
 $(TARGET1): $(OBJECT1)
 	@echo " Compiling $(APP1)"
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) $(LIBDIRADD) -loniondebug -lonioni2c -lonionmcp23008"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) $(LIBDIRADD) -loniondebug -lonioni2c -lonionmcp23008
+	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) -loniondebug -lonioni2c -lonionmcp23008"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) -loniondebug -lonioni2c -lonionmcp23008
 
 
 # generic: build any object file required
