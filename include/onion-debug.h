@@ -20,6 +20,9 @@
 extern "C"{
 #endif 
 
+#ifdef __cplusplus
+extern 
+#endif 
 int 	onionVerbosityLevel;
 
 // debug functions
@@ -28,5 +31,6 @@ void 	onionPrint 				(int severity, const char* msg, ...);
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
+
 #endif // _ONION_DEBUG_H_ 
