@@ -126,7 +126,7 @@ int main(int argc, char** argv)
 	char 	*switchAddr;
 	
 	int 	status;
-	int 	verbose 	= ONION_SEVERITY_INFO;
+	int 	verbose 	= ONION_VERBOSITY_NORMAL;
 	int 	init 		= 0;
 	int 	ch;
 
@@ -149,11 +149,11 @@ int main(int argc, char** argv)
 		switch (ch) {
 		case 'v':
 			// verbose output
-			verbose = ONION_SEVERITY_DEBUG;
+			verbose = ONION_VERBOSITY_VERBOSE;
 			break;
 		case 'q':
 			// quiet output
-			verbose = ONION_SEVERITY_FATAL;
+			verbose = ONION_VERBOSITY_NONE;
 			break;
 		case 'i':
 			// perform init sequence

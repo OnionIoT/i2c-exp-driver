@@ -7,37 +7,37 @@ typedef enum e_PwmExpMode {
 
 void usage(const char* progName) 
 {
-	printf("\n");
-	printf("Usage: pwm-exp -i\n");
-	printf("\n");
-	printf("FUNCTIONALITY:\n");
-	printf("\tOnly initialize the pwm chip\n");
-	printf("\n\n");
-	printf("Usage: pwm-exp [-qvi] [-f <freq>] CHANNEL DUTY [DELAY]\n");
-	printf("\n");
-	printf("CHANNEL is the specified PWM channel on the Expansion\n");
-	printf("\tcan be: 0-15  to control a single channel\n");
-	printf("\tcan be: 'all' to control all channels simultaneously\n");
-	printf("DUTY is the signal duty cycle, expressed 1-100\n");
-	printf("DELAY is the delay before signal asserts, optional\n");
-	printf("\n");
-	printf("FUNCTIONALITY:\n");
-	printf("\tProgram the CHANNEL to the specified duty cycle\n");
-	printf("\n");
-	printf("OPTIONS:\n");
-	printf(" -q 		quiet: no output\n");
-	printf(" -v 		verbose: lots of output\n");
-	printf(" -h 		help: show this prompt\n");
-	printf(" -i 		initialize the pwm chip (must be done after power-up)\n");
-	printf(" -f <freq>	set pwm signal frequency\n");
-	printf("\n\n");
-	printf("Usage: pwm-exp -p CHANNEL PULSE_WIDTH TOTAL_PERIOD\n");
-	printf("\n");
-	printf("CHANNEL is the specified PWM channel on the Expansion\n");
-	printf("PULSE_WIDTH is the time in ms while the pulse is high\n");
-	printf("TOTAL_PERIOD is the total period in ms\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "Usage: pwm-exp -i\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "FUNCTIONALITY:\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tOnly initialize the pwm chip\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n\n");
+	onionPrint(ONION_SEVERITY_FATAL, "Usage: pwm-exp [-qvi] [-f <freq>] CHANNEL DUTY [DELAY]\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "CHANNEL is the specified PWM channel on the Expansion\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tcan be: 0-15  to control a single channel\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tcan be: 'all' to control all channels simultaneously\n");
+	onionPrint(ONION_SEVERITY_FATAL, "DUTY is the signal duty cycle, expressed 1-100\n");
+	onionPrint(ONION_SEVERITY_FATAL, "DELAY is the delay before signal asserts, optional\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "FUNCTIONALITY:\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tProgram the CHANNEL to the specified duty cycle\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "OPTIONS:\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -q 		quiet: no output\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -v 		verbose: lots of output\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -h 		help: show this prompt\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -i 		initialize the pwm chip (must be done after power-up)\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -f <freq>	set pwm signal frequency\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n\n");
+	onionPrint(ONION_SEVERITY_FATAL, "Usage: pwm-exp -p CHANNEL PULSE_WIDTH TOTAL_PERIOD\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "CHANNEL is the specified PWM channel on the Expansion\n");
+	onionPrint(ONION_SEVERITY_FATAL, "PULSE_WIDTH is the time in ms while the pulse is high\n");
+	onionPrint(ONION_SEVERITY_FATAL, "TOTAL_PERIOD is the total period in ms\n");
 	
-	printf("\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
 }
 
 int readChannelArgument (char* channelArgument) 
@@ -59,11 +59,11 @@ int validateChannelArgument (int channel)
 	int status = EXIT_SUCCESS;
 
 	if (channel < -1 || channel >= PWM_EXP_NUM_CHANNELS) {
-		printf("ERROR: invalid CHANNEL selection\n");
-		printf("Accepted values are:\n");
-		printf("\t0-15\n");
-		printf("\tall\n");
-		printf("\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid CHANNEL selection\n");
+		onionPrint(ONION_SEVERITY_FATAL, "Accepted values are:\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\t0-15\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\tall\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\n");
 
 		status = EXIT_FAILURE;
 	}
@@ -78,19 +78,19 @@ int validateArgumentsDutyMode(int channel, float duty, float delay)
 	status = validateChannelArgument(channel);
 
 	if (duty < 0.0f || duty > 100.0f) {
-		printf("ERROR: invalid DUTY selection\n");
-		printf("Accepted values are:\n");
-		printf("\t0 - 100\n");
-		printf("\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid DUTY selection\n");
+		onionPrint(ONION_SEVERITY_FATAL, "Accepted values are:\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\t0 - 100\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\n");
 
 		status = EXIT_FAILURE;
 	}
 
 	if (delay < 0.0f || delay > 100.0f) {
-		printf("ERROR: invalid DELAY selection\n");
-		printf("Accepted values are:\n");
-		printf("\t0 - 100\n");
-		printf("\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid DELAY selection\n");
+		onionPrint(ONION_SEVERITY_FATAL, "Accepted values are:\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\t0 - 100\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\n");
 
 		status = EXIT_FAILURE;
 	}
@@ -105,29 +105,29 @@ int validateArgumentsPeriodMode(int channel, float periodOn, float periodTotal, 
 	status = validateChannelArgument(channel);
 
 	if (periodOn < 0.0f || periodOn > periodTotal) {
-		printf("ERROR: invalid PERIOD_ON selection\n");
-		printf("Must fulfill the following conditions:\n");
-		printf("\tbe greater than 0\n");
-		printf("\tbe less than or equal to the total period\n");
-		printf("\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid PERIOD_ON selection\n");
+		onionPrint(ONION_SEVERITY_FATAL, "Must fulfill the following conditions:\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\tbe greater than 0\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\tbe less than or equal to the total period\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\n");
 
 		status = EXIT_FAILURE;
 	}
 
 	if (periodTotal < 0.0f) {
-		printf("ERROR: invalid PERIOD_TOTAL selection\n");
-		printf("Must be greater than 0\n");
-		printf("\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid PERIOD_TOTAL selection\n");
+		onionPrint(ONION_SEVERITY_FATAL, "Must be greater than 0\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\n");
 
 		status = EXIT_FAILURE;
 	}
 
 	if (frequency < PWM_FREQUENCY_MIN || frequency > PWM_FREQUENCY_MAX) {
-		printf("ERROR: invalid PERIOD_TOTAL selection\n");
-		printf("Period corresponds to frequency of %0.2f Hz\n", frequency);
-		printf("Period must correspond to frequency between:\n");
-		printf("\t%d Hz - %d Hz", (int)PWM_FREQUENCY_MIN, (int)PWM_FREQUENCY_MAX);
-		printf("\n");
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid PERIOD_TOTAL selection\n");
+		onionPrint(ONION_SEVERITY_FATAL, "Period corresponds to frequency of %0.2f Hz\n", frequency);
+		onionPrint(ONION_SEVERITY_FATAL, "Period must correspond to frequency between:\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\t%d Hz - %d Hz", (int)PWM_FREQUENCY_MIN, (int)PWM_FREQUENCY_MAX);
+		onionPrint(ONION_SEVERITY_FATAL, "\n");
 
 		status = EXIT_FAILURE;
 	}
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 	const char *progname;
 	int status;
 	int mode 		= MAIN_PWM_EXP_DUTY_MODE;
-	int verbose 	= ONION_SEVERITY_INFO;
+	int verbose 	= ONION_VERBOSITY_NORMAL;
 	int init 		= 0;
 	int ch;
 
@@ -160,11 +160,11 @@ int main(int argc, char** argv)
 		switch (ch) {
 		case 'v':
 			// verbose output
-			verbose = ONION_SEVERITY_DEBUG;
+			verbose = ONION_VERBOSITY_VERBOSE;
 			break;
 		case 'q':
 			// quiet output
-			verbose = ONION_SEVERITY_FATAL;
+			verbose = ONION_VERBOSITY_NONE;
 			break;
 		case 'i':
 			// perform init sequence
