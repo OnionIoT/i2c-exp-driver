@@ -58,12 +58,11 @@ int 	_i2c_releaseFd			(int devHandle);
 int 	_i2c_setDevice 			(int devHandle, int addr);
 int 	_i2c_setDevice10bit 	(int devHandle, int addr);
 
-int 	_i2c_writebuffer		(int devNum, int devAddr, int addr, uint8_t *buffer, int size);
-
 
 // i2c functions
 void 	i2c_setVerbosity 		(int level);
 
+int 	i2c_writebuffer			(int devNum, int devAddr, int addr, uint8_t *buffer, int size);
 int 	i2c_write	 			(int devNum, int devAddr, int addr, int val);
 int 	i2c_writeBytes 			(int devNum, int devAddr, int addr, int val, int numBytes);
 
