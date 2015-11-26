@@ -97,8 +97,10 @@ void 	_pwmCalculate		(float duty, float delay, struct pwmSetup *setup);
 
 // programming functions
 int 	pwmCheckInit 		(int *bInitialized);
-
 int 	pwmDriverInit 		();
+
+int 	pwmDisableChip 		();
+
 int 	pwmSetFrequency		(float freq);
 int 	pwmSetupDriver		(int driverNum, float duty, float delay);
 

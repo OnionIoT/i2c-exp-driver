@@ -193,7 +193,7 @@ int _pwmSetSleepMode (int bSleepMode)
 	return EXIT_SUCCESS;
 }
 
-// i2c register read to find if chip is in sleep mode
+// i2c register read to find if chip (oscillator) is in sleep mode
 int _pwmGetSleepMode (int *bSleepMode) {
 	int 	status;
 	int 	addr, val;
@@ -252,6 +252,7 @@ int _pwmSetReset ()
 	return EXIT_SUCCESS;
 }
 
+
 // check if the oscillator is running
 int pwmCheckInit (int *bInitialized) {
 	int 	status;
@@ -270,7 +271,6 @@ int pwmCheckInit (int *bInitialized) {
 
 	return status;
 }
-
 
 // run the initial oscillator setup
 int pwmDriverInit () {
@@ -323,6 +323,21 @@ int pwmDriverInit () {
 	status 	= _pwmSetReset();
 	if (status == EXIT_FAILURE) {
 		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:init:: reset failed\n");
+		return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
+}
+
+// disable the chip - set oscillator to sleep
+int pwmDisableChip ()
+{
+	int 	status;
+
+	// enable oscillator sleep mode
+	status  = _pwmSetSleepMode(1);
+	if (status == EXIT_FAILURE) {
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:pwmSetFreq:: disabling SLEEP mode failed\n");
 		return EXIT_FAILURE;
 	}
 

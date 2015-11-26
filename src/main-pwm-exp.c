@@ -1,8 +1,9 @@
 #include <pwm-exp.h>
 
 typedef enum e_PwmExpMode {
-	MAIN_PWM_EXP_DUTY_MODE = 0,
-	MAIN_PWM_EXP_PERIOD_MODE = 1
+	MAIN_PWM_EXP_DUTY_MODE 		= 0,
+	MAIN_PWM_EXP_PERIOD_MODE 	= 1,
+	MAIN_PWM_EXP_SLEEP_MODE		= 2
 }	eProgramMode;
 
 void usage(const char* progName) 
@@ -139,9 +140,9 @@ int main(int argc, char** argv)
 {
 	const char 	*progname;
 	int 		status;
-	int 		mode 		= MAIN_PWM_EXP_DUTY_MODE;
-	int 		verbose 	= ONION_VERBOSITY_NORMAL;
-	int 		init 		= 0;
+	int 		mode;
+	int 		verbose;
+	int 		init;
 	int 		ch;
 
 	int 		bInitialized;
@@ -150,6 +151,10 @@ int main(int argc, char** argv)
 	float 		periodOn, periodTotal;
 
 	// set the defaults
+	init 		= 0;
+	verbose 	= ONION_VERBOSITY_NORMAL;
+	mode 		= MAIN_PWM_EXP_DUTY_MODE;
+
 	frequency 	= PWM_FREQUENCY_DEFAULT;
 	delay 		= 0.0f;	// default value
 
@@ -157,7 +162,7 @@ int main(int argc, char** argv)
 	progname = argv[0];	
 
 	//// parse the option arguments
-	while ((ch = getopt(argc, argv, "vqhipf:")) != -1) {
+	while ((ch = getopt(argc, argv, "vqhipsf:")) != -1) {
 		switch (ch) {
 		case 'v':
 			// verbose output
@@ -172,12 +177,16 @@ int main(int argc, char** argv)
 			init 	= 1;
 			break;
 		case 'p':
-			// enabled period mode
+			// enable period mode
 			mode 	= MAIN_PWM_EXP_PERIOD_MODE;
 			break;
 		case 'f':
 			// specify the pwm frequency
 			frequency = atof(optarg);
+			break;
+		case 's':
+			// enable sleep mode
+			mode  	= MAIN_PWM_EXP_SLEEP_MODE;
 			break;
 		default:
 			usage(progname);
@@ -202,6 +211,17 @@ int main(int argc, char** argv)
 		}
 		return 0;
 	}
+
+	// check if setting sleep mode
+	if (mode == MAIN_PWM_EXP_SLEEP_MODE) {
+		status = pwmDisableChip();
+		if (status == EXIT_FAILURE) {
+			onionPrint(ONION_SEVERITY_FATAL, "main-pwm-exp:: pwm chip disable failed!\n");
+		}
+		return 0;
+	}
+
+
 
 	//// parse the real arguments
 	if (mode == MAIN_PWM_EXP_DUTY_MODE)
