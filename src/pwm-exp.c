@@ -334,6 +334,8 @@ int pwmDisableChip ()
 {
 	int 	status;
 
+	onionPrint(ONION_SEVERITY_INFO, "> Oscillator going into sleep mode, PWM disabled\n");
+
 	// enable oscillator sleep mode
 	status  = _pwmSetSleepMode(1);
 	if (status == EXIT_FAILURE) {
