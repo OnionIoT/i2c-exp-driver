@@ -137,16 +137,17 @@ int validateArgumentsPeriodMode(int channel, float periodOn, float periodTotal, 
 
 int main(int argc, char** argv)
 {
-	const char *progname;
-	int status;
-	int mode 		= MAIN_PWM_EXP_DUTY_MODE;
-	int verbose 	= ONION_VERBOSITY_NORMAL;
-	int init 		= 0;
-	int ch;
+	const char 	*progname;
+	int 		status;
+	int 		mode 		= MAIN_PWM_EXP_DUTY_MODE;
+	int 		verbose 	= ONION_VERBOSITY_NORMAL;
+	int 		init 		= 0;
+	int 		ch;
 
-	int channel;
-	float duty, delay, frequency;
-	float periodOn, periodTotal;
+	int 		bInitialized;
+	int 		channel;
+	float 		duty, delay, frequency;
+	float 		periodOn, periodTotal;
 
 	// set the defaults
 	frequency 	= PWM_FREQUENCY_DEFAULT;
@@ -266,9 +267,12 @@ int main(int argc, char** argv)
 
 
 
-	//// PWM
+	//// PWM PROGRAMMING
+	// check if initialized
+	status 	= pwmCheckInit(&bInitialized);
+
 	// perform initialization
-	if (init == 1) {
+	if (init == 1 || bInitialized) {
 		status = pwmDriverInit();
 		if (status == EXIT_FAILURE) {
 			onionPrint(ONION_SEVERITY_FATAL, "main-pwm-exp:: pwm init failed!\n");

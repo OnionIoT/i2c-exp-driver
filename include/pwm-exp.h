@@ -87,11 +87,16 @@ int 	_writeValue			(int addr, int value);
 int 	_pwmSetTime			(struct pwmSetup *setup);
 
 int 	_pwmSetReset 		(void);
+
+int 	_pwmGetSleepMode 	(int *bSleepMode);
 int 	_pwmSetSleepMode 	(int bSleepMode);
 
 
 void 	_pwmCalculate		(float duty, float delay, struct pwmSetup *setup);
 
+
+// programming functions
+int 	pwmCheckInit 		(int *bInitialized);
 
 int 	pwmDriverInit 		();
 int 	pwmSetFrequency		(float freq);

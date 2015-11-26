@@ -72,7 +72,7 @@ int _dutyToCount (float duty)
 // split value into two bytes, and write to the L and H registers (via I2C)
 int _writeValue(int addr, int value)
 {
-	int status, byte, wrAddr;
+	int 	status, byte, wrAddr;
 
 	// write first byte to L
 	wrAddr 	= addr + REG_OFFSET_BYTE0;
@@ -94,7 +94,7 @@ int _writeValue(int addr, int value)
 // write ON and OFF time values
 int _pwmSetTime(struct pwmSetup *setup)
 {
-	int status;
+	int 	status;
 
 	// set the ON time
 	status = _writeValue(setup->regOffset + REG_OFFSET_ON_BYTES, setup->timeStart);
@@ -151,8 +151,8 @@ void _pwmCalculate(float duty, float delay, struct pwmSetup *setup)
 // i2c register writes to set sleep mode
 int _pwmSetSleepMode (int bSleepMode)
 {
-	int status;
-	int addr, val;
+	int 	status;
+	int 	addr, val;
 
 	// read MODE1 register
 	addr 	= PWM_EXP_REG_MODE1;
@@ -193,11 +193,34 @@ int _pwmSetSleepMode (int bSleepMode)
 	return EXIT_SUCCESS;
 }
 
+// i2c register read to find if chip is in sleep mode
+int _pwmGetSleepMode (int *bSleepMode) {
+	int 	status;
+	int 	addr, val;
+
+	// read MODE1 register
+	addr 	= PWM_EXP_REG_MODE1;
+	status 	= i2c_readByte	(	PWM_I2C_DEVICE_NUM, 
+								PWM_I2C_DEVICE_ADDR, 
+								addr, 
+								&val
+							);
+	if (status == EXIT_FAILURE) {
+		onionPrint(ONION_SEVERITY_FATAL, "pwm-exp:pwmCheckInit:: read MODE1 failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// check if oscillator is in sleep mode
+	*bSleepMode 	= ((val & PWM_EXP_REG_MODE1_SLEEP) == PWM_EXP_REG_MODE1_SLEEP) ? 1 : 0;
+
+	return EXIT_SUCCESS;
+}
+
 // i2c register writes to set sw reset
 int _pwmSetReset ()
 {
-	int status;
-	int addr, val;
+	int 	status;
+	int 	addr, val;
 
 	// read MODE1 register
 	addr 	= PWM_EXP_REG_MODE1;
@@ -229,10 +252,30 @@ int _pwmSetReset ()
 	return EXIT_SUCCESS;
 }
 
+// check if the oscillator is running
+int pwmCheckInit (int *bInitialized) {
+	int 	status;
+	int 	bSleepMode;
+
+	// check if oscillator is in sleep mode
+	status 	= _pwmGetSleepMode (&bSleepMode);
+	if (status == EXIT_FAILURE) {
+		*bInitialized 	= 0;
+		return EXIT_FAILURE;
+	}
+
+	// check if oscillator is in sleep mode
+	*bInitialized 	= (bSleepMode == 1 ? 0 : 1);
+	onionPrint(ONION_SEVERITY_DEBUG, "pwm-exp::pwmCheckInit:: sleep mode is %d, initialized is %d\n", bSleepMode, *bInitialized);
+
+	return status;
+}
+
+
 // run the initial oscillator setup
 int pwmDriverInit () {
-	int status;
-	int addr, val;
+	int 	status;
+	int 	addr, val;
 
 	onionPrint(ONION_SEVERITY_INFO, "> Initializing PWM Expansion chip\n");
 
@@ -289,9 +332,9 @@ int pwmDriverInit () {
 // program the prescale value for desired pwm frequency
 int pwmSetFrequency(float freq)
 {
-	int status;
-	int prescale;
-	int addr, val;
+	int 	status;
+	int 	prescale;
+	int 	addr, val;
 
 	//// calculate the prescale value
 	// prescale = round( osc_clk / pulse_count x update_rate ) - 1
