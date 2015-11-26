@@ -14,6 +14,7 @@
 #define OLED_EXP_HEIGHT 64
 #define OLED_EXP_WIDTH 128
 #define OLED_EXP_PAGES 8
+#define OLED_EXP_CHAR_LENGTH 5
 
 // Command Constants
 #define OLED_EXP_SET_CONTRAST 0x81
@@ -39,8 +40,8 @@
 #define OLED_EXP_COM_SCAN_DEC 0xC8
 #define OLED_EXP_SEG_REMAP 0xA0
 #define OLED_EXP_CHARGE_PUMP 0x8D
-#define OLED_EXP_EXTERNAL_VCC 0x1
-#define OLED_EXP_SWITCH_CAP_VCC 0x2
+#define OLED_EXP_EXTERNAL_VCC 0x01
+#define OLED_EXP_SWITCH_CAP_VCC 0x02
 
 // Scrolling Constants
 #define OLED_EXP_ACTIVATE_SCROLL 0x2F
@@ -52,7 +53,7 @@
 #define OLED_EXP_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL 0x2A
 
 // Ascii Table
-int asciiTable[96][5] = {
+int asciiTable[][OLED_EXP_CHAR_LENGTH] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00}, // SPACE
 
 	{0x00, 0x00, 0x4F, 0x00, 0x00}, // !
@@ -158,17 +159,22 @@ int asciiTable[96][5] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00}
 };
 
+// Variables
+int _vccState;
+int _buffer[OLED_EXP_WIDTH * OLED_EXP_PAGES] = {0};
+int _cursor = 0;
+
 // Functions
-int _oledSendCommand(int command);
+int _oledSendCommand (int command);
 int oledDriverInit ();
-int oledDisplay();
-int oledPrintChar(char c);
-int oledLineScroll();
-int oledNewLine();
-int oledPrintLine();
-int oledInvert();
-int oledClear();
-int oledSetContrast(int contrast);
-int oledSetDim(bool dim);
+int oledDisplay ();
+int oledPrintChar (char c);
+int oledLineScroll ();
+int oledNewLine ();
+int oledPrintLine ();
+int oledInvert ();
+int oledClear ();
+int oledSetContrast (int contrast);
+int oledSetDim (bool dim);
 
 #endif // _OLED_EXP_H_

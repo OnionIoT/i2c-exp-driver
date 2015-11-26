@@ -97,7 +97,7 @@ int _i2c_setDevice10bit(int devHandle, int addr)
 }
 
 // generic function to write a buffer to the i2c bus
-int i2c_writebuffer(int devNum, int devAddr, int addr, uint8_t *buffer, int size)
+int i2c_writeBuffer(int devNum, int devAddr, int addr, uint8_t *buffer, int size)
 {
 	int 	status;
 	int 	fd, index;
@@ -161,7 +161,7 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 	onionPrint(ONION_SEVERITY_DEBUG, "%s Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", I2C_PRINT_BANNER, devAddr, addr, val, (size-1) );
 
 	// write the buffer
- 	status 	= i2c_writebuffer(devNum, devAddr, addr, buffer, size);
+ 	status = i2c_writeBuffer(devNum, devAddr, addr, buffer, size);
 
 	return (status);
 }
@@ -191,7 +191,7 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 	onionPrint(ONION_SEVERITY_DEBUG, "%s Writing to device 0x%02x: addr = 0x%02x, data = 0x%02x (data size: %d)\n", I2C_PRINT_BANNER, devAddr, addr, val, (size-1) );
 
 	// write the buffer
-	status 	= i2c_writebuffer(devNum, devAddr, addr, buffer, size);
+	status 	= i2c_writeBuffer(devNum, devAddr, addr, buffer, size);
 
 	return (status);
 }
