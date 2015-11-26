@@ -272,7 +272,7 @@ int main(int argc, char** argv)
 	status 	= pwmCheckInit(&bInitialized);
 
 	// perform initialization
-	if (init == 1 || bInitialized) {
+	if (init == 1 || bInitialized == 0) {
 		status = pwmDriverInit();
 		if (status == EXIT_FAILURE) {
 			onionPrint(ONION_SEVERITY_FATAL, "main-pwm-exp:: pwm init failed!\n");
