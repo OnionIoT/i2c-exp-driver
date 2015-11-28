@@ -2,8 +2,6 @@
 
 # include the Onion sh lib
 . /usr/lib/onion/lib.sh
-#dbg
-bLogEnabled=1
 
 
 ##### pwm-exp #####
