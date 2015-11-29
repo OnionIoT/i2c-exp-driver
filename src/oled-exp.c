@@ -27,8 +27,9 @@ int oledDriverInit ()
 
 	onionPrint(ONION_SEVERITY_INFO, "> Initializing display\n");
 
-	memset(_buffer, 0, sizeof(_buffer));				// Reinitialize the buffer
-	_cursor = 0;										// Reinitialize the cursor
+	memset(_buffer, 0, sizeof(_buffer));	// Initialize the buffer
+	_cursor 		= 0;					// Initialize the cursor
+	_cursorInRow	= 0;					// Initialize the row cursor
 
 	// set defaults
 	_vccState = OLED_EXP_SWITCH_CAP_VCC;
@@ -156,10 +157,22 @@ int oledWriteChar(char c)
 
 	// ensure character is in the table
 	if (charIndex >= 0 && charIndex < sizeof(asciiTable) / sizeof(asciiTable[0])) {
+		// check where the cursor is in the current row
+		if (_cursorInRow == OLED_EXP_CHAR_COLUMNS - 1) {
+			// last character is cut off, write two pixels of nothing to advance to new line
+			status 	= _oledSendData(0x00);
+			status 	= _oledSendData(0x00);
+
+			_cursorInRow 	= 0;
+		}
+
 		// write the data for the character
 		for (idx = 0; idx < OLED_EXP_CHAR_LENGTH; idx++) {
 	        status 	= _oledSendData(asciiTable[charIndex][idx]);
 	    }
+
+	    // increment row cursor
+	    _cursorInRow++;
 	}
 
 	return status;
