@@ -95,6 +95,7 @@ int oledSetNormalDisplay ()
 {
 	int 	status;
 
+	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display to normal\n");
 	status 	= _oledSendCommand(OLED_EXP_NORMAL_DISPLAY);
 
 	return status;
@@ -105,7 +106,7 @@ int oledSetCursor(int row, int column)
 {
 	int 	status;
 
-	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display to normal\n");
+	onionPrint(ONION_SEVERITY_DEBUG, "> Setting cursor to (%d, %d)\n", row, column);
 
 	// set page address
 	status	= _oledSendCommand(OLED_EXP_ADDR_BASE_PAGE_START + row); 
@@ -123,21 +124,19 @@ int oledSetCursor(int row, int column)
 int oledClear()
 {
 	int 	status;
-	int 	col, row;
+	int 	charRow, pixelCol;
 
 	onionPrint(ONION_SEVERITY_DEBUG, "> Clearing display\n");
 	// display off
 	status 	= _oledSendCommand(OLED_EXP_DISPLAY_OFF);
 
 	// write a blank space to each character
-	for (row = 0; row < OLED_EXP_CHAR_ROWS; row++) {
-		oledSetCursor(row, 0);
+	for (charRow = 0; charRow < OLED_EXP_CHAR_ROWS; charRow++) {
+		oledSetCursor(charRow, 0);
 
-		for (col = 0; col < OLED_EXP_CHAR_COLUMNS - 1; col++) {
-			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "(%d, %d) ", row, col);
-			oledWriteChar(' ');
+		for (pixelCol = 0; pixelCol < OLED_EXP_WIDTH; pixelCol++) {
+			status 	= _oledSendData(0x00);
 		}
-		onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "\n");
 	}
 
 	// display on
