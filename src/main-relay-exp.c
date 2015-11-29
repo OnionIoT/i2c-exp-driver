@@ -126,8 +126,8 @@ int main(int argc, char** argv)
 	char 	*switchAddr;
 	
 	int 	status;
-	int 	verbose 	= ONION_VERBOSITY_NORMAL;
-	int 	init 		= 0;
+	int 	verbose;
+	int 	init;
 	int 	ch;
 
 	int 	channel;
@@ -136,13 +136,15 @@ int main(int argc, char** argv)
 	int 	devAddr;
 	int 	bInitialized;
 
+	// set defaults
+	init 		= 0;
+	verbose 	= ONION_VERBOSITY_NORMAL;
+
+	switchAddr 	= malloc(RELAY_EXP_ADDR_SWITCH_NUM * sizeof *switchAddr);
+	strcpy(switchAddr, RELAY_EXP_ADDR_SWITCH_DEFAULT_VAL);
 
 	// save the program name
 	progname 	= argv[0];	
-
-	// set defaults
-	switchAddr 	= malloc(RELAY_EXP_ADDR_SWITCH_NUM * sizeof *switchAddr);
-	strcpy(switchAddr, RELAY_EXP_ADDR_SWITCH_DEFAULT_VAL);
 
 	//// parse the option arguments
 	while ((ch = getopt(argc, argv, "vqhis:")) != -1) {
