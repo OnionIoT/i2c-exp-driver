@@ -183,20 +183,23 @@ int 		_oledSendData				(int data);
 int 		oledDriverInit 				();
 
 int 		oledSetNormalDisplay 		();
+int 		oledInvert 					(int bInvert);
+int 		oledSetContrast 			(int contrast);
+int 		oledSetDim 					(int dim);
+
 int 		oledSetCursor				(int row, int column);
 
 int 		oledClear 					();
 
 int 		oledWriteChar 				(char c);
+int 		oledWrite 					(char *msg);
 
 int 		oledDisplay 				();
 int 		oledPrintChar 				(char c);
+
 int 		oledLineScroll 				();
 int 		oledNewLine 				();
 int 		oledPrintLine 				();
-int 		oledInvert 					();
 
-int 		oledSetContrast 			(int contrast);
-int 		oledSetDim 					(int dim);
 
 #endif // _OLED_EXP_H_

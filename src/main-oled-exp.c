@@ -36,7 +36,8 @@ void usage(const char* progName)
 int main(int argc, char** argv)
 {
 	const char *progname;
-	char 	*switchAddr;
+	char 	*command;
+	char 	*param;
 	
 	int 	status;
 	int 	verbose;
@@ -49,6 +50,9 @@ int main(int argc, char** argv)
 	// set the defaults
 	init 		= 0;
 	verbose 	= ONION_VERBOSITY_NORMAL;
+
+	command 	= malloc(255 * sizeof *command);
+	param 		= malloc(255 * sizeof *param);
 
 	// save the program name
 	progname 	= argv[0];	
@@ -98,11 +102,38 @@ int main(int argc, char** argv)
 	}
 
 	// ensure correct number of arguments
-	if ( argc != 0) {
+	if ( argc != 2) {
 		usage(progname);
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid amount of arguments!\n");
 		return 0;
 	}
+
+	//// parse the arguments
+	// first arg - command
+	strcpy(command, argv[0]);
+
+	// second arg - parameter
+	strcpy(param, argv[1]);
+
+
+	//// OLED PROGRAMMING
+	// check if initialized
+	// to do: implement htis
+	bInitialized = 0;
+
+	// perform initialization
+	if (init == 1 || bInitialized == 0) {
+		status 	= oledDriverInit();
+		if (status == EXIT_FAILURE) {
+			onionPrint(ONION_SEVERITY_FATAL, "main-oled-exp:: relay init failed!\n");
+		}
+	}
+
+	// perform the specified command
+	if (strcmp(command, "write") == 0) {
+		oledWrite(param);
+	}
+
 
 
 	return 0;

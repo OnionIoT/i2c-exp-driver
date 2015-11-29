@@ -25,10 +25,12 @@ int oledDriverInit ()
 {
 	int 	status;
 
+	onionPrint(ONION_SEVERITY_INFO, "> Initializing display\n");
+
 	memset(_buffer, 0, sizeof(_buffer));				// Reinitialize the buffer
 	_cursor = 0;										// Reinitialize the cursor
 
-	// set default
+	// set defaults
 	_vccState = OLED_EXP_SWITCH_CAP_VCC;
 
 	// Initialize the screen for 128x64
@@ -158,6 +160,22 @@ int oledWriteChar(char c)
 		for (idx = 0; idx < OLED_EXP_CHAR_LENGTH; idx++) {
 	        status 	= _oledSendData(asciiTable[charIndex][idx]);
 	    }
+	}
+
+	return status;
+}
+
+// Write a string message directly to the displayy
+int oledWrite (char *msg)
+{
+	int 	status;
+	int 	idx;
+
+	onionPrint(ONION_SEVERITY_INFO, "> Writing '%s' to display\n", msg);
+
+	// write each character
+	for (idx = 0; idx < strlen(msg); idx++) {
+		status 	= oledWriteChar(msg[idx]);
 	}
 
 	return status;
