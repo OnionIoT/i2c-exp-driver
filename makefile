@@ -31,6 +31,11 @@ SOURCE1 := $(SRCDIR)/main-$(APP1).$(SRCEXT) $(SRCDIR)/$(APP1).$(SRCEXT)
 OBJECT1 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE1:.$(SRCEXT)=.o))
 TARGET1 := $(BINDIR)/$(APP1)
 
+APP2 := oled-exp
+SOURCE2 := $(SRCDIR)/main-$(APP2).$(SRCEXT) $(SRCDIR)/$(APP2).$(SRCEXT)
+OBJECT2 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE2:.$(SRCEXT)=.o))
+TARGET2 := $(BINDIR)/$(APP2)
+
 LIBD := liboniondebug
 SOURCE_LIBD := src/lib/onion-debug.$(SRCEXT)
 OBJECT_LIBD := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE_LIBD:.$(SRCEXT)=.o))
@@ -47,7 +52,7 @@ OBJECT_LIB1 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE_LIB1:.$(SRCEXT)=.o)
 TARGET_LIB1 := $(LIBDIR)/$(LIB1).so
 
 
-all: resp $(TARGET_LIBD) $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET0) $(TARGET1)
+all: resp $(TARGET_LIBD) $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET0) $(TARGET1) $(TARGET2)
 
 # libraries
 $(TARGET_LIBD): $(OBJECT_LIBD)
@@ -70,13 +75,19 @@ $(TARGET0): $(OBJECT0)
 	@echo " Compiling $(APP0)"
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) -L$(LIBDIR) -loniondebug -lonioni2c"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) -L$(LIBDIR) -loniondebug -lonioni2c
+	$(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET0) $(LIB) -L$(LIBDIR) -loniondebug -lonioni2c
 
 $(TARGET1): $(OBJECT1)
 	@echo " Compiling $(APP1)"
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) -L$(LIBDIR) -loniondebug -lonioni2c -lonionmcp23008"; $(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) -L$(LIBDIR) -loniondebug -lonioni2c -lonionmcp23008
+	$(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET1) $(LIB) -L$(LIBDIR) -loniondebug -lonioni2c -lonionmcp23008
+
+$(TARGET2): $(OBJECT2)
+	@echo " Compiling $(APP2)"
+	@mkdir -p $(BINDIR)
+	@echo " Linking..."
+	$(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET2) $(LIB) -L$(LIBDIR) -loniondebug -lonioni2c
 
 
 # generic: build any object file required
