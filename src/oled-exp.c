@@ -81,6 +81,7 @@ int oledDriverInit ()
 
 	// clear the display
 	status 	|= oledSetNormalDisplay();
+	status	|= oledClear();
 
 
 	return EXIT_SUCCESS;
@@ -101,6 +102,8 @@ int oledSetCursor(int row, int column)
 {
 	int 	status;
 
+	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display to normal\n");
+
 	// set page address
 	status	= _oledSendCommand(OLED_EXP_ADDR_BASE_PAGE_START + row); 
 
@@ -119,6 +122,7 @@ int oledClear()
 	int 	status;
 	int 	col, row;
 
+	onionPrint(ONION_SEVERITY_DEBUG, "> Clearing display\n");
 	// display off
 	status 	= _oledSendCommand(OLED_EXP_DISPLAY_OFF);
 
@@ -127,8 +131,10 @@ int oledClear()
 		oledSetCursor(row, 0);
 
 		for (col = 0; col < OLED_EXP_CHAR_COLUMNS; col++) {
+			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "(%d, %d) ", row, col);
 			oledWriteChar(' ');
 		}
+		onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "\n");
 	}
 
 	// display on

@@ -55,7 +55,7 @@ int main(int argc, char** argv)
 
 
 	//// parse the option arguments
-	while ((ch = getopt(argc, argv, "vqhi")) != -1) {
+	while ((ch = getopt(argc, argv, "vqxhi")) != -1) {
 		switch (ch) {
 		case 'v':
 			// verbose output
@@ -64,6 +64,10 @@ int main(int argc, char** argv)
 		case 'q':
 			// quiet output
 			verbose = ONION_VERBOSITY_NONE;
+			break;
+		case 'x':
+			// extra verbose output
+			verbose = ONION_SEVERITY_DEBUG_EXTRA;
 			break;
 		case 'i':
 			// perform init sequence
