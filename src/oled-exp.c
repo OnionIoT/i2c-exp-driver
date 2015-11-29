@@ -5,7 +5,17 @@ int _oledSendCommand (int command)
 {
 	int status;
 
-	status = i2c_write(OLED_EXP_DEVICE_NUM, OLED_EXP_ADDR, OLED_EXP_REG_CONTROL, command);
+	status = i2c_write(OLED_EXP_DEVICE_NUM, OLED_EXP_ADDR, OLED_EXP_REG_COMMAND, (uint8_t)command);
+
+	return status;
+}
+
+// Send data byte to OLED Expansion
+int _oledSendData (int data)
+{
+	int status;
+
+	status = i2c_write(OLED_EXP_DEVICE_NUM, OLED_EXP_ADDR, OLED_EXP_REG_DATA, (uint8_t)data);
 
 	return status;
 }
@@ -76,6 +86,17 @@ int oledDriverInit ()
 	return EXIT_SUCCESS;
 }
 
+// set the display to normal
+int oledSetNormalDisplay ()
+{
+	int 	status;
+
+	status 	= _oledSendCommand(OLED_EXP_NORMAL_DISPLAY);
+
+	return status;
+}
+
+// set the OLED's cursor
 int oledSetCursor(int row, int column)
 {
 	int 	status;
@@ -92,15 +113,7 @@ int oledSetCursor(int row, int column)
     return status;
 }
 
-int oledSetNormalDisplay ()
-{
-	int 	status;
-
-	status 	= _oledSendCommand(OLED_EXP_NORMAL_DISPLAY);
-
-	return status;
-}
-
+// Clear the OLED screen
 int oledClear()
 {
 	int 	status;
@@ -114,7 +127,7 @@ int oledClear()
 		oledSetCursor(row, 0);
 
 		for (col = 0; col < OLED_EXP_CHAR_COLUMNS; col++) {
-			oledPrintChar(' ');
+			oledWriteChar(' ');
 		}
 	}
 
@@ -122,6 +135,24 @@ int oledClear()
 	status 	|= _oledSendCommand(OLED_EXP_DISPLAY_ON);
 	// reset the cursor to (0, 0)
 	status	|= oledSetCursor(0, 0);
+
+	return status;
+}
+
+// Write a character directly to the OLED display (at the OLED cursor's current position)
+int oledWriteChar(char c)
+{
+	int 	status;
+	int 	idx;
+	int 	charIndex = (int) c - 32;
+
+	// ensure character is in the table
+	if (charIndex >= 0 && charIndex < sizeof(asciiTable) / sizeof(asciiTable[0])) {
+		// write the data for the character
+		for (idx = 0; idx < OLED_EXP_CHAR_LENGTH; idx++) {
+	        status 	= _oledSendData(asciiTable[charIndex][idx]);
+	    }
+	}
 
 	return status;
 }
@@ -152,6 +183,7 @@ int oledDisplay ()
 	return EXIT_SUCCESS;
 }
 
+// Write a character to the buffer
 int oledPrintChar(char c)
 {
 	int 	status;

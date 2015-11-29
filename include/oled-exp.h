@@ -21,7 +21,9 @@
 #define OLED_EXP_CHAR_ROWS				8
 
 // Registers
-#define OLED_EXP_REG_CONTROL			0x80
+#define OLED_EXP_REG_DATA				0x40
+#define OLED_EXP_REG_COMMAND			0x80
+
 
 // Addresses
 #define OLED_EXP_ADDR_BASE_PAGE_START	0xB0
@@ -176,12 +178,16 @@ int _cursor;
 
 // Functions
 int 		_oledSendCommand 			(int command);
+int 		_oledSendData				(int data);
 
 int 		oledDriverInit 				();
 
-int 		oledSetCursor				(int row, int column);
 int 		oledSetNormalDisplay 		();
+int 		oledSetCursor				(int row, int column);
+
 int 		oledClear 					();
+
+int 		oledWriteChar 				(char c);
 
 int 		oledDisplay 				();
 int 		oledPrintChar 				(char c);
