@@ -133,7 +133,7 @@ int oledClear()
 	for (row = 0; row < OLED_EXP_CHAR_ROWS; row++) {
 		oledSetCursor(row, 0);
 
-		for (col = 0; col < OLED_EXP_CHAR_COLUMNS; col++) {
+		for (col = 0; col < OLED_EXP_CHAR_COLUMNS - 1; col++) {
 			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "(%d, %d) ", row, col);
 			oledWriteChar(' ');
 		}
