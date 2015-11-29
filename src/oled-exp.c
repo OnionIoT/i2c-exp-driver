@@ -170,6 +170,7 @@ int oledWriteChar(char c)
 		for (idx = 0; idx < OLED_EXP_CHAR_LENGTH; idx++) {
 	        status 	= _oledSendData(asciiTable[charIndex][idx]);
 	    }
+	    onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "\twriting '%c' to column %d\n", c, _cursorInRow);
 
 	    // increment row cursor
 	    _cursorInRow++;
