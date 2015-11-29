@@ -17,7 +17,7 @@
 #define OLED_EXP_CHAR_LENGTH 			5
 #define OLED_EXP_NUM_CHARS				96
 
-#define OLED_EXP_CHAR_COLUMNS			25
+#define OLED_EXP_CHAR_COLUMNS			26
 #define OLED_EXP_CHAR_ROWS				8
 
 // Registers
