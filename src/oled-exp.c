@@ -10,11 +10,6 @@ int _oledSendCommand (int command)
 	return status;
 }
 
-int oledInvert();
-int oledClear();
-int oledSetContrast(int contrast);
-int oledSetDim(int dim);
-
 // Initialize the OLED Expansion
 int oledDriverInit ()
 {
@@ -74,8 +69,68 @@ int oledDriverInit ()
 	status 	|= _oledSendCommand(OLED_EXP_DISPLAY_ON);
 	usleep(4500);
 
+	// clear the display
+	status 	|= oledSetNormalDisplay();
+
+
 	return EXIT_SUCCESS;
 }
+
+int oledSetCursor(int row, int column)
+{
+	int 	status;
+
+	// set page address
+	status	= _oledSendCommand(OLED_EXP_ADDR_BASE_PAGE_START + row); 
+
+	// set column lower address
+	status	|= _oledSendCommand(OLED_EXP_SET_LOW_COLUMN + (8 * column & 0x0F) ); 
+
+	// set column higher address
+    status	|= _oledSendCommand(OLED_EXP_SET_HIGH_COLUMN + ((8 * column >> 4) & 0x0F) );
+
+    return status;
+}
+
+int oledSetNormalDisplay ()
+{
+	int 	status;
+
+	status 	= _oledSendCommand(OLED_EXP_NORMAL_DISPLAY);
+
+	return status;
+}
+
+int oledClear()
+{
+	int 	status;
+	int 	col, row;
+
+	// display off
+	status 	= _oledSendCommand(OLED_EXP_DISPLAY_OFF);
+
+	// write a blank space to each character
+	for (row = 0; row < OLED_EXP_CHAR_ROWS; row++) {
+		oledSetCursor(row, 0);
+
+		for (col = 0; col < OLED_EXP_CHAR_COLUMNS; col++) {
+			oledPrintChar(' ');
+		}
+	}
+
+	// display on
+	status 	|= _oledSendCommand(OLED_EXP_DISPLAY_ON);
+	// reset the cursor to (0, 0)
+	status	|= oledSetCursor(0, 0);
+
+	return status;
+}
+
+
+int oledInvert();
+
+int oledSetContrast(int contrast);
+int oledSetDim(int dim);
 
 // Write display buffer to OLED
 int oledDisplay ()
@@ -114,9 +169,8 @@ int oledPrintChar(char c)
 			_cursor += 2;
 		}
 
-		/*int buff[] = asciiTable[charIndex];
-		memcpy(_buffer + _cursor, buff, OLED_EXP_CHAR_LENGTH);
-		_cursor += OLED_EXP_CHAR_LENGTH;*/
+		memcpy(_buffer + _cursor, asciiTable[charIndex], OLED_EXP_CHAR_LENGTH);
+		_cursor += OLED_EXP_CHAR_LENGTH;
 	}
 
 	return status;
