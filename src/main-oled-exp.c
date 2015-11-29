@@ -43,8 +43,6 @@ int main(int argc, char** argv)
 	int 	verbose;
 	int 	init;
 	int 	ch;
-	
-	int 	bInitialized;
 
 
 	// set the defaults
@@ -117,12 +115,8 @@ int main(int argc, char** argv)
 
 
 	//// OLED PROGRAMMING
-	// check if initialized
-	// to do: implement htis
-	bInitialized = 0;
-
 	// perform initialization
-	if (init == 1 || bInitialized == 0) {
+	if (init == 1) {
 		status 	= oledDriverInit();
 		if (status == EXIT_FAILURE) {
 			onionPrint(ONION_SEVERITY_FATAL, "main-oled-exp:: relay init failed!\n");
