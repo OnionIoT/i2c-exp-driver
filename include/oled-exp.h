@@ -23,13 +23,16 @@
 #define OLED_EXP_CONTRAST_MIN			0
 #define OLED_EXP_CONTRAST_MAX			255
 
+#define OLED_EXP_DEF_CONTRAST_EXTERNAL_VCC 		159
+#define OLED_EXP_DEF_CONTRAST_SWITCH_CAP_VCC 	207
+
 // Registers
-#define OLED_EXP_REG_DATA				0x40
-#define OLED_EXP_REG_COMMAND			0x80
+#define OLED_EXP_REG_DATA					0x40
+#define OLED_EXP_REG_COMMAND				0x80
 
 
 // Addresses
-#define OLED_EXP_ADDR_BASE_PAGE_START	0xB0
+#define OLED_EXP_ADDR_BASE_PAGE_START		0xB0
 
 // Command Constants
 #define OLED_EXP_SET_CONTRAST 				0x81
@@ -185,21 +188,23 @@ int _cursorInRow;
 int 		_oledSendCommand 			(int command);
 int 		_oledSendData				(int data);
 
+// initialization and clearing
 int 		oledDriverInit 				();
+int 		oledClear 					();
 
+// configuration
 int 		oledSetDisplayPower			(int bPowerOn);
-int 		oledSetNormalDisplay 		();
 int 		oledSetDisplayMode			(int bInvert);
 int 		oledSetContrast 			(int contrast);
 int 		oledSetDim 					(int dim);
 
 int 		oledSetCursor				(int row, int column);
 
-int 		oledClear 					();
-
+// writing to the display
 int 		oledWriteChar 				(char c);
 int 		oledWrite 					(char *msg);
 
+// writing to the buffer
 int 		oledDisplay 				();
 int 		oledPrintChar 				(char c);
 

@@ -90,13 +90,29 @@ int oledDriverInit ()
 	return EXIT_SUCCESS;
 }
 
-// set the display to normal
-int oledSetNormalDisplay ()
+// Clear the OLED screen
+int oledClear()
 {
 	int 	status;
+	int 	charRow, pixelCol;
 
-	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display to normal\n");
-	status 	= _oledSendCommand(OLED_EXP_NORMAL_DISPLAY);
+	onionPrint(ONION_SEVERITY_DEBUG, "> Clearing display\n");
+	// display off
+	status 	= _oledSendCommand(OLED_EXP_DISPLAY_OFF);
+
+	// write a blank space to each character
+	for (charRow = 0; charRow < OLED_EXP_CHAR_ROWS; charRow++) {
+		oledSetCursor(charRow, 0);
+
+		for (pixelCol = 0; pixelCol < OLED_EXP_WIDTH; pixelCol++) {
+			status 	= _oledSendData(0x00);
+		}
+	}
+
+	// display on
+	status 	|= _oledSendCommand(OLED_EXP_DISPLAY_ON);
+	// reset the cursor to (0, 0)
+	status	|= oledSetCursor(0, 0);
 
 	return status;
 }
@@ -160,6 +176,7 @@ int oledSetContrast(int contrast)
 		contrastAdj		= OLED_EXP_CONTRAST_MAX;
 	}
 
+	// send the command
 	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display contrast to %d/%d\n", contrastAdj, OLED_EXP_CONTRAST_MAX);
 	status 	=  _oledSendCommand(OLED_EXP_SET_CONTRAST);
 	status 	|= _oledSendCommand(contrastAdj);
@@ -167,7 +184,32 @@ int oledSetContrast(int contrast)
 	return status;
 }
 
-int oledSetDim(int dim);
+// set the screen to normal brightness or dimmed brightness
+int oledSetDim(int bDim)
+{
+	int 	status;
+	int 	contrast;
+	
+	// set the contrast based on the dimness setting
+	if (bDim == 1) {
+		// dim 
+		contrast 	= OLED_EXP_CONTRAST_MIN;
+		onionPrint(ONION_SEVERITY_DEBUG, "> Dimming display\n");
+	}
+	else if (bDim == 0) {
+		// normal
+		contrast	= OLED_EXP_DEF_CONTRAST_SWITCH_CAP_VCC;
+		if (_vccState == OLED_EXP_EXTERNAL_VCC) {
+			contrast 	= OLED_EXP_DEF_CONTRAST_EXTERNAL_VCC;
+		}
+		onionPrint(ONION_SEVERITY_DEBUG, "> Setting normal display brightness\n");
+	}
+
+	// send the command
+	status 	=  oledSetContrast(contrast);
+
+	return status;
+}
 
 // set the OLED's cursor
 int oledSetCursor(int row, int column)
@@ -186,33 +228,6 @@ int oledSetCursor(int row, int column)
     status	|= _oledSendCommand(OLED_EXP_SET_HIGH_COLUMN + ((8 * column >> 4) & 0x0F) );
 
     return status;
-}
-
-// Clear the OLED screen
-int oledClear()
-{
-	int 	status;
-	int 	charRow, pixelCol;
-
-	onionPrint(ONION_SEVERITY_DEBUG, "> Clearing display\n");
-	// display off
-	status 	= _oledSendCommand(OLED_EXP_DISPLAY_OFF);
-
-	// write a blank space to each character
-	for (charRow = 0; charRow < OLED_EXP_CHAR_ROWS; charRow++) {
-		oledSetCursor(charRow, 0);
-
-		for (pixelCol = 0; pixelCol < OLED_EXP_WIDTH; pixelCol++) {
-			status 	= _oledSendData(0x00);
-		}
-	}
-
-	// display on
-	status 	|= _oledSendCommand(OLED_EXP_DISPLAY_ON);
-	// reset the cursor to (0, 0)
-	status	|= oledSetCursor(0, 0);
-
-	return status;
 }
 
 // Write a character directly to the OLED display (at the OLED cursor's current position)
@@ -262,6 +277,7 @@ int oledWrite (char *msg)
 	return status;
 }
 
+//// buffer functions ////
 // Write display buffer to OLED
 int oledDisplay ()
 {
