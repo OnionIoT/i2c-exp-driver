@@ -8,22 +8,30 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, "Usage: oled-exp -i\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
 	onionPrint(ONION_SEVERITY_FATAL, "FUNCTIONALITY:\n");
-	onionPrint(ONION_SEVERITY_FATAL, "\tJust initialize the OLED Display\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  Initialize the OLED Display\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n\n");
-	onionPrint(ONION_SEVERITY_FATAL, "Usage: oled-exp [-qvi] COMMAND PARAMETER\n");
+
+	onionPrint(ONION_SEVERITY_FATAL, "Usage: oled-exp -c\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "FUNCTIONALITY:\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  Clear the OLED Display\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n\n");
+
+	onionPrint(ONION_SEVERITY_FATAL, "Usage: oled-exp [-icqv] COMMAND PARAMETER\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
 	onionPrint(ONION_SEVERITY_FATAL, "The following COMMANDs are available:\n");
-	onionPrint(ONION_SEVERITY_FATAL, "\tpower <on|off>		Turn the display on or off\n");
-	onionPrint(ONION_SEVERITY_FATAL, "\twrite <message>	Write the input string on the display\n");
-	onionPrint(ONION_SEVERITY_FATAL, "\tdim <on|off>		Adjust the screen brightness\n");
-	onionPrint(ONION_SEVERITY_FATAL, "\tinvert <on|off>	Invert the colors on the display\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  power <on|off>                  Turn the display on or off\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  write <message>                 Write the input string on the display\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  dim <on|off>                    Adjust the screen brightness\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  invert <on|off>                 Invert the colors on the display\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  cursor \"(<row>,<column>)\"       Set the cursor to the specified row and column\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
 	onionPrint(ONION_SEVERITY_FATAL, "OPTIONS:\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -i 		initialize display\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -c 		clear the display\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -q 		quiet: no output\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -v 		verbose: lots of output\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -h 		help: show this prompt\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  -i 		initialize display\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  -c 		clear the display\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  -q 		quiet: no output\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  -v 		verbose: lots of output\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  -h 		help: show this prompt\n");
 	
 
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
@@ -32,7 +40,7 @@ void usage(const char* progName)
 int oledCommand(char *command, char *param)
 {
 	int 	status;
-	int 	val;
+	int 	val0, val1;
 
 	// perform the specified command
 	onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "command = '%s', param = '%s'\n", command, param);
@@ -44,27 +52,33 @@ int oledCommand(char *command, char *param)
 	}
 	else if (strcmp(command, "invert") == 0 ) {
 		// interpret the parameter
-		val 	= 0;	// off by default
+		val0 	= 0;	// off by default
 		if (strcmp(param, "on") == 0 ) {
-			val = 1;
+			val0 = 1;
 		}
-		oledSetDisplayMode( val );
+		oledSetDisplayMode( val0 );
 	}
 	else if (strcmp(command, "power") == 0 ) {
 		// interpret the parameter
-		val 	= 0;	// off by default
+		val0 	= 0;	// off by default
 		if (strcmp(param, "on") == 0 ) {
-			val = 1;
+			val0 = 1;
 		}
-		oledSetDisplayPower(val);
+		oledSetDisplayPower(val0);
 	}
 	else if (strcmp(command, "dim") == 0 ) {
 		// interpret the parameter
-		val 	= 0;	// off by default
+		val0 	= 0;	// off by default
 		if (strcmp(param, "on") == 0 ) {
-			val = 1;
+			val0 = 1;
 		}
-		oledSetDim(val);
+		oledSetDim(val0);
+	}
+	else if (strcmp(command, "cursor") == 0 ) {
+		// interpret the parameter
+		sscanf(param, "(%d, %d)", &val0, &val1);
+		onionPrint(ONION_SEVERITY_INFO, "> Setting cursor to (%d, %d)\n", val0, val1);
+		oledSetCursor(val0, val1);
 	}
 	else {
 		onionPrint(ONION_SEVERITY_FATAL, "> Unrecognized command '%s'\n", command );
@@ -158,6 +172,10 @@ int main(int argc, char** argv)
 
 	// check if just option command
 	if ( argc == 0 ) {
+		// check if usage needs to be printed
+		if ( init == 0 && clear == 0) {
+			usage(progname);
+		}
 		return 0;
 	}
 
