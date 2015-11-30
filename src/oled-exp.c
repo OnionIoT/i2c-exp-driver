@@ -274,7 +274,17 @@ int oledWrite (char *msg)
 
 	// write each character
 	for (idx = 0; idx < strlen(msg); idx++) {
-		status 	= oledWriteChar(msg[idx]);
+		// check for newline character
+		if (msg[idx] == '\\' && msg[idx+1] == 'n' && msg[idx-1] != '\\' ) {
+			// move the cursor to the next row
+			// to do: implement this
+
+			// increment past this newline
+			idx 	+= 2;
+		}
+		else {
+			status 	= oledWriteChar(msg[idx]);
+		}
 	}
 
 	return status;
