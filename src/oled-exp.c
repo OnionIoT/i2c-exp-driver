@@ -123,7 +123,7 @@ int oledSetDisplayPower(int bPowerOn)
 	int 	status;
 	uint8_t	cmd;
 
-	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display to %s\n", (bPowerOn == 1 ? "ON" : "OFF") );
+	onionPrint(ONION_SEVERITY_INFO, "> Setting display to %s\n", (bPowerOn == 1 ? "ON" : "OFF") );
 
 	// set the command code
 	if (bPowerOn == 1) {
@@ -145,7 +145,10 @@ int oledSetDisplayMode(int bInvert)
 	int 	status;
 	uint8_t	cmd;
 
-	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display mode to %s\n", (bInvert == 1 ? "inverted" : "normal") );
+	onionPrint(	(bInvert == 1 ? ONION_SEVERITY_INFO : ONION_SEVERITY_DEBUG), 
+				"> Setting display mode to %s\n", 
+				(bInvert == 1 ? "inverted" : "normal") 
+			);
 
 	// set the command code
 	if (bInvert == 0) {
@@ -194,7 +197,7 @@ int oledSetDim(int bDim)
 	if (bDim == 1) {
 		// dim 
 		contrast 	= OLED_EXP_CONTRAST_MIN;
-		onionPrint(ONION_SEVERITY_DEBUG, "> Dimming display\n");
+		onionPrint(ONION_SEVERITY_INFO, "> Dimming display\n");
 	}
 	else if (bDim == 0) {
 		// normal
@@ -202,7 +205,7 @@ int oledSetDim(int bDim)
 		if (_vccState == OLED_EXP_EXTERNAL_VCC) {
 			contrast 	= OLED_EXP_DEF_CONTRAST_EXTERNAL_VCC;
 		}
-		onionPrint(ONION_SEVERITY_DEBUG, "> Setting normal display brightness\n");
+		onionPrint(ONION_SEVERITY_INFO, "> Setting normal display brightness\n");
 	}
 
 	// send the command
