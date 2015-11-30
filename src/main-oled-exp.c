@@ -43,6 +43,7 @@ int main(int argc, char** argv)
 	int 	verbose;
 	int 	init;
 	int 	ch;
+	int 	val;
 
 
 	// set the defaults
@@ -126,6 +127,7 @@ int main(int argc, char** argv)
 	}
 
 	// perform the specified command
+	onionPrint(ONION_SEVERITY_DEBUG, "command = '%s', param = '%s'\n", command, param);
 	if (strcmp(command, "write") == 0 ) {
 		oledWrite(param);
 	}
@@ -134,6 +136,17 @@ int main(int argc, char** argv)
 	}
 	else if (strcmp(command, "invert") == 0 ) {
 		oledSetDisplayMode( atoi(param) );
+	}
+	else if (strcmp(command, "power") == 0 ) {
+		// interpret the parameter
+		val 	= 0;	// off by default
+		if (strcmp(param, "on") == 0 ) {
+			val = 1;
+		}
+		oledSetDisplayPower(val);
+	}
+	else {
+		onionPrint(ONION_SEVERITY_FATAL, "> Unrecognized command '%s'\n", command );
 	}
 
 

@@ -83,7 +83,7 @@ int oledDriverInit ()
 	usleep(4500);
 
 	// clear the display
-	status 	|= oledSetNormalDisplay();
+	status 	|= oledSetDisplayMode(0);	// set normal display
 	status	|= oledClear();
 
 
@@ -101,14 +101,37 @@ int oledSetNormalDisplay ()
 	return status;
 }
 
+// set the display to on or off
+int oledSetDisplayPower(int bPowerOn)
+{
+	int 	status;
+	uint8_t	cmd;
+
+	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display to %s\n", (bPowerOn == 1 ? "ON" : "OFF") );
+
+	// set the command code
+	if (bPowerOn == 1) {
+		cmd 	= OLED_EXP_DISPLAY_ON;
+	}
+	else if (bPowerOn == 0) {
+		cmd 	= OLED_EXP_DISPLAY_OFF;
+	}
+
+	// send the command code
+	status 	= _oledSendCommand(cmd);
+
+	return status;
+}
+
 // set the display to normal or inverted mode
 int oledSetDisplayMode(int bInvert)
 {
 	int 	status;
 	uint8_t	cmd;
 
-	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display to %s\n", (bInvert == 1 ? "inverted" : "normal") );
+	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display mode to %s\n", (bInvert == 1 ? "inverted" : "normal") );
 
+	// set the command code
 	if (bInvert == 0) {
 		cmd 	= OLED_EXP_NORMAL_DISPLAY;
 	}
@@ -116,6 +139,7 @@ int oledSetDisplayMode(int bInvert)
 		cmd 	= OLED_EXP_INVERT_DISPLAY;
 	}
 
+	// send the command code
 	status 	= _oledSendCommand(cmd);
 
 	return status;
@@ -128,11 +152,12 @@ int oledSetContrast(int contrast)
 	int 	contrastAdj;
 
 	// clamp the contrast to the lower and upper limits
+	contrastAdj 		= contrast;
 	if (contrast < OLED_EXP_CONTRAST_MIN) {
 		contrastAdj 	= OLED_EXP_CONTRAST_MIN;
 	}
 	if (contrast > OLED_EXP_CONTRAST_MAX) {
-		contrastAdj	= OLED_EXP_CONTRAST_MAX;
+		contrastAdj		= OLED_EXP_CONTRAST_MAX;
 	}
 
 	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display contrast to %d/%d\n", contrastAdj, OLED_EXP_CONTRAST_MAX);

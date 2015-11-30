@@ -187,6 +187,7 @@ int 		_oledSendData				(int data);
 
 int 		oledDriverInit 				();
 
+int 		oledSetDisplayPower			(int bPowerOn);
 int 		oledSetNormalDisplay 		();
 int 		oledSetDisplayMode			(int bInvert);
 int 		oledSetContrast 			(int contrast);
