@@ -279,8 +279,8 @@ int oledWrite (char *msg)
 			// move the cursor to the next row
 			// to do: implement this
 
-			// increment past this newline
-			idx 	+= 2;
+			// increment past this newline character (skip next index)
+			idx++;
 		}
 		else {
 			status 	= oledWriteChar(msg[idx]);
