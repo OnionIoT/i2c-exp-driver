@@ -20,6 +20,9 @@
 #define OLED_EXP_CHAR_COLUMNS			22
 #define OLED_EXP_CHAR_ROWS				8
 
+#define OLED_EXP_CONTRAST_MIN			0
+#define OLED_EXP_CONTRAST_MAX			255
+
 // Registers
 #define OLED_EXP_REG_DATA				0x40
 #define OLED_EXP_REG_COMMAND			0x80
@@ -185,7 +188,7 @@ int 		_oledSendData				(int data);
 int 		oledDriverInit 				();
 
 int 		oledSetNormalDisplay 		();
-int 		oledInvert 					(int bInvert);
+int 		oledSetDisplayMode			(int bInvert);
 int 		oledSetContrast 			(int contrast);
 int 		oledSetDim 					(int dim);
 

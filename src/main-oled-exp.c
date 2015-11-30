@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 	}
 
 	// ensure correct number of arguments
-	if ( argc != 2) {
+	if ( argc < 1) {
 		usage(progname);
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid amount of arguments!\n");
 		return 0;
@@ -111,7 +111,9 @@ int main(int argc, char** argv)
 	strcpy(command, argv[0]);
 
 	// second arg - parameter
-	strcpy(param, argv[1]);
+	if ( argc > 1 ) {
+		strcpy(param, argv[1]);
+	}
 
 
 	//// OLED PROGRAMMING
@@ -124,8 +126,14 @@ int main(int argc, char** argv)
 	}
 
 	// perform the specified command
-	if (strcmp(command, "write") == 0) {
+	if (strcmp(command, "write") == 0 ) {
 		oledWrite(param);
+	}
+	else if (strcmp(command, "contrast") == 0 ) {
+		oledSetContrast( atoi(param) );
+	}
+	else if (strcmp(command, "invert") == 0 ) {
+		oledSetDisplayMode( atoi(param) );
 	}
 
 

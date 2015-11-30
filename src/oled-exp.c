@@ -101,6 +101,49 @@ int oledSetNormalDisplay ()
 	return status;
 }
 
+// set the display to normal or inverted mode
+int oledSetDisplayMode(int bInvert)
+{
+	int 	status;
+	uint8_t	cmd;
+
+	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display to %s\n", (bInvert == 1 ? "inverted" : "normal") );
+
+	if (bInvert == 0) {
+		cmd 	= OLED_EXP_NORMAL_DISPLAY;
+	}
+	else if (bInvert == 1) {
+		cmd 	= OLED_EXP_INVERT_DISPLAY;
+	}
+
+	status 	= _oledSendCommand(cmd);
+
+	return status;
+}
+
+// set the display's contrast
+int oledSetContrast(int contrast)
+{
+	int 	status;
+	int 	contrastAdj;
+
+	// clamp the contrast to the lower and upper limits
+	if (contrast < OLED_EXP_CONTRAST_MIN) {
+		contrastAdj 	= OLED_EXP_CONTRAST_MIN;
+	}
+	if (contrast > OLED_EXP_CONTRAST_MAX) {
+		contrastAdj	= OLED_EXP_CONTRAST_MAX;
+	}
+
+	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display contrast to %d/%d\n", contrastAdj, OLED_EXP_CONTRAST_MAX);
+	status 	=  _oledSendCommand(OLED_EXP_SET_CONTRAST);
+	status 	|= _oledSendCommand(contrastAdj);
+
+	return status;
+}
+
+int oledSetDim(int dim);
+
 // set the OLED's cursor
 int oledSetCursor(int row, int column)
 {
@@ -193,12 +236,6 @@ int oledWrite (char *msg)
 
 	return status;
 }
-
-
-int oledInvert();
-
-int oledSetContrast(int contrast);
-int oledSetDim(int dim);
 
 // Write display buffer to OLED
 int oledDisplay ()
