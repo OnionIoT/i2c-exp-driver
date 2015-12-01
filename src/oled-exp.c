@@ -355,22 +355,22 @@ int oledDraw (uint8_t *buffer, int bytes)
 
 	onionPrint(ONION_SEVERITY_INFO, "> Writing buffer data to display\n");
 
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x00, _reverseByte(0x00) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x01, _reverseByte(0x01) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x02, _reverseByte(0x02) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x03, _reverseByte(0x03) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x04, _reverseByte(0x04) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x05, _reverseByte(0x05) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x06, _reverseByte(0x06) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x07, _reverseByte(0x07) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x08, _reverseByte(0x08) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x09, _reverseByte(0x09) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x0a, _reverseByte(0x0a) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x0b, _reverseByte(0x0b) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x0c, _reverseByte(0x0c) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x0d, _reverseByte(0x0d) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x0e, _reverseByte(0x0e) );
-	print("original: 0x%02x, reverse: 0x%02x\n", 0x0f, _reverseByte(0x0f) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x00, _reverseByte(0x00) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x01, _reverseByte(0x01) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x02, _reverseByte(0x02) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x03, _reverseByte(0x03) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x04, _reverseByte(0x04) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x05, _reverseByte(0x05) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x06, _reverseByte(0x06) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x07, _reverseByte(0x07) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x08, _reverseByte(0x08) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x09, _reverseByte(0x09) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x0a, _reverseByte(0x0a) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x0b, _reverseByte(0x0b) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x0c, _reverseByte(0x0c) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x0d, _reverseByte(0x0d) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x0e, _reverseByte(0x0e) );
+	printf("original: 0x%02x, reverse: 0x%02x\n", 0x0f, _reverseByte(0x0f) );
 
 	// set addressing mode to horizontal (automatic newline at the end of each line)
 	oledSetMemoryMode(OLED_EXP_MEM_HORIZONTAL_ADDR_MODE);
