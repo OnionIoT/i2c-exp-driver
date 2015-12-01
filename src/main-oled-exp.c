@@ -30,6 +30,7 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, "  cursor <row>,<column>           Set the cursor to the specified row and column\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  scroll <direction>              Enable scrolling of screen content\n");
 	onionPrint(ONION_SEVERITY_FATAL, "         available directions:    left, right, diagonal-left, diagonal-right\n");
+	onionPrint(ONION_SEVERITY_FATAL, "         to stop scrolling:       stop\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  draw <lcd file>                 Draw the contents of an lcd file to the display\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
 
