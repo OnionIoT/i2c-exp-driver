@@ -279,6 +279,8 @@ int oledWriteChar(char c)
 
 	// ensure character is in the table
 	if (charIndex >= 0 && charIndex < sizeof(asciiTable) / sizeof(asciiTable[0])) {
+		printf(">> printing char '%c', cursor in row: %d\n", c, _cursorInRow);
+
 		// check where the cursor is in the current row
 		if (_cursorInRow == OLED_EXP_CHAR_COLUMNS - 1) {
 			// last character is cut off, write two pixels of nothing to advance to new line
