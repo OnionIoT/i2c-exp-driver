@@ -53,16 +53,16 @@ int oledDriverInit ()
 	}
 
 	status 	|= _oledSendCommand(OLED_EXP_MEMORY_MODE);
-	status 	|= _oledSendCommand(0x00);
+	status 	|= _oledSendCommand(OLED_EXP_MEM_HORIZONTAL_ADDR_MODE);
 	status 	|= _oledSendCommand(OLED_EXP_SEG_REMAP | 0x01);
 	status 	|= _oledSendCommand(OLED_EXP_COM_SCAN_DEC);
 	status 	|= _oledSendCommand(OLED_EXP_SET_COM_PINS);
 	status 	|= _oledSendCommand(0x12);
 	status 	|= _oledSendCommand(OLED_EXP_SET_CONTRAST);
 	if (_vccState == OLED_EXP_EXTERNAL_VCC) {
-		status 	|= _oledSendCommand(0x9F);
+		status 	|= _oledSendCommand(OLED_EXP_DEF_CONTRAST_EXTERNAL_VCC);
 	} else {
-		status 	|= _oledSendCommand(0xCF);
+		status 	|= _oledSendCommand(OLED_EXP_DEF_CONTRAST_SWITCH_CAP_VCC);
 	}
 
 	status 	|= _oledSendCommand(OLED_EXP_SET_PRECHARGE);
@@ -214,14 +214,52 @@ int oledSetDim(int bDim)
 	return status;
 }
 
+// set the display's memory mode
+int oledSetMemoryMode(int mode)
+{
+	int 	status;
+	int 	contrast;
+	
+	// check the input
+	if 	(	mode != OLED_EXP_MEM_HORIZONTAL_ADDR_MODE &&
+			mode != OLED_EXP_MEM_VERTICAL_ADDR_MODE &&
+			mode != OLED_EXP_MEM_PAGE_ADDR_MODE
+		);
+	{
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set invalid memory mode (0x%02x)\n", mode);
+		return EXIT_FAILURE;
+	}
+
+	// send the command
+	status 	=  _oledSendCommand(OLED_EXP_MEMORY_MODE);
+	status 	=  _oledSendCommand(mode);
+
+	// store the memory mode
+	_memoryMode	= mode;
+
+	return status;
+}
+
 // set the OLED's cursor
 int oledSetCursor(int row, int column)
 {
 	int 	status;
+	int 	rowMax, colMax;
 
 	onionPrint(ONION_SEVERITY_DEBUG, "> Setting cursor to (%d, %d)\n", row, column);
 
-	// check the inputs
+	//// check the inputs
+	// define the maximum values based on the addressing mode
+	if (_memoryMode == OLED_EXP_MEM_PAGE_ADDR_MODE) {
+		rowMax 	= OLED_EXP_CHAR_ROWS;
+		colMax	= OLED_EXP_CHAR_COLUMNS;
+	}
+	else {
+		rowMax 	= OLED_EXP_HEIGHT;
+		colMax	= OLED_EXP_WIDTH;
+	}
+
+	// perform the check
 	if (row < 0 || row >= OLED_EXP_CHAR_ROWS) {
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set cursor to invalid row '%d'\n", row);
 		return EXIT_FAILURE;
@@ -231,6 +269,7 @@ int oledSetCursor(int row, int column)
 		return EXIT_FAILURE;
 	}
 
+	//// set the cursor
 	// set page address
 	status	= _oledSendCommand(OLED_EXP_ADDR_BASE_PAGE_START + row); 
 
@@ -281,6 +320,9 @@ int oledWrite (char *msg)
 	int 	idx;
 
 	onionPrint(ONION_SEVERITY_INFO, "> Writing '%s' to display\n", msg);
+
+	// set addressing mode to page
+	oledSetMemoryMode(OLED_EXP_MEM_PAGE_ADDR_MODE);
 
 	// write each character
 	for (idx = 0; idx < strlen(msg); idx++) {

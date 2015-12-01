@@ -23,8 +23,8 @@
 #define OLED_EXP_CONTRAST_MIN			0
 #define OLED_EXP_CONTRAST_MAX			255
 
-#define OLED_EXP_DEF_CONTRAST_EXTERNAL_VCC 		159
-#define OLED_EXP_DEF_CONTRAST_SWITCH_CAP_VCC 	207
+#define OLED_EXP_DEF_CONTRAST_EXTERNAL_VCC 		0x9f
+#define OLED_EXP_DEF_CONTRAST_SWITCH_CAP_VCC 	0xcf
 
 // Registers
 #define OLED_EXP_REG_DATA					0x40
@@ -52,7 +52,15 @@
 #define OLED_EXP_SET_HIGH_COLUMN 			0x10
 #define OLED_EXP_SET_START_LINE 			0x40
 #define OLED_EXP_MEMORY_MODE 				0x20
-#define OLED_EXP_COLUMN_ADDR 				0x21
+
+typedef enum e_OledExpMemoryMode {
+	OLED_EXP_MEM_HORIZONTAL_ADDR_MODE 	= 0x00,
+	OLED_EXP_MEM_VERTICAL_ADDR_MODE 	= 0x01,
+	OLED_EXP_MEM_PAGE_ADDR_MODE	 		= 0x02,
+	OLED_EXP_MEM_NUM_MODES 				= 3
+} eOledExpMemoryMode;
+
+#define OLED_EXP_COLUMN_ADDR				0x21
 #define OLED_EXP_PAGE_ADDR 					0x22
 #define OLED_EXP_COM_SCAN_INC 				0xC0
 #define OLED_EXP_COM_SCAN_DEC 				0xC8
@@ -178,11 +186,13 @@ static const uint8_t asciiTable[][OLED_EXP_CHAR_LENGTH] = {
 };
 
 // Variables
-int _vccState;
-int _buffer[OLED_EXP_WIDTH * OLED_EXP_PAGES];
-int _cursor;
+int 	_vccState;
+int 	_memoryMode;
 
-int _cursorInRow;
+int 	_buffer[OLED_EXP_WIDTH * OLED_EXP_PAGES];
+int 	_cursor;
+
+int 	_cursorInRow;
 
 // Functions
 int 		_oledSendCommand 			(int command);
@@ -197,6 +207,7 @@ int 		oledSetDisplayPower			(int bPowerOn);
 int 		oledSetDisplayMode			(int bInvert);
 int 		oledSetContrast 			(int contrast);
 int 		oledSetDim 					(int dim);
+int 		oledSetMemoryMode			(int mode);
 
 int 		oledSetCursor				(int row, int column);
 
