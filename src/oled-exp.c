@@ -244,22 +244,10 @@ int oledSetMemoryMode(int mode)
 int oledSetCursor(int row, int column)
 {
 	int 	status;
-	int 	rowMax, colMax;
 
 	onionPrint(ONION_SEVERITY_DEBUG, "> Setting cursor to (%d, %d)\n", row, column);
 
-	//// check the inputs
-	// define the maximum values based on the addressing mode
-	if (_memoryMode == OLED_EXP_MEM_PAGE_ADDR_MODE) {
-		rowMax 	= OLED_EXP_CHAR_ROWS;
-		colMax	= OLED_EXP_CHAR_COLUMNS;
-	}
-	else {
-		rowMax 	= OLED_EXP_HEIGHT;
-		colMax	= OLED_EXP_WIDTH;
-	}
-
-	// perform the check
+	// check the inputs
 	if (row < 0 || row >= OLED_EXP_CHAR_ROWS) {
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set cursor to invalid row '%d'\n", row);
 		return EXIT_FAILURE;

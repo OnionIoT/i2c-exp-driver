@@ -24,7 +24,7 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, "  write <message>                 Write the input string on the display\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  dim <on|off>                    Adjust the screen brightness\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  invert <on|off>                 Invert the colors on the display\n");
-	onionPrint(ONION_SEVERITY_FATAL, "  cursor \"(<row>,<column>)\"       Set the cursor to the specified row and column\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  cursor <row>,<column>           Set the cursor to the specified row and column\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
 	onionPrint(ONION_SEVERITY_FATAL, "OPTIONS:\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  -i 		initialize display\n");
@@ -76,7 +76,7 @@ int oledCommand(char *command, char *param)
 	}
 	else if (strcmp(command, "cursor") == 0 ) {
 		// interpret the parameter
-		sscanf(param, "(%d, %d)", &val0, &val1);
+		sscanf(param, "%d, %d", &val0, &val1);
 		onionPrint(ONION_SEVERITY_INFO, "> Setting cursor to (%d, %d)\n", val0, val1);
 		oledSetCursor(val0, val1);
 	}
