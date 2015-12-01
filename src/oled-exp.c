@@ -317,19 +317,21 @@ int oledWriteChar(char c)
 int oledWrite (char *msg)
 {
 	int 	status;
-	int 	idx;
+	int 	idx, i;
 
 	onionPrint(ONION_SEVERITY_INFO, "> Writing '%s' to display\n", msg);
 
 	// set addressing mode to page
-	oledSetMemoryMode(OLED_EXP_MEM_PAGE_ADDR_MODE);
+	//oledSetMemoryMode(OLED_EXP_MEM_PAGE_ADDR_MODE);	// want automatic newlines enabled
 
 	// write each character
 	for (idx = 0; idx < strlen(msg); idx++) {
 		// check for newline character
 		if (msg[idx] == '\\' && msg[idx+1] == 'n' && msg[idx-1] != '\\' ) {
 			// move the cursor to the next row
-			// to do: implement this
+			for(i = _cursorInRow; i < OLED_EXP_CHAR_COLUMNS - 1; i++) {
+				status 	= oledWriteChar(' ');
+			}
 
 			// increment past this newline character (skip next index)
 			idx++;
