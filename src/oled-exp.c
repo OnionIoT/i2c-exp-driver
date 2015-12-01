@@ -279,8 +279,6 @@ int oledWriteChar(char c)
 
 	// ensure character is in the table
 	if (charIndex >= 0 && charIndex < sizeof(asciiTable) / sizeof(asciiTable[0])) {
-		printf(">> printing char '%c', cursor in row: %d\n", c, _cursorInRow);
-
 		// check where the cursor is in the current row
 		if (_cursorInRow == OLED_EXP_CHAR_COLUMNS - 1) {
 			// last character is cut off, write two pixels of nothing to advance to new line
@@ -329,6 +327,25 @@ int oledWrite (char *msg)
 		else {
 			status 	= oledWriteChar(msg[idx]);
 		}
+	}
+
+	return status;
+}
+
+// Write a buffer directly to the display
+int oledDraw (uint8_t *buffer, int bytes) 
+{
+	int 	status;
+	int 	idx, i;
+
+	onionPrint(ONION_SEVERITY_INFO, "> Writing buffer data to display\n");
+
+	// set addressing mode to horizontal (automatic newline at the end of each line)
+	oledSetMemoryMode(OLED_EXP_MEM_HORIZONTAL_ADDR_MODE);
+
+	// write each byte
+	for (idx = 0; idx < bytes; idx++) {
+		status 	= _oledSendData(buffer[idx]);
 	}
 
 	return status;

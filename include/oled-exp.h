@@ -214,6 +214,7 @@ int 		oledSetCursor				(int row, int column);
 // writing to the display
 int 		oledWriteChar 				(char c);
 int 		oledWrite 					(char *msg);
+int 		oledDraw 					(uint8_t *buffer, int bytes);
 
 // writing to the buffer
 int 		oledDisplay 				();
