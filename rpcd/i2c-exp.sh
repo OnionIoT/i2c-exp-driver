@@ -120,7 +120,7 @@ RelayExpMain () {
 	
 	# print return message
 	if [ "$ret" == "" ]; then
-		echo '{"status":"success"}'
+		echo '{"status":"success", "channel":"'"$channel"'", "state":"'"$state"'"}'
 	else
 		echo '{"status":"failure", "error":"'"$ret"'"}'
 	fi
