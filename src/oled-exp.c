@@ -338,7 +338,7 @@ int oledWrite (char *msg)
 int oledDraw (uint8_t *buffer, int bytes) 
 {
 	int 	status;
-	int 	idx, i;
+	int 	idx;
 
 	onionPrint(ONION_SEVERITY_INFO, "> Writing buffer data to display\n");
 
@@ -347,6 +347,7 @@ int oledDraw (uint8_t *buffer, int bytes)
 
 	// write each byte
 	for (idx = 0; idx < bytes; idx++) {
+		onionPrint(ONION_SEVERITY_DEBUG, ">> writing byte %d 0x%02x\n", idx, buffer[idx]);
 		status 	= _oledSendData(buffer[idx]);
 	}
 
