@@ -88,20 +88,36 @@ int oledCommand(char *command, char *param)
 		status	= oledDraw(testIMG, (128*8));
 	}
 	else if (strcmp(command, "scroll") == 0 ) {
-		// interpret the parameter (direction: 0 - left; 1 - right)
+		// interpret the parameters
 		val0 		= -1;
+		val1 		= -1;
 		if (strcmp(param, "left") == 0) {
-			val0 	= 0;
+			val0 	= 0;	// horizontal scrolling
+			val1	= 0;	// scrolling left
 		}
 		else if (strcmp(param, "right") == 0) {
-			val0 	= 1;
+			val0 	= 0;	// horizontal scrolling
+			val1	= 1;	// scrolling right
+		}
+		else if (strcmp(param, "diagonal-left") == 0) {
+			val0 	= 1;	// vertical scrolling
+			val1	= 0;	// scrolling up
+		}
+		else if (strcmp(param, "diagonal-right") == 0) {
+			val0 	= 1;	// vertical scrolling
+			val1	= 1;	// scrolling down
 		}
 
 		if (val0 == -1) {
 			status 	= oledScrollStop();
 		}
-		else {
-			status 	= oledScroll(val0, 0, 16);
+		else if (val0 == 0) {
+			// horizontal scrolling
+			status 	= oledScroll(val1, OLED_EXP_SCROLL_SPEED_5_FRAMES, 0, OLED_EXP_CHAR_ROWS);
+		}
+		else if (val0 == 1) {
+			// diagonal scrolling
+			status 	= oledScrollDiagonal (val1, OLED_EXP_SCROLL_SPEED_5_FRAMES, 0, OLED_EXP_HEIGHT, 0, OLED_EXP_CHAR_ROWS);
 		}
 	}
 	else {

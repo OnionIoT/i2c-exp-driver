@@ -356,8 +356,10 @@ int oledDraw (uint8_t *buffer, int bytes)
 
 //// scrolling functions ////
 // horizontal scrolling
-//	direction: 0 - left; 1 - right
-int oledScroll (int direction, int start, int stop)
+//	direction 	scrolling
+//	0 			left
+//	1 			right
+int oledScroll (int direction, int scrollSpeed, int startPage, int stopPage)
 {
 	int 	status;
 	int 	scrollMode;
@@ -371,12 +373,49 @@ int oledScroll (int direction, int start, int stop)
 
 	// send the commands
 	status 	=  _oledSendCommand(scrollMode);
-	status 	|= _oledSendCommand(0x00);
-	status 	|= _oledSendCommand(start);
-	status 	|= _oledSendCommand(0x00);
-	status 	|= _oledSendCommand(stop);
-	status 	|= _oledSendCommand(0x00);
-	status 	|= _oledSendCommand(0xff);
+	status 	|= _oledSendCommand(0x00);			// dummy byte
+	status 	|= _oledSendCommand(startPage);		// start page addr (0 - 7)
+	status 	|= _oledSendCommand(scrollSpeed);	// time interval between frames
+	status 	|= _oledSendCommand(stopPage);		// end page addr (must be greater than start)
+	status 	|= _oledSendCommand(0x00);			// dummy byte (must be 0x00)
+	status 	|= _oledSendCommand(0xff);			// dummy byte (must be 0xff)
+
+	status 	|= _oledSendCommand(OLED_EXP_ACTIVATE_SCROLL);
+
+    return status;
+}
+
+// diagonal scrolling
+//	direction 	scrolling
+//	0 			left
+//	1 			right
+int oledScrollDiagonal (int direction, int scrollSpeed, int fixedRows, int scrollRows, int startPage, int stopPage)
+{
+	int 	status;
+	int 	scrollMode;
+
+	if (direction == 1) {
+		scrollMode 	= OLED_EXP_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL;
+	}
+	else if (direction == 0) {
+		scrollMode 	= OLED_EXP_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL;
+	}
+
+	//// send the commands
+	// setup the vertical scrolling
+	status 	=  _oledSendCommand(OLED_EXP_SET_VERTICAL_SCROLL_AREA);
+	status 	|= _oledSendCommand(fixedRows);			// number of fixed rows
+	status 	|= _oledSendCommand(scrollRows);	// number of rows in scroll area
+
+	// setup the horizontal scrolling
+	status 	|= _oledSendCommand(scrollMode);
+	status 	|= _oledSendCommand(0x00);			// dummy byte
+	status 	|= _oledSendCommand(startPage);		// start page addr (0 - 7)
+	status 	|= _oledSendCommand(0x00);			// time interval between frames
+	status 	|= _oledSendCommand(stopPage);		// end page addr (must be greater than start)
+	status 	|= _oledSendCommand(0x00);			// dummy byte (must be 0x00)
+	status 	|= _oledSendCommand(0xff);			// dummy byte (must be 0xff)
+
 	status 	|= _oledSendCommand(OLED_EXP_ACTIVATE_SCROLL);
 
     return status;

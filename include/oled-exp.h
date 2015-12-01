@@ -78,6 +78,19 @@ typedef enum e_OledExpMemoryMode {
 #define OLED_EXP_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL 	0x29
 #define OLED_EXP_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL 	0x2A
 
+typedef enum e_OledExpScrollSpeed {
+	OLED_EXP_SCROLL_SPEED_5_FRAMES		= 0x00,
+	OLED_EXP_SCROLL_SPEED_64_FRAMES		= 0x01,
+	OLED_EXP_SCROLL_SPEED_128_FRAMES	= 0x02,
+	OLED_EXP_SCROLL_SPEED_256_FRAMES	= 0x03,
+	OLED_EXP_SCROLL_SPEED_3_FRAMES		= 0x04,
+	OLED_EXP_SCROLL_SPEED_4_FRAMES		= 0x05,
+	OLED_EXP_SCROLL_SPEED_25_FRAMES		= 0x06,
+	OLED_EXP_SCROLL_SPEED_2_FRAMES		= 0x07,
+	OLED_EXP_SCROLL_SPEED_NUM
+} eOledExpScrollSpeed;
+
+
 // Ascii Table
 static const uint8_t asciiTable[][OLED_EXP_CHAR_LENGTH] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // SPACE
@@ -217,7 +230,8 @@ int 		oledWrite 					(char *msg);
 int 		oledDraw 					(uint8_t *buffer, int bytes);
 
 // scroll the display
-int 		oledScroll 					(int direction, int start, int stop);
+int 		oledScroll 					(int bVertical, int direction, int startPage, int stopPage);
+int 		oledScrollDiagonal 			(int direction, int scrollSpeed, int fixedRows, int scrollRows, int startPage, int stopPage);
 int 		oledScrollStop 				();
 
 // writing to the buffer
