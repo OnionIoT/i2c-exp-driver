@@ -64,7 +64,7 @@ The Relay Expansion can be programmed using the `relay-exp` command in the i2c_e
 #### Set Command
 The only command is the `set` command, it allows the relays to be programmed:
 ```bash
-ubus call i2c_exp relay-exp '{"command":"set", "params":{"channel":"<CHANNEL>", "state":"RELAY STATE"}}'
+ubus call i2c_exp relay-exp '{"command":"set", "params":{"channel":"<CHANNEL>", "state":"RELAY STATE", "address":"<SWITCH STATES>"}}'
 ```
 
 The CHANNEL can be one of:
@@ -76,3 +76,27 @@ The RELAY STATE can be one of:
 * off	- relay is switched off
 * on	- relay is switched on
 
+The DIP-SWITCH STATES should reflect the dip switch settings in binary starting with switch 1, then switch 2, then switch 3. The 0 position is when the switch is close the numbers.
+
+Not required when all switches are 0.
+
+Examples: 
+* Switches 1 and 2 are 0 (close to the printed numbers), switch 3 is 1:
+  * `"address":"001"`
+* Switches 1 and 3 are 1, switch 2 is 0:
+  * `"address":"101"`
+* All switches are 1:
+  * `"address":"111"`
+
+#### Return Values
+The ubus call will return different values based on if the command was successful or not.
+
+Successful Command:
+```bash
+{"status":"success", "state":"<NEW RELAY STATE>"}
+```
+
+Unsuccessful Command:
+```bash
+{"status":"success", "error":"<INFO ON ERROR>"}
+```
