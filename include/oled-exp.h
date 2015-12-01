@@ -231,7 +231,7 @@ int 		oledDraw 					(uint8_t *buffer, int bytes);
 
 // scroll the display
 int 		oledScroll 					(int bVertical, int direction, int startPage, int stopPage);
-int 		oledScrollDiagonal 			(int direction, int scrollSpeed, int fixedRows, int scrollRows, int startPage, int stopPage);
+int 		oledScrollDiagonal 			(int direction, int scrollSpeed, int fixedRows, int scrollRows, int verticalOffset, int startPage, int stopPage);
 int 		oledScrollStop 				();
 
 // writing to the buffer

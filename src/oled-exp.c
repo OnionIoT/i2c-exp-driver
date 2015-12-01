@@ -392,7 +392,7 @@ int oledScroll (int direction, int scrollSpeed, int startPage, int stopPage)
 //	direction 	scrolling
 //	0 			left
 //	1 			right
-int oledScrollDiagonal (int direction, int scrollSpeed, int fixedRows, int scrollRows, int startPage, int stopPage)
+int oledScrollDiagonal (int direction, int scrollSpeed, int fixedRows, int scrollRows, int verticalOffset, int startPage, int stopPage)
 {
 	int 	status;
 	int 	scrollMode;
@@ -410,17 +410,16 @@ int oledScrollDiagonal (int direction, int scrollSpeed, int fixedRows, int scrol
 	//// send the commands
 	// setup the vertical scrolling
 	status 	=  _oledSendCommand(OLED_EXP_SET_VERTICAL_SCROLL_AREA);
-	status 	|= _oledSendCommand(fixedRows);			// number of fixed rows
+	status 	|= _oledSendCommand(fixedRows);		// number of fixed rows
 	status 	|= _oledSendCommand(scrollRows);	// number of rows in scroll area
 
 	// setup the horizontal scrolling
 	status 	|= _oledSendCommand(scrollMode);
 	status 	|= _oledSendCommand(0x00);			// dummy byte
 	status 	|= _oledSendCommand(startPage);		// start page addr (0 - 7)
-	status 	|= _oledSendCommand(0x00);			// time interval between frames
+	status 	|= _oledSendCommand(scrollSpeed);	// time interval between frames
 	status 	|= _oledSendCommand(stopPage);		// end page addr (must be greater than start)
-	status 	|= _oledSendCommand(0x00);			// dummy byte (must be 0x00)
-	status 	|= _oledSendCommand(0xff);			// dummy byte (must be 0xff)
+	status 	|= _oledSendCommand(verticalOffset);// number of rows to scroll by
 
 	status 	|= _oledSendCommand(OLED_EXP_ACTIVATE_SCROLL);
 
