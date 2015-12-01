@@ -113,11 +113,11 @@ int oledCommand(char *command, char *param)
 		}
 		else if (val0 == 0) {
 			// horizontal scrolling
-			status 	= oledScroll(val1, OLED_EXP_SCROLL_SPEED_5_FRAMES, 0, OLED_EXP_CHAR_ROWS);
+			status 	= oledScroll(val1, OLED_EXP_SCROLL_SPEED_5_FRAMES, 0, OLED_EXP_CHAR_ROWS-1);
 		}
 		else if (val0 == 1) {
 			// diagonal scrolling
-			status 	= oledScrollDiagonal (val1, OLED_EXP_SCROLL_SPEED_5_FRAMES, 0, OLED_EXP_HEIGHT, 0, OLED_EXP_CHAR_ROWS);
+			status 	= oledScrollDiagonal (val1, OLED_EXP_SCROLL_SPEED_5_FRAMES, 0, OLED_EXP_HEIGHT, 0, OLED_EXP_CHAR_ROWS-1);
 		}
 	}
 	else {
