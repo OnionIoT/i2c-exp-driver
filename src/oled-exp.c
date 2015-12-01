@@ -364,6 +364,9 @@ int oledScroll (int direction, int scrollSpeed, int startPage, int stopPage)
 	int 	status;
 	int 	scrollMode;
 
+	onionPrint(ONION_SEVERITY_INFO, "> Enabling horizontal scrolling to the %s\n", (direction == 1 ? "right" : "left") );
+
+	// read the direction
 	if (direction == 1) {
 		scrollMode 	= OLED_EXP_RIGHT_HORIZONTAL_SCROLL;
 	}
@@ -394,6 +397,9 @@ int oledScrollDiagonal (int direction, int scrollSpeed, int fixedRows, int scrol
 	int 	status;
 	int 	scrollMode;
 
+	onionPrint(ONION_SEVERITY_INFO, "> Enabling diagonal scrolling to the %s\n", (direction == 1 ? "right" : "left") );
+
+	// read the direction
 	if (direction == 1) {
 		scrollMode 	= OLED_EXP_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL;
 	}
@@ -424,6 +430,8 @@ int oledScrollDiagonal (int direction, int scrollSpeed, int fixedRows, int scrol
 int oledScrollStop ()
 {
 	int 	status;
+
+	onionPrint(ONION_SEVERITY_INFO, "> Disabling scrolling\n");
 
 	// send the command
 	status 	|= _oledSendCommand(OLED_EXP_DEACTIVATE_SCROLL);

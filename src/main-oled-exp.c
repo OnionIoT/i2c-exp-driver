@@ -117,7 +117,7 @@ int oledCommand(char *command, char *param)
 		}
 		else if (val0 == 1) {
 			// diagonal scrolling
-			status 	= oledScrollDiagonal (val1, OLED_EXP_SCROLL_SPEED_5_FRAMES, 0, OLED_EXP_HEIGHT, 0, OLED_EXP_CHAR_ROWS-1);
+			status 	= oledScrollDiagonal (val1, OLED_EXP_SCROLL_SPEED_5_FRAMES, 0, OLED_EXP_HEIGHT-1, 0, OLED_EXP_CHAR_ROWS-1);
 		}
 	}
 	else {
