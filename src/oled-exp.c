@@ -453,6 +453,36 @@ int oledScrollStop ()
     return status;
 }
 
+
+//// reading lcd files ////
+// read a file with comma-separated hex data 
+int oledReadLcdFile(char* file, uint8_t *buffer)
+{
+	int 	idx;
+	FILE 	*fp;
+	unsigned int	val;
+
+	// open the file
+	fp = fopen(file, "r");
+	if (fp == NULL) {
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: cannot open file '%s'\n", file);
+		return EXIT_FAILURE;
+	}
+
+	// read each byte, add to the buffer
+	idx 	= 0;
+	while ( fscanf(fp, "0x%02x,", &val) > 0 ) {
+		buffer[idx]	= (uint8_t)val;
+		idx++;
+	}
+
+	// close the file
+	fclose(fp);
+
+	return EXIT_SUCCESS;
+}
+
+
 //// buffer functions ////
 // Write display buffer to OLED
 int oledDisplay ()

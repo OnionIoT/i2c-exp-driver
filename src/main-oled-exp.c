@@ -3,7 +3,6 @@
 // function prototypes:
 void 	Usage 				(const char* progName);
 int 	oledCommand 		(char *command, char *param);
-int 	readLcdFile			(char* file, uint8_t *buffer);
 
 // print the usage info 
 void usage(const char* progName) 
@@ -29,9 +28,11 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, "  dim <on|off>                    Adjust the screen brightness\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  invert <on|off>                 Invert the colors on the display\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  cursor <row>,<column>           Set the cursor to the specified row and column\n");
-	// add scroll
-	// add draw
+	onionPrint(ONION_SEVERITY_FATAL, "  scroll <direction>              Enable scrolling of screen content\n");
+	onionPrint(ONION_SEVERITY_FATAL, "         available directions:    left, right, diagonal-left, diagonal-right\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  draw <lcd file>                 Draw the contents of an lcd file to the display\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
+
 	onionPrint(ONION_SEVERITY_FATAL, "OPTIONS:\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  -i 		initialize display\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  -c 		clear the display\n");
@@ -91,7 +92,7 @@ int oledCommand(char *command, char *param)
 	else if (strcmp(command, "draw") == 0 ) {
 		// read the parameter file
 		buffer 	= malloc(OLED_EXP_WIDTH*OLED_EXP_HEIGHT/8 * sizeof *buffer);
-		status 	= readLcdFile(param, buffer);
+		status 	= oledReadLcdFile(param, buffer);
 		if (status == EXIT_SUCCESS) {
 			status	= oledDraw(buffer, OLED_EXP_WIDTH*OLED_EXP_HEIGHT/8);
 		}
@@ -145,34 +146,6 @@ int oledCommand(char *command, char *param)
 
 	return status;
 }
-
-// read a file with hex data 
-int readLcdFile(char* file, uint8_t *buffer)
-{
-	int 	idx;
-	FILE 	*fp;
-	unsigned int	val;
-
-	// open the file
-	fp = fopen(file, "r");
-	if (fp == NULL) {
-		onionPrint(ONION_SEVERITY_FATAL, "ERROR: cannot open file '%s'\n", file);
-		return EXIT_FAILURE;
-	}
-
-	// read each byte, add to the buffer
-	idx 	= 0;
-	while ( fscanf(fp, "0x%02x,", &val) > 0 ) {
-		buffer[idx]	= (uint8_t)val;
-		idx++;
-	}
-
-	// close the file
-	fclose(fp);
-
-	return EXIT_SUCCESS;
-}
-
 
 int main(int argc, char** argv)
 {

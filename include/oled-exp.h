@@ -207,7 +207,7 @@ int 	_cursor;
 
 int 	_cursorInRow;
 
-// Functions
+//// Functions
 int 		_oledSendCommand 			(int command);
 int 		_oledSendData				(int data);
 
@@ -233,6 +233,9 @@ int 		oledDraw 					(uint8_t *buffer, int bytes);
 int 		oledScroll 					(int bVertical, int direction, int startPage, int stopPage);
 int 		oledScrollDiagonal 			(int direction, int scrollSpeed, int fixedRows, int scrollRows, int verticalOffset, int startPage, int stopPage);
 int 		oledScrollStop 				();
+
+// reading lcd files
+int 		oledReadLcdFile				(char* file, uint8_t *buffer);
 
 // writing to the buffer
 int 		oledDisplay 				();
