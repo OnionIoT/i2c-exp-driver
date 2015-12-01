@@ -224,7 +224,7 @@ int oledSetMemoryMode(int mode)
 	if 	(	mode != OLED_EXP_MEM_HORIZONTAL_ADDR_MODE &&
 			mode != OLED_EXP_MEM_VERTICAL_ADDR_MODE &&
 			mode != OLED_EXP_MEM_PAGE_ADDR_MODE
-		);
+		)
 	{
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set invalid memory mode (0x%02x)\n", mode);
 		return EXIT_FAILURE;
