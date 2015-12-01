@@ -270,6 +270,8 @@ int oledSetCursor(int row, int column)
     return status;
 }
 
+
+//// writing functions ////
 // Write a character directly to the OLED display (at the OLED cursor's current position)
 int oledWriteChar(char c)
 {
@@ -349,6 +351,45 @@ int oledDraw (uint8_t *buffer, int bytes)
 	}
 
 	return status;
+}
+
+
+//// scrolling functions ////
+// horizontal scrolling
+//	direction: 0 - left; 1 - right
+int oledScroll (int direction, int start, int stop)
+{
+	int 	status;
+	int 	scrollMode;
+
+	if (direction == 1) {
+		scrollMode 	= OLED_EXP_RIGHT_HORIZONTAL_SCROLL;
+	}
+	else if (direction == 0) {
+		scrollMode 	= OLED_EXP_LEFT_HORIZONTAL_SCROLL;
+	}
+
+	// send the commands
+	status 	=  _oledSendCommand(scrollMode);
+	status 	|= _oledSendCommand(0x00);
+	status 	|= _oledSendCommand(start);
+	status 	|= _oledSendCommand(0x00);
+	status 	|= _oledSendCommand(stop);
+	status 	|= _oledSendCommand(0x00);
+	status 	|= _oledSendCommand(0xff);
+	status 	|= _oledSendCommand(OLED_EXP_ACTIVATE_SCROLL);
+
+    return status;
+}
+
+int oledScrollStop ()
+{
+	int 	status;
+
+	// send the command
+	status 	|= _oledSendCommand(OLED_EXP_DEACTIVATE_SCROLL);
+
+    return status;
 }
 
 //// buffer functions ////

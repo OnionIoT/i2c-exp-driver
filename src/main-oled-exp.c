@@ -87,6 +87,23 @@ int oledCommand(char *command, char *param)
 		// to do: implement this
 		status	= oledDraw(testIMG, (128*8));
 	}
+	else if (strcmp(command, "scroll") == 0 ) {
+		// interpret the parameter (direction: 0 - left; 1 - right)
+		val0 		= -1;
+		if (strcmp(param, "left") == 0) {
+			val0 	= 0;
+		}
+		else if (strcmp(param, "right") == 0) {
+			val0 	= 1;
+		}
+
+		if (val0 == -1) {
+			status 	= oledScrollStop();
+		}
+		else {
+			status 	= oledScroll(val0, 0, 16);
+		}
+	}
 	else {
 		onionPrint(ONION_SEVERITY_FATAL, "> Unrecognized command '%s'\n", command );
 	}

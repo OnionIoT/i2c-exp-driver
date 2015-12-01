@@ -216,6 +216,10 @@ int 		oledWriteChar 				(char c);
 int 		oledWrite 					(char *msg);
 int 		oledDraw 					(uint8_t *buffer, int bytes);
 
+// scroll the display
+int 		oledScroll 					(int direction, int start, int stop);
+int 		oledScrollStop 				();
+
 // writing to the buffer
 int 		oledDisplay 				();
 int 		oledPrintChar 				(char c);
