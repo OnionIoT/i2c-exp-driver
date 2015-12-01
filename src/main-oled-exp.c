@@ -84,8 +84,8 @@ int oledCommand(char *command, char *param)
 	}
 	else if (strcmp(command, "draw") == 0 ) {
 		// interpret the parameter
-		// to do: implement this
-		status	= oledDraw(testIMG, (128*8));
+		// to do: implement this for real
+		status	= oledDraw(testIMG, atoi(param));
 	}
 	else if (strcmp(command, "scroll") == 0 ) {
 		// interpret the parameters
