@@ -331,7 +331,7 @@ int oledWrite (char *msg)
 		// check for newline character
 		if (msg[idx] == '\\' && msg[idx+1] == 'n' && msg[idx-1] != '\\' ) {
 			// move the cursor to the next row
-			for(i = _cursorInRow; i < OLED_EXP_CHAR_COLUMNS - 1; i++) {
+			for(i = _cursorInRow; i < OLED_EXP_CHAR_COLUMNS; i++) {
 				status 	= oledWriteChar(' ');
 			}
 
