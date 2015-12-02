@@ -4,7 +4,7 @@ Project for drivers to program Omega Expansions that are I2C-based.
 ## ubus Integration
 The drivers for the I2C-based Onion Expansions have been integrated with the ubus service via RPCD. They can be accessed through the i2c_exp service.
 
-### pwm-exp ubus Commands
+## pwm-exp ubus Commands
 The Servo Expansion can be programmed using the `pwm-exp` command in the i2c_exp ubus service:
 ```bash
 ubus call i2c_exp pwm-exp '{"command":"String", "params": {"key": "value" } }'
@@ -16,19 +16,19 @@ The following commands are available:
 * set
 * set-period
 
-#### Init Command
+### Init Command
 The `init` command will reset the chip on the Servo Expansion and enable the oscillator.
 ```bash
 ubus call i2c_exp pwm-exp '{"command":"init"}'
 ```
 
-#### Sleep Command
+### Sleep Command
 The `sleep` command will put the oscillator into sleep mode, disabling all PWM signals
 ```bash
 ubus call i2c_exp pwm-exp '{"command":"sleep"}'
 ```
 
-#### Set Command
+### Set Command
 The `set` command is used to generate a PWM signal on a specific channel based on a **duty cycle percentage**:
 ```bash
 ubus call i2c_exp pwm-exp '{"command":"set", "params":{"channel":"<CHANNEL>", "duty":"<DUTY CYCLE>"} }'
@@ -51,17 +51,17 @@ Optional parameters:
   * Adds a delay in the PWM signal, can be an integer or **floating point** number between 0 and 100
   * 0% delay by default
 
-#### Set-Period Command
+### Set-Period Command
 The `set-period` command is used to generate a PWM signal on a specific channel based on a **PWM period and pulse width** (both can be integer ot floating point numbers):
 ```bash
 ubus call i2c_exp pwm-exp '{"command":"set-period", "params":{"channel":9, "pulse":"1.5", "periods":20}}'
 ```
 
 
-### relay-exp ubus Commands
+## relay-exp ubus Commands
 The Relay Expansion can be programmed using the `relay-exp` command in the i2c_exp ubus service:
 
-#### Set Command
+### Set Command
 The only command is the `set` command, it allows the relays to be programmed:
 ```bash
 ubus call i2c_exp relay-exp '{"command":"set", "params":{"channel":"<CHANNEL>", "state":"RELAY STATE", "address":"<SWITCH STATES>"}}'
@@ -88,7 +88,7 @@ Examples:
 * All switches are 1:
   * `"address":"111"`
 
-#### Return Values
+### Return Values
 The ubus call will return different values based on if the command was successful or not.
 
 Successful Command:
@@ -102,16 +102,16 @@ Unsuccessful Command:
 ```
 
 
-### oled-exp ubus Commands
+## oled-exp ubus Commands
 The OLED Expansion can be programmed using the `oled-exp` command in the i2c_exp ubus service:
 
-#### Set Command
+### Set Command
 The only command is the `set` command, it allows the relays to be programmed:
 ```bash
 ubus call i2c_exp relay-exp '{"command":"set", "option":"opt" "params":{"<COMMAND>":"<COMMAND PARAMETER>}}'
 ```
 
-##### Options
+#### Options
 Available options are
 * i
   * Initialize the display, **this must be done at powerup**
@@ -124,7 +124,7 @@ Example Usage:
 * Clear the display and then write Onion Omega to it
   * `ubus call i2c_exp oled-exp '{"command":"set", "option":"c", "params":{"write":"Onion Omega"}}'`
 
-##### Commands
+#### Commands
 The following are the commands and their parameters as accepted by the oled-exp:
 * `power <on|off>`
 * `invert <on|off>`
@@ -134,25 +134,25 @@ The following are the commands and their parameters as accepted by the oled-exp:
 * `scroll <direction>`
 * `draw <lcd file>`
 
-###### Power
+##### Power
 Turn the display on or off. Can be used to toggle the display after it has been initialized.
 ```
 "params":{"power":"<on|off>"}
 ```
 
-###### Invert
+##### Invert
 Invert black and white on the display. Setting to `on` will enable the invert, setting to `off` will disable the inversion.
 ```
 "params":{"invert":"<on|off>"}
 ```
 
-###### Dim
+##### Dim
 Enable dimming the display. Setting to `on` will dim the display, setting to `off` will restore the default brightness.
 ```
 "params":{"dim":"<on|off>"}
 ```
 
-###### Cursor
+##### Cursor
 Set the cursor position on the display. 
 
 The `row` parameter represents each character row (8 pixel rows) on the display, so the range is **0 to 7**
@@ -162,7 +162,7 @@ The `column` parameter represents each horizontal pixel, the range is **0 to 127
 "params":{"cursor":"<row>,<column>"}
 ```
 
-####### Examples
+###### Examples
 Set the cursor to the start of the last character row:
 ```
 "params":{"cursor":"7,0"}
@@ -183,7 +183,7 @@ Set the cursor to the top left (home position):
 "params":{"cursor":"0,0"}
 ```
 
-###### Write
+##### Write
 Write a string to the display. 
 For now, avoid the following characters
 * `"`
@@ -194,7 +194,7 @@ For now, avoid the following characters
 "params":{"write":"<string>"}
 ```
 
-####### Examples
+###### Examples
 Write `Onion Omega` to the display:
 ```
 "params":{"write":"Onion Omega"}
@@ -205,14 +205,14 @@ Write `Onion Corporation` and then the office address on the lines below:
 "params":{"write":"Onion Corporation", "cursor":"1,0", "write":"187 Denison St", "cursor":"2,0", "write":"Markham, ON", "cursor":"3,0", "write":"L3R-1B5"}
 ```
 
-###### Scroll
+##### Scroll
 Enable scrolling of whatever is currently on the display.
 
 ```
 "params":{"scroll":"<direction>"}
 ```
 
-####### Directions
+###### Directions
 Available directions:
 * left
 * right
@@ -221,7 +221,7 @@ Available directions:
 * stop
   * To disable scrolling
 
-###### Draw
+##### Draw
 Display an image from an LCD file on the display. 
 
 *Details on LCD file: The LCD file must be generated by the Onion utility. For a 128x64 image, there should be 1024 bytes. Each byte is one character column (8 vertical pixels), with the LSB representing the top-most pixel.*
