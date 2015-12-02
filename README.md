@@ -40,7 +40,7 @@ The CHANNEL can be:
 * all
   * control all channels at once
 
-The DUTY CYCLE can be an integer or floating point number between 0 and 100
+The DUTY CYCLE can be an integer or **floating point** number between 0 and 100
 
 Optional parameters:
 * `"frequency":"<signal frequency>"`
@@ -48,11 +48,11 @@ Optional parameters:
   * If not specified, default of 50 Hz is used
   * Frequency range is 24 Hz to 1526 Hz
 * `"delay":"<delay percentage>"`
-  * Adds a delay in the PWM signal, can be an integer or floating point number between 0 and 1000
+  * Adds a delay in the PWM signal, can be an integer or **floating point** number between 0 and 100
   * 0% delay by default
 
 #### Set-Period Command
-The `set-period` command is used to generate a PWM signal on a specific channel based on a **PWM period and pulse width**:
+The `set-period` command is used to generate a PWM signal on a specific channel based on a **PWM period and pulse width** (both can be integer ot floating point numbers):
 ```bash
 ubus call i2c_exp pwm-exp '{"command":"set-period", "params":{"channel":9, "pulse":"1.5", "periods":20}}'
 ```
