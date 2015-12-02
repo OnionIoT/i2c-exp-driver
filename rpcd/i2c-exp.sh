@@ -2,7 +2,8 @@
 
 # include the Onion sh lib
 . /usr/lib/onion/lib.sh
-
+bLogEnabled=1
+#DBG!
 
 ##### pwm-exp #####
 # function to set a pwm channel with duty cycle
@@ -86,6 +87,7 @@ PwmExpMain () {
 	fi
 }
 
+
 ##### relay-exp #####
 # main relay-exp function
 RelayExpMain () {
@@ -127,22 +129,61 @@ RelayExpMain () {
 }
 
 
+##### oled-exp #####
+# main oled-exp function
+OledExpMain () {
+	# read the command
+	json_get_var cmd "command"
+
+	# only command is 'set'	
+	if [ "$cmd" == "set" ]
+	then
+		# parse the options
+		json_get_var opts "option"
+		if [ "$opts" != "" ]; then
+			opts="-$opts"
+		fi
+		# parse the arguments object
+		json_get_keys param "params"
+		if [ "$param" != "" ]; then
+			cmds=$(_ParseArgumentsObject "nodash")
+		fi
+
+		Log "relay-exp: opts: $opts, cmds: $cmds"
+		Log "/usr/sbin/oled-exp -q $opts $cmds"
+		#ret=$(/usr/sbin/oled-exp -q $opts $cmds)
+		eval "/usr/sbin/oled-exp -q $opts $cmds"
+	else
+		ret="invalid command"
+	fi
+	
+	# print return message
+	if [ "$ret" == "" ]; then
+		cmds=$(echo $cmds | sed -e "s/\"/'/g")
+		echo '{"status":"success", "options":"'"$opts"'", "commands":"'"$cmds"'"}'
+	else
+		echo '{"status":"failure", "error":"'"$ret"'"}'
+	fi
+}
+
 
 ########################
 ##### Main Program #####
 
 cmdPwmExp="pwm-exp"
 cmdRelayExp="relay-exp"
+cmdOledExp="oled-exp"
 cmdStatus="status"
 
 jsonPwmExp='"'"$cmdPwmExp"'": { "command":"cmd", "params": {"key": "value" } }'
 jsonRelayExp='"'"$cmdRelayExp"'": { "command":"cmd", "params": {"key": "value" } }'
+jsonOledExp='"'"$cmdOledExp"'": { "command":"cmd", "option":"opt", "params": {"key": "value" } }'
 jsonStatus='"'"$cmdStatus"'": { }'
 
 
 case "$1" in
     list)
-		echo "{ $jsonPwmExp, $jsonRelayExp, $jsonStatus }"
+		echo "{ $jsonPwmExp, $jsonRelayExp, $jsonOledExp, $jsonStatus }"
     ;;
     call)
 		Log "Function: call, Method: $2"
@@ -169,6 +210,17 @@ case "$1" in
 
 				# parse the json and run the function
 				RelayExpMain
+			;;
+			$cmdOledExp)
+				# read the json arguments
+				read input;
+				Log "Json argument: $input"
+
+				# parse the json
+				json_load "$input"
+
+				# parse the json and run the function
+				OledExpMain
 			;;
 			$cmdStatus)
 				# dummy call for now
