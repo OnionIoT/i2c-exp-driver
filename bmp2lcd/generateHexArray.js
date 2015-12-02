@@ -32,7 +32,7 @@ function processImage(e) {
     var dataArray   = convertToDataArray(imageData);
 
     // convert data array into a hex string
-    var output      = generateHexArray(dataArray);
+    var output      = generateHexArray(dataArray, 1);
 
     console.log(output);
 }
@@ -197,13 +197,21 @@ function colorToBlackOrWhite(imageData, x,y)
 }
 
 // take an array and output it as a hex string
-function generateHexArray(dataArr) {
+//  outputOption
+//  0   - output file will be in following format: 0x00,0x01,0x02,0xfa,0x40,
+//  1   - output file will be in following format: 000102fa40
+function generateHexArray(dataArr, outputOption) {
     var hexArray  = "";
 
     for (var i = 0; i < dataArr.length; i++) {
-        hexArray  += "0x";
-        hexArray  += dec2hex(dataArr[i]);
-        hexArray  += ","
+        if (outputOption === 0) {
+            hexArray  += "0x";
+            hexArray  += dec2hex(dataArr[i]);
+            hexArray  += ",";
+        }
+        else if (outputOption === 1) {
+            hexArray  += dec2hex(dataArr[i]);
+        }
     }
 
     return hexArray;
