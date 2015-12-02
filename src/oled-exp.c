@@ -248,11 +248,11 @@ int oledSetCursor(int row, int column)
 	onionPrint(ONION_SEVERITY_DEBUG, "> Setting cursor to (%d, %d)\n", row, column);
 
 	// check the inputs
-	if (row < 0 || row >= OLED_EXP_CHAR_ROWS) {
+	if (row < 0 || row >= OLED_EXP_CHAR_ROWS-1) {
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set cursor to invalid row '%d'\n", row);
 		return EXIT_FAILURE;
 	}
-	if (column < 0 || column >= OLED_EXP_WIDTH-1) {
+	if (column < 0 || column >= OLED_EXP_CHAR_COLUMNS-1) {
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set cursor to invalid column '%d'\n", column);
 		return EXIT_FAILURE;
 	}
@@ -262,10 +262,10 @@ int oledSetCursor(int row, int column)
 	status	= _oledSendCommand(OLED_EXP_ADDR_BASE_PAGE_START + row); 
 
 	// set column lower address
-	status	|= _oledSendCommand(OLED_EXP_SET_LOW_COLUMN + (8 * column & 0x0F) ); 
+	status	|= _oledSendCommand(OLED_EXP_SET_LOW_COLUMN + (OLED_EXP_CHAR_LENGTH * column & 0x0F) ); 
 
 	// set column higher address
-    status	|= _oledSendCommand(OLED_EXP_SET_HIGH_COLUMN + ((8 * column >> 4) & 0x0F) );
+    status	|= _oledSendCommand(OLED_EXP_SET_HIGH_COLUMN + ((OLED_EXP_CHAR_LENGTH * column >> 4) & 0x0F) );
 
     return status;
 }
@@ -281,14 +281,16 @@ int oledWriteChar(char c)
 
 	// ensure character is in the table
 	if (charIndex >= 0 && charIndex < sizeof(asciiTable) / sizeof(asciiTable[0])) {
+		/* 	fixed by adjusting column start and end addr in oledWrite 
 		// check where the cursor is in the current row
 		if (_cursorInRow == OLED_EXP_CHAR_COLUMNS - 1) {
 			// last character is cut off, write two pixels of nothing to advance to new line
 			status 	= _oledSendData(0x00);
 			status 	= _oledSendData(0x00);
 
+			// reset the count
 			_cursorInRow 	= 0;
-		}
+		}*/
 
 		// write the data for the character
 		for (idx = 0; idx < OLED_EXP_CHAR_LENGTH; idx++) {
@@ -297,7 +299,12 @@ int oledWriteChar(char c)
 	    onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "\twriting '%c' to column %d\n", c, _cursorInRow);
 
 	    // increment row cursor
-	    _cursorInRow++;
+	    if (_cursorInRow == OLED_EXP_CHAR_COLUMNS - 1) {
+	    	_cursorInRow 	= 0;
+	    }
+	    else {
+	    	_cursorInRow++;
+	    }
 	}
 
 	return status;
@@ -313,6 +320,11 @@ int oledWrite (char *msg)
 
 	// set addressing mode to page
 	//oledSetMemoryMode(OLED_EXP_MEM_PAGE_ADDR_MODE);	// want automatic newlines enabled
+
+	// set column addressing to fit 126 characters that are 6 pixels wide
+	status 	=  _oledSendCommand(OLED_EXP_COLUMN_ADDR);
+	status 	|= _oledSendCommand(0);		// start pixel is 0
+	status 	|= _oledSendCommand(125);	// end pixel is 125
 
 	// write each character
 	for (idx = 0; idx < strlen(msg); idx++) {
@@ -330,6 +342,11 @@ int oledWrite (char *msg)
 			status 	= oledWriteChar(msg[idx]);
 		}
 	}
+
+	// reset the column addressing
+	status 	=  _oledSendCommand(OLED_EXP_COLUMN_ADDR);
+	status 	|= _oledSendCommand(0);						// start pixel is 0
+	status 	|= _oledSendCommand(OLED_EXP_WIDTH - 1);	// end pixel is 127
 
 	return status;
 }
