@@ -108,7 +108,8 @@ The OLED Expansion can be programmed using the `oled-exp` command in the i2c_exp
 #### Set Command
 The only command is the `set` command, it allows the relays to be programmed:
 ```bash
-ubus call i2c_exp relay-exp '{"command":"set", "option":"opt" "params":{"<COMMAND":"<COMMAND PARAMETER>}}'
+ubus call i2c_exp relay-exp '{"command":"set", "option":"opt" "params":{"<COMMAND>":"<COMMAND PARAMETER>}}'
+```
 
 ##### Options
 Available options are
