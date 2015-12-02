@@ -474,7 +474,7 @@ int oledReadLcdFile(char* file, uint8_t *buffer)
 
 	// read each byte, add to the buffer
 	idx 	= 0;
-	while ( fscanf(fp, "0x%02x,", &val) > 0 ) {
+	while ( fscanf(fp, OLED_EXP_READ_LCD_STRING_OPT1, &val) > 0 ) {
 		buffer[idx]	= (uint8_t)val;
 		idx++;
 	}

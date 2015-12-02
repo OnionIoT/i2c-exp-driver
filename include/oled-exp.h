@@ -91,6 +91,10 @@ typedef enum e_OledExpScrollSpeed {
 } eOledExpScrollSpeed;
 
 
+#define OLED_EXP_READ_LCD_STRING_OPT0					"0x%02x,"
+#define OLED_EXP_READ_LCD_STRING_OPT1					"%2x"
+
+
 // Ascii Table
 static const uint8_t asciiTable[][OLED_EXP_CHAR_LENGTH] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // SPACE
