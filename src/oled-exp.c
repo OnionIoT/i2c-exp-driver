@@ -248,11 +248,11 @@ int oledSetCursor(int row, int column)
 	onionPrint(ONION_SEVERITY_DEBUG, "> Setting cursor to (%d, %d)\n", row, column);
 
 	// check the inputs
-	if (row < 0 || row >= OLED_EXP_CHAR_ROWS-1) {
+	if (row < 0 || row >= OLED_EXP_CHAR_ROWS) {
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set cursor to invalid row '%d'\n", row);
 		return EXIT_FAILURE;
 	}
-	if (column < 0 || column >= OLED_EXP_CHAR_COLUMNS-1) {
+	if (column < 0 || column >= OLED_EXP_CHAR_COLUMNS) {
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set cursor to invalid column '%d'\n", column);
 		return EXIT_FAILURE;
 	}
