@@ -351,7 +351,7 @@ int oledDraw (uint8_t *buffer, int bytes)
 {
 	int 	status;
 	int 	idx;
-	int 	swap;	// removing bit flip
+	//int 	swap;	// removing bit flip
 
 	onionPrint(ONION_SEVERITY_INFO, "> Writing buffer data to display\n");
 
@@ -360,10 +360,11 @@ int oledDraw (uint8_t *buffer, int bytes)
 
 	// write each byte
 	for (idx = 0; idx < bytes; idx++) {
-		swap = _reverseByte(buffer[idx]);
+		//swap = _reverseByte(buffer[idx]);
 		onionPrint(ONION_SEVERITY_DEBUG_EXTRA, ">> writing byte %d 0x%02x\n", idx, buffer[idx] );
-		//status 	= _oledSendData(buffer[idx]);
-		status 	= _oledSendData(swap);
+		//status 	= _oledSendData(swap);
+		status 	= _oledSendData(buffer[idx]);
+
 	}
 
 	return status;
