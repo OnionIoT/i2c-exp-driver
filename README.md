@@ -185,14 +185,18 @@ Set the cursor to the top left (home position):
 
 ##### Write
 Write a string to the display. 
-For now, avoid the following characters
-* `"`
-* `'`
-* `\n`
 
 ```
 "params":{"write":"<string>"}
 ```
+
+###### Notes
+To get a newline on the display, need to write `\\\\\n` in the string
+
+For now, avoid the following characters:
+* `"`
+* `'`
+
 
 ###### Examples
 Write `Onion Omega` to the display:
