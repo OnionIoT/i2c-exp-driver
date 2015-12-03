@@ -2,8 +2,7 @@
 
 # include the Onion sh lib
 . /usr/lib/onion/lib.sh
-bLogEnabled=1
-#DBG!
+
 
 ##### pwm-exp #####
 # function to set a pwm channel with duty cycle
