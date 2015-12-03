@@ -50,6 +50,7 @@ int oledCommand(char *command, char *param)
 {
 	int 	status;
 	int 	val0, val1;
+	char 	*data;
 	uint8_t	*buffer;
 
 	// perform the specified command
@@ -91,15 +92,45 @@ int oledCommand(char *command, char *param)
 		status	= oledSetCursor(val0, val1);
 	}
 	else if (strcmp(command, "draw") == 0 ) {
-		// read the parameter file
+		// allocate memory for the buffer
 		buffer 	= malloc(OLED_EXP_WIDTH*OLED_EXP_HEIGHT/8 * sizeof *buffer);
-		status 	= oledReadLcdFile(param, buffer);
+
+		// read the parameter
+		if ( strncmp(param, OLED_EXP_READ_LCD_DATA_IDENTIFIER, strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER) ) == 0 ) {
+			onionPrint(ONION_SEVERITY_INFO, "> Reading data from argument\n");
+
+			// allocate memory for the data
+			data 	= malloc(strlen(param) * sizeof(char) );
+
+			// remove the data identifier from the string
+			strncpy(
+					data, 
+					param + strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER), 
+					strlen(param) - strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER)
+					);
+
+			// read the data into a buffer
+			//printf("Writing data of length %d:\n%s\n", strlen(data), data);
+			status 	= oledReadLcdData(data, buffer);
+
+			// deallocate memory for data
+			free(data);
+		}
+		else {
+			// read data from a file
+			onionPrint(ONION_SEVERITY_INFO, "> Reading data from file '%s'\n", param);
+			status 	= oledReadLcdFile(param, buffer);
+		}
+
 		if (status == EXIT_SUCCESS) {
 			status	= oledDraw(buffer, OLED_EXP_WIDTH*OLED_EXP_HEIGHT/8);
 		}
 		else {
 			onionPrint(ONION_SEVERITY_FATAL, "ERROR: Cannot draw invalid data\n");
 		}
+
+		// deallocate memory for the buffer
+		free(buffer);
 	}
 	else if (strcmp(command, "scroll") == 0 ) {
 		// interpret the parameters

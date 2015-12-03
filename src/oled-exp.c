@@ -474,8 +474,8 @@ int oledScrollStop ()
 }
 
 
-//// reading lcd files ////
-// read a file with comma-separated hex data 
+//// reading lcd data ////
+// read a file with hex data 
 int oledReadLcdFile(char* file, uint8_t *buffer)
 {
 	int 	idx;
@@ -498,6 +498,22 @@ int oledReadLcdFile(char* file, uint8_t *buffer)
 
 	// close the file
 	fclose(fp);
+
+	return EXIT_SUCCESS;
+}
+
+// read hex data from a string
+int oledReadLcdData(char* data, uint8_t *buffer)
+{
+	int 	idx;
+	unsigned int	val;
+
+	// read each byte, add to the buffer
+	idx 	= 0;
+	while ( sscanf(data, OLED_EXP_READ_LCD_STRING_OPT1, &val) > 0 ) {
+		buffer[idx]	= (uint8_t)val;
+		idx++;
+	}
 
 	return EXIT_SUCCESS;
 }

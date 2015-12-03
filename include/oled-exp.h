@@ -93,6 +93,7 @@ typedef enum e_OledExpScrollSpeed {
 
 #define OLED_EXP_READ_LCD_STRING_OPT0					"0x%02x,"
 #define OLED_EXP_READ_LCD_STRING_OPT1					"%2x"
+#define OLED_EXP_READ_LCD_DATA_IDENTIFIER				"data:"
 
 
 // Ascii Table
@@ -238,8 +239,9 @@ int 		oledScroll 					(int bVertical, int direction, int startPage, int stopPage
 int 		oledScrollDiagonal 			(int direction, int scrollSpeed, int fixedRows, int scrollRows, int verticalOffset, int startPage, int stopPage);
 int 		oledScrollStop 				();
 
-// reading lcd files
+// reading lcd data
 int 		oledReadLcdFile				(char* file, uint8_t *buffer);
+int 		oledReadLcdData				(char* data, uint8_t *buffer);
 
 // writing to the buffer
 int 		oledDisplay 				();
