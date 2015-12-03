@@ -508,9 +508,13 @@ int oledReadLcdData(char* data, uint8_t *buffer)
 	int 	idx;
 	unsigned int	val;
 
+	//DBG
+	onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "\n\n\ndata is of length %d, data:\n%s\n",strlen(data), data);
+
 	// read each byte, add to the buffer
 	idx 	= 0;
 	while ( sscanf(data, OLED_EXP_READ_LCD_STRING_OPT1, &val) > 0 ) {
+		onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "idx: %d, val: 0x%02x\n", idx, val);
 		buffer[idx]	= (uint8_t)val;
 		
 		// advance the buffer index
@@ -518,6 +522,13 @@ int oledReadLcdData(char* data, uint8_t *buffer)
 		// advance the string by 2 characters
 		memmove(data, data+2, strlen(data) );
 	}
+
+	//DBG
+	onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "buffer: idx is %d, buffer: \n", idx);
+	for (int i = 0; i < idx; i++) {
+		onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "idx: %d, 0x%02x\n", i, buffer[i]);
+	}
+	onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "\n");
 
 	return EXIT_SUCCESS;
 }
