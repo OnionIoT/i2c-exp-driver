@@ -54,7 +54,7 @@ int oledCommand(char *command, char *param)
 
 	// perform the specified command
 	onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "command = '%s', param = '%s'\n", command, param);
-	if (strcmp(command, "write") == 0 ) {
+	if (strcmp(command, "write") == 0 ) {	
 		status	= oledWrite(param);
 	}
 	else if (strcmp(command, "contrast") == 0 ) {
