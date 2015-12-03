@@ -106,14 +106,16 @@ int oledCommand(char *command, char *param)
 			strncpy(
 					data, 
 					param + strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER), 
-					strlen(param) - strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER)
+					strlen(param) - strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER) + 1
 					);
+			data[strlen(data)-1]	= '\0';
 
 			// read the data into a buffer
-			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "Writing data of length %d:\n%s\n", strlen(data), data);
+			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "> Writing data of length %d:\n%s\n", strlen(data), data);
 			status 	= oledReadLcdData(data, buffer);
 
 			// deallocate memory for data
+			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "> Deallocating data char array\n");
 			free(data);
 		}
 		else {
@@ -130,7 +132,10 @@ int oledCommand(char *command, char *param)
 		}
 
 		// deallocate memory for the buffer
-		free(buffer);
+		if (buffer != NULL) {
+			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "> Deallocating buffer array\n");
+			free(buffer);
+		}
 	}
 	else if (strcmp(command, "scroll") == 0 ) {
 		// interpret the parameters
