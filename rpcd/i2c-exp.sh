@@ -150,8 +150,10 @@ OledExpMain () {
 
 		Log "relay-exp: opts: $opts, cmds: $cmds"
 		Log "/usr/sbin/oled-exp -q $opts $cmds"
-		#ret=$(/usr/sbin/oled-exp -q $opts $cmds)
-		eval "/usr/sbin/oled-exp -q $opts $cmds"
+
+		# run the command
+		#	need the eval command to properly evaluate any double quotes in the $cmds variable
+		ret=$(eval "/usr/sbin/oled-exp -q $opts $cmds")
 	else
 		ret="invalid command"
 	fi
