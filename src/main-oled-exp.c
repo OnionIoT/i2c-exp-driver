@@ -110,7 +110,7 @@ int oledCommand(char *command, char *param)
 					);
 
 			// read the data into a buffer
-			//printf("Writing data of length %d:\n%s\n", strlen(data), data);
+			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "Writing data of length %d:\n%s\n", strlen(data), data);
 			status 	= oledReadLcdData(data, buffer);
 
 			// deallocate memory for data
