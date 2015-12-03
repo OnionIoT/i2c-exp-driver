@@ -505,7 +505,7 @@ int oledReadLcdFile(char* file, uint8_t *buffer)
 // read hex data from a string
 int oledReadLcdData(char* data, uint8_t *buffer)
 {
-	int 	idx;
+	int 	idx, i;
 	unsigned int	val;
 
 	//DBG
@@ -525,7 +525,7 @@ int oledReadLcdData(char* data, uint8_t *buffer)
 
 	//DBG
 	onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "buffer: idx is %d, buffer: \n", idx);
-	for (int i = 0; i < idx; i++) {
+	for (i = 0; i < idx; i++) {
 		onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "idx: %d, 0x%02x\n", i, buffer[i]);
 	}
 	onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "\n");
