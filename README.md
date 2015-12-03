@@ -134,6 +134,8 @@ The following are the commands and their parameters as accepted by the oled-exp:
 * `scroll <direction>`
 * `draw <lcd file>`
 
+Commands can be strung together!
+
 ##### Power
 Turn the display on or off. Can be used to toggle the display after it has been initialized.
 ```
@@ -187,11 +189,11 @@ Set the cursor to the top left (home position):
 Write a string to the display. 
 
 ```
-"params":{"write":"<string>"}
+"params":{"write":"<message>"}
 ```
 
 ###### Notes
-To get a newline on the display, need to write `\\\\\n` in the string
+To get a newline on the display, need to write `\\\\\n` in the message.
 
 For now, avoid the following characters:
 * `"`
@@ -206,7 +208,7 @@ Write `Onion Omega` to the display:
 
 Write `Onion Corporation` and then the office address on the lines below:
 ```
-"params":{"write":"Onion Corporation", "cursor":"1,0", "write":"187 Denison St", "cursor":"2,0", "write":"Markham, ON", "cursor":"3,0", "write":"L3R-1B5"}
+"params":{"write":"Onion Corporation\\\\\n187 Denison St\\\\\nMarkham, ON\\\\\nCanada\\\\\nL3R-1B5"}
 ```
 
 ##### Scroll
