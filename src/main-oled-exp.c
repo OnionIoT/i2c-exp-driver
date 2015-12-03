@@ -98,11 +98,13 @@ int oledCommand(char *command, char *param)
 		if ( strncmp(param, OLED_EXP_READ_LCD_DATA_IDENTIFIER, strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER) ) == 0 ) {
 			onionPrint(ONION_SEVERITY_INFO, "> Reading data from argument\n");
 
+			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "  param length is %d\n", strlen(param) );
 			// remove the data identifier from the string
 			memmove	(	param, 
 						param + strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER), 
 						strlen(param) 
 					);
+			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "  after move: param length is %d\n", strlen(param) );
 
 			// read the data into a buffer
 			status 	= oledReadLcdData(param, buffer);
