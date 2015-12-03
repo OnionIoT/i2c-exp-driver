@@ -50,7 +50,6 @@ int oledCommand(char *command, char *param)
 {
 	int 	status;
 	int 	val0, val1;
-	char 	*data;
 	uint8_t	*buffer;
 
 	// perform the specified command
@@ -99,24 +98,14 @@ int oledCommand(char *command, char *param)
 		if ( strncmp(param, OLED_EXP_READ_LCD_DATA_IDENTIFIER, strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER) ) == 0 ) {
 			onionPrint(ONION_SEVERITY_INFO, "> Reading data from argument\n");
 
-			// allocate memory for the data
-			data 	= malloc(strlen(param) * sizeof(char) );
-
 			// remove the data identifier from the string
-			strncpy(
-					data, 
-					param + strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER), 
-					strlen(param) - strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER) + 1
+			memmove	(	param, 
+						param + strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER), 
+						strlen(param) 
 					);
-			data[strlen(data)-1]	= '\0';
 
 			// read the data into a buffer
-			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "> Writing data of length %d:\n%s\n", strlen(data), data);
-			status 	= oledReadLcdData(data, buffer);
-
-			// deallocate memory for data
-			onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "> Deallocating data char array\n");
-			free(data);
+			status 	= oledReadLcdData(param, buffer);
 		}
 		else {
 			// read data from a file

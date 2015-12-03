@@ -512,7 +512,11 @@ int oledReadLcdData(char* data, uint8_t *buffer)
 	idx 	= 0;
 	while ( sscanf(data, OLED_EXP_READ_LCD_STRING_OPT1, &val) > 0 ) {
 		buffer[idx]	= (uint8_t)val;
+		
+		// advance the buffer index
 		idx++;
+		// advance the string by 2 characters
+		memmove(data, data+2, strlen(data) );
 	}
 
 	return EXIT_SUCCESS;
