@@ -33,6 +33,8 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, "         to stop scrolling:       stop\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  draw <lcd file>                 Draw the contents of an lcd file to the display\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "COMMANDs can be cascaded one after another, they will execute in order.\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
 
 	onionPrint(ONION_SEVERITY_FATAL, "OPTIONS:\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  -i 		initialize display\n");
