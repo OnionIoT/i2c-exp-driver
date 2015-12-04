@@ -29,7 +29,8 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, " -q 		quiet: no output\n");
 	onionPrint(ONION_SEVERITY_FATAL, " -v 		verbose: lots of output\n");
 	onionPrint(ONION_SEVERITY_FATAL, " -h 		help: show this prompt\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -i 		initialize the pwm chip (must be done after power-up)\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -i 		initialize the pwm chip and oscillator\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -s 		put oscillator into sleep mode, disabling all pwm signals\n");
 	onionPrint(ONION_SEVERITY_FATAL, " -f <freq>	set pwm signal frequency\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n\n");
 	onionPrint(ONION_SEVERITY_FATAL, "Usage: pwm-exp -p CHANNEL PULSE_WIDTH TOTAL_PERIOD\n");
