@@ -1,21 +1,5 @@
 #include <onion-i2c.h>
 
-// set verbosity level
-void i2c_setVerbosity(int level)
-{
-	i2cVerbosityLevel 	= level;
-}
-
-void _i2c_print (const char* msg, ...)
-{
-	va_list 	argptr;	
-
-	if (i2cVerbosityLevel > 0) {
-		va_start(argptr, msg);
-		vprintf(msg, argptr);
-		va_end(argptr);
-	}
-}
 
 // get a file handle to the device 
 int _i2c_getFd(int adapterNum, int *devHandle)

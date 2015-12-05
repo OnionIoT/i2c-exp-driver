@@ -1,10 +1,5 @@
 #include <onion-mcp23008-driver.h>
 
-// set verbosity level
-void mcp_setVerbosity(int level)
-{
-	i2c_setVerbosity(level);
-}
 
 // change the value of a single bit
 void _SetBit(int* regVal, int bitNum, int value)

@@ -159,7 +159,7 @@ Set the cursor position on the display.
 
 The `row` parameter represents each character row (8 pixel rows) on the display, so the range is **0 to 7**
 
-The `column` parameter represents each horizontal pixel, the range is **0 to 127**
+The `column` parameter represents each character column, the range is **0 to 20**
 ```
 "params":{"cursor":"<row>,<column>"}
 ```
@@ -172,7 +172,7 @@ Set the cursor to the start of the last character row:
 
 Set the cursor to the middle of the 4th character row:
 ```
-"params":{"cursor":"3,63"}
+"params":{"cursor":"3,10"}
 ```
 
 Set the cursor to the start of the 2nd character row:

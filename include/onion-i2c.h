@@ -33,13 +33,6 @@
 #endif
 
 
-//#define I2C_DEBUG
-#ifdef I2C_DEBUG
-	#define I2C_PRINT(a,...)		printf (a,##__VA_ARGS__)
-#else
-	#define I2C_PRINT(a,...)
-#endif
-
 #ifdef __cplusplus
 extern "C"{
 #endif 
@@ -60,8 +53,6 @@ int 	_i2c_setDevice10bit 	(int devHandle, int addr);
 
 
 // i2c functions
-void 	i2c_setVerbosity 		(int level);
-
 int 	i2c_writeBuffer			(int devNum, int devAddr, int addr, uint8_t *buffer, int size);
 int 	i2c_write	 			(int devNum, int devAddr, int addr, int val);
 int 	i2c_writeBytes 			(int devNum, int devAddr, int addr, int val, int numBytes);
