@@ -43,8 +43,6 @@ extern
 int 	i2cVerbosityLevel;
 
 // helper functions
-void 	_i2c_print 				(const char* msg, ...);
-
 int 	_i2c_getFd 				(int adapterNum, int *devHandle);
 int 	_i2c_releaseFd			(int devHandle);
 
