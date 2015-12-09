@@ -171,11 +171,13 @@ static PyObject* pyOledSetColumnAddressing(PyObject* self, PyObject* args)
  */
 static PyObject* pyOledWriteChar(PyObject* self, PyObject* args)
 {
-	int 	status;
-	char 	c;
+	int 		status;
+	const char 	*msg;
+	char 		c;
 
 	// parse the character to be written
-	PyArg_ParseTuple(args, "b", &c);
+	PyArg_ParseTuple(args, "s", &msg);
+	c 	= (char)msg[0];
 
 	// make the oled-exp call
 	status 	= oledWriteChar (c);
