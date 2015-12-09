@@ -5,6 +5,23 @@
 // static object variable for error:
 static PyObject *PyRelayExpError;
 
+
+/*
+ * 	Python Analogue for setting verbosity
+ */
+static PyObject* pyRelaySetVerbosity(PyObject* self, PyObject* args)
+{
+	int 	verbosity;
+
+	// parse the address
+	PyArg_ParseTuple(args, "i", &verbosity);
+
+	// make the call
+	onionSetVerbosity (verbosity);
+
+	return Py_BuildValue("i", 0);
+}
+
 /*
  * 	relayDriverInit() Python Analogue
  */
@@ -69,29 +86,32 @@ static PyObject* pyRelaySetAllChannels(PyObject* self, PyObject* args)
 	return Py_BuildValue("i", status);
 }
 
+
+////// Python Module Setup //////
 /*
  * 	Bind Python function names to the C functions
  */
 static PyMethodDef pyRelayExpMethods[] = {
-  {"relayDriverInit", 		pyRelayDriverInit, 		METH_VARARGS},
-  {"relayCheckInit", 		pyRelayCheckInit, 		METH_VARARGS},
-  {"relaySetChannel", 		pyRelaySetChannel, 		METH_VARARGS},
-  {"relaySetAllChannels", 	pyRelaySetAllChannels, 	METH_VARARGS},
-  {NULL, NULL}	/* Sentinel */
+	{"setVerbosity", 	pyRelaySetVerbosity, 	METH_VARARGS},
+	{"driverInit", 		pyRelayDriverInit, 		METH_VARARGS},
+	{"checkInit", 		pyRelayCheckInit, 		METH_VARARGS},
+	{"setChannel", 		pyRelaySetChannel, 		METH_VARARGS},
+	{"setAllChannels", 	pyRelaySetAllChannels, 	METH_VARARGS},
+	{NULL, NULL}	/* Sentinel */
 };
 
 /*
  * 	Python calls this to initialize this module
  */
-void initrelayexp()
+void initrelayExp()
 {
 	PyObject *m;
 
-    m = Py_InitModule("relayexp", pyRelayExpMethods);
+    m = Py_InitModule("relayExp", pyRelayExpMethods);
     if (m == NULL)
         return;
 
-    PyRelayExpError = PyErr_NewException("relayexp.error", NULL, NULL);
+    PyRelayExpError = PyErr_NewException("relayExp.error", NULL, NULL);
     Py_INCREF(PyRelayExpError);
     PyModule_AddObject(m, "error", PyRelayExpError);
 }
