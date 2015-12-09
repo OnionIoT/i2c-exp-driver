@@ -85,7 +85,8 @@ TARGET_PYLIB1 := $(PYLIBDIR)/$(PYLIB1).so
 LIB_PYLIB1 := -L$(LIBDIR) -loniondebug -lonioni2c -lonionmcp23008 -lonionrelayexp -lpython2.7
 
 
-all: resp $(TARGET_LIBD) $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET_LIB2) $(TARGET_LIB3) $(TARGET_LIB4) $(TARGET_APP0) $(TARGET_APP1) $(TARGET_APP2) $(TARGET_PYLIB1)
+#all: resp $(TARGET_LIBD) $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET_LIB2) $(TARGET_LIB3) $(TARGET_LIB4) $(TARGET_APP0) $(TARGET_APP1) $(TARGET_APP2) $(TARGET_PYLIB1)
+all: resp $(TARGET_LIBD) $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET_LIB2) $(TARGET_LIB3) $(TARGET_LIB4) $(TARGET_APP0) $(TARGET_APP1) $(TARGET_APP2)
 
 # libraries
 $(TARGET_LIBD): $(OBJECT_LIBD)
@@ -139,10 +140,10 @@ $(TARGET_APP2): $(OBJECT_APP2)
 	$(CC) $^ $(CFLAGS) $(LDFLAGS) -o $(TARGET_APP2) $(LIB) $(LIB_APP2)
 
 
-$(TARGET_PYLIB1): $(OBJECT_PYLIB1)
-	@echo " Compiling $@"
-	@mkdir -p $(PYLIBDIR)
-	$(CC) -shared -o $@  $^ $(LIB_PYLIB1)
+#$(TARGET_PYLIB1): $(OBJECT_PYLIB1)
+#	@echo " Compiling $@"
+#	@mkdir -p $(PYLIBDIR)
+#	$(CC) -shared -o $@  $^ $(LIB_PYLIB1)
 
 
 # generic: build any object file required
