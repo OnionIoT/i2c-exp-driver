@@ -398,6 +398,10 @@ int oledDraw (uint8_t *buffer, int bytes)
 
 	onionPrint(ONION_SEVERITY_INFO, "> Writing buffer data to display\n");
 
+	// set the column addressing for the full width
+	status 	=  oledSetColumnAddressing(0, OLED_EXP_WIDTH-1);
+	_bColumnsSetForText 	= 0;
+
 	// set addressing mode to horizontal (automatic newline at the end of each line)
 	oledSetMemoryMode(OLED_EXP_MEM_HORIZONTAL_ADDR_MODE);
 
