@@ -20,7 +20,8 @@ SOURCES := $(shell find $(SRCDIR) -maxdepth 1 -type f \( -iname "*.$(SRCEXT)" ! 
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g # -Wall
 INC := $(shell find $(INCDIR) -maxdepth 1 -type d -exec echo -I {}  \;)
-
+PYINC := "-I/usr/include/python2.7"
+INC += $(PYINC)
 
 # define specific binaries to create
 LIBD := liboniondebug
@@ -83,7 +84,7 @@ SOURCE_PYLIB1 := src/python/relay-exp-module.$(SRCEXT)
 OBJECT_PYLIB1 := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCE_PYLIB1:.$(SRCEXT)=.o))
 TARGET_PYLIB1 := $(PYLIBDIR)/$(PYLIB1).so
 LIB_PYLIB1 := -L$(LIBDIR) -loniondebug -lonioni2c -lonionmcp23008 -lonionrelayexp -lpython2.7
-INC += "-I/usr/include/python2.7"
+
 
 all: resp $(TARGET_LIBD) $(TARGET_LIB0) $(TARGET_LIB1) $(TARGET_LIB2) $(TARGET_LIB3) $(TARGET_LIB4) $(TARGET_APP0) $(TARGET_APP1) $(TARGET_APP2) $(TARGET_PYLIB1)
 
