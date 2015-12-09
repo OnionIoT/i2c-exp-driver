@@ -59,7 +59,7 @@ int oledCommand(char *command, char *param)
 	if (strcmp(command, "write") == 0 ) {	
 		status	= oledWrite(param);
 	}
-	else if (strcmp(command, "oledSetBrightness") == 0 ) {
+	else if (strcmp(command, "brightness") == 0 ) {
 		status	= oledSetBrightness( atoi(param) );
 	}
 	else if (strcmp(command, "invert") == 0 ) {
