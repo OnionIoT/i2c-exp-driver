@@ -11,13 +11,6 @@ BINDIR := bin
 LIBDIR := lib
 PYLIBDIR := lib/python
 
-# add lib directory
-#LIB := -L$(LIBDIR) $(LIB)
-
-ifeq ($(shell uname -s),Darwin)
-	# only add this when compiling on OS X
-	PYINC := "-I/usr/include/python2.7"
-endif
 
 # define common variables
 SRCEXT := c
@@ -25,6 +18,8 @@ SOURCES := $(shell find $(SRCDIR) -maxdepth 1 -type f \( -iname "*.$(SRCEXT)" ! 
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g # -Wall
 INC := $(shell find $(INCDIR) -maxdepth 1 -type d -exec echo -I {}  \;)
+
+PYINC := "-I/usr/include/python2.7"
 INC += $(PYINC)
 
 # define specific binaries to create
