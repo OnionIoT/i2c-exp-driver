@@ -19,6 +19,7 @@
 
 #define OLED_EXP_CHAR_COLUMNS			21
 #define OLED_EXP_CHAR_ROWS				8
+#define OLED_EXP_CHAR_COLUMN_PIXELS		(OLED_EXP_CHAR_COLUMNS * OLED_EXP_CHAR_LENGTH)
 
 #define OLED_EXP_CONTRAST_MIN			0
 #define OLED_EXP_CONTRAST_MAX			255
@@ -211,6 +212,7 @@ int 	_buffer[OLED_EXP_WIDTH * OLED_EXP_PAGES];
 int 	_cursor;
 
 int 	_cursorInRow;
+int 	_bColumnsSetForText;
 
 //// Functions
 int 		_oledSendCommand 			(int command);
@@ -228,6 +230,7 @@ int 		oledSetDim 					(int dim);
 int 		oledSetMemoryMode			(int mode);
 
 int 		oledSetCursor				(int row, int column);
+int 		oledSetColumnAddressing 	(int startPixel, int endPixel);
 
 // writing to the display
 int 		oledWriteChar 				(char c);

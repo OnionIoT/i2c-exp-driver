@@ -257,9 +257,13 @@ int oledSetCursor(int row, int column)
 		return EXIT_FAILURE;
 	}
 
+	//// set the column addressing for text mode
+	status 	= oledSetColumnAddressing(0, OLED_EXP_CHAR_COLUMN_PIXELS-1);
+	_bColumnsSetForText 	= 1;
+
 	//// set the cursor
 	// set page address
-	status	= _oledSendCommand(OLED_EXP_ADDR_BASE_PAGE_START + row); 
+	status	|= _oledSendCommand(OLED_EXP_ADDR_BASE_PAGE_START + row); 
 
 	// set column lower address
 	status	|= _oledSendCommand(OLED_EXP_SET_LOW_COLUMN + (OLED_EXP_CHAR_LENGTH * column & 0x0F) ); 
@@ -268,6 +272,29 @@ int oledSetCursor(int row, int column)
     status	|= _oledSendCommand(OLED_EXP_SET_HIGH_COLUMN + ((OLED_EXP_CHAR_LENGTH * column >> 4) & 0x0F) );
 
     return status;
+}
+
+// set the horizontal addressing
+int oledSetColumnAddressing (int startPixel, int endPixel)
+{
+	int status;
+
+	// check the inputs
+	if (startPixel < 0 || startPixel >= OLED_EXP_WIDTH || startPixel >= endPixel) {
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Invalid start pixel (%d) for column address setup\n", startPixel);
+		return EXIT_FAILURE;
+	}
+	if (endPixel < 0 || endPixel >= OLED_EXP_WIDTH) {
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Invalid end pixel (%d) for column address setup\n", endPixel);
+		return EXIT_FAILURE;
+	}
+
+	// set column addressing to fit 126 characters that are 6 pixels wide
+	status 	=  _oledSendCommand(OLED_EXP_COLUMN_ADDR);
+	status 	|= _oledSendCommand(startPixel);	// start pixel setup
+	status 	|= _oledSendCommand(endPixel);		// end pixel setup
+
+	return status;
 }
 
 
@@ -322,9 +349,10 @@ int oledWrite (char *msg)
 	//oledSetMemoryMode(OLED_EXP_MEM_PAGE_ADDR_MODE);	// want automatic newlines enabled
 
 	// set column addressing to fit 126 characters that are 6 pixels wide
-	status 	=  _oledSendCommand(OLED_EXP_COLUMN_ADDR);
-	status 	|= _oledSendCommand(0);		// start pixel is 0
-	status 	|= _oledSendCommand(125);	// end pixel is 125
+	if (_bColumnsSetForText == 0) {
+		status 	=  oledSetColumnAddressing(0, OLED_EXP_CHAR_COLUMN_PIXELS-1);
+		_bColumnsSetForText 	= 1;
+	}
 
 	// write each character
 	for (idx = 0; idx < strlen(msg); idx++) {
@@ -344,9 +372,8 @@ int oledWrite (char *msg)
 	}
 
 	// reset the column addressing
-	status 	=  _oledSendCommand(OLED_EXP_COLUMN_ADDR);
-	status 	|= _oledSendCommand(0);						// start pixel is 0
-	status 	|= _oledSendCommand(OLED_EXP_WIDTH - 1);	// end pixel is 127
+	status 	=  oledSetColumnAddressing(0, OLED_EXP_WIDTH-1);
+	_bColumnsSetForText 	= 0;
 
 	return status;
 }
