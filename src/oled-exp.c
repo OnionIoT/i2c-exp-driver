@@ -164,25 +164,25 @@ int oledSetDisplayMode(int bInvert)
 	return status;
 }
 
-// set the display's contrast
-int oledSetContrast(int contrast)
+// set the display's brightness
+int oledSetBrightness(int brightness)
 {
 	int 	status;
-	int 	contrastAdj;
+	int 	brightnessAdj;
 
-	// clamp the contrast to the lower and upper limits
-	contrastAdj 		= contrast;
-	if (contrast < OLED_EXP_CONTRAST_MIN) {
-		contrastAdj 	= OLED_EXP_CONTRAST_MIN;
+	// clamp the brightness to the lower and upper limits
+	brightnessAdj 		= brightness;
+	if (brightness < OLED_EXP_CONTRAST_MIN) {
+		brightnessAdj 	= OLED_EXP_CONTRAST_MIN;
 	}
-	if (contrast > OLED_EXP_CONTRAST_MAX) {
-		contrastAdj		= OLED_EXP_CONTRAST_MAX;
+	if (brightness > OLED_EXP_CONTRAST_MAX) {
+		brightnessAdj		= OLED_EXP_CONTRAST_MAX;
 	}
 
 	// send the command
-	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display contrast to %d/%d\n", contrastAdj, OLED_EXP_CONTRAST_MAX);
+	onionPrint(ONION_SEVERITY_DEBUG, "> Setting display brightness to %d/%d\n", brightnessAdj, OLED_EXP_CONTRAST_MAX);
 	status 	=  _oledSendCommand(OLED_EXP_SET_CONTRAST);
-	status 	|= _oledSendCommand(contrastAdj);
+	status 	|= _oledSendCommand(brightnessAdj);
 
 	return status;
 }
@@ -191,25 +191,25 @@ int oledSetContrast(int contrast)
 int oledSetDim(int bDim)
 {
 	int 	status;
-	int 	contrast;
+	int 	brightness;
 	
-	// set the contrast based on the dimness setting
+	// set the brightness based on the dimness setting
 	if (bDim == 1) {
 		// dim 
-		contrast 	= OLED_EXP_CONTRAST_MIN;
+		brightness 	= OLED_EXP_CONTRAST_MIN;
 		onionPrint(ONION_SEVERITY_INFO, "> Dimming display\n");
 	}
 	else if (bDim == 0) {
 		// normal
-		contrast	= OLED_EXP_DEF_CONTRAST_SWITCH_CAP_VCC;
+		brightness	= OLED_EXP_DEF_CONTRAST_SWITCH_CAP_VCC;
 		if (_vccState == OLED_EXP_EXTERNAL_VCC) {
-			contrast 	= OLED_EXP_DEF_CONTRAST_EXTERNAL_VCC;
+			brightness 	= OLED_EXP_DEF_CONTRAST_EXTERNAL_VCC;
 		}
 		onionPrint(ONION_SEVERITY_INFO, "> Setting normal display brightness\n");
 	}
 
 	// send the command
-	status 	=  oledSetContrast(contrast);
+	status 	=  oledSetBrightness(brightness);
 
 	return status;
 }
@@ -218,7 +218,6 @@ int oledSetDim(int bDim)
 int oledSetMemoryMode(int mode)
 {
 	int 	status;
-	int 	contrast;
 	
 	// check the input
 	if 	(	mode != OLED_EXP_MEM_HORIZONTAL_ADDR_MODE &&

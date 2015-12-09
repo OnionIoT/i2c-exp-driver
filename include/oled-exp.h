@@ -225,7 +225,7 @@ int 		oledClear 					();
 // configuration
 int 		oledSetDisplayPower			(int bPowerOn);
 int 		oledSetDisplayMode			(int bInvert);
-int 		oledSetContrast 			(int contrast);
+int 		oledSetBrightness 			(int brightness);
 int 		oledSetDim 					(int dim);
 int 		oledSetMemoryMode			(int mode);
 
@@ -238,7 +238,7 @@ int 		oledWrite 					(char *msg);
 int 		oledDraw 					(uint8_t *buffer, int bytes);
 
 // scroll the display
-int 		oledScroll 					(int bVertical, int direction, int startPage, int stopPage);
+int 		oledScroll 					(int direction, int scrollSpeed, int startPage, int stopPage);
 int 		oledScrollDiagonal 			(int direction, int scrollSpeed, int fixedRows, int scrollRows, int verticalOffset, int startPage, int stopPage);
 int 		oledScrollStop 				();
 
