@@ -94,6 +94,11 @@ int i2c_writeBuffer(int devNum, int devAddr, int addr, uint8_t *buffer, int size
 		status 	= _i2c_setDevice(fd, devAddr);
 	}
 
+	onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "%s writing buffer:\n", I2C_PRINT_BANNER);
+	for (index = 0; index < size; index++) {
+		onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "\tbuffer[%d]: 0x%02x\n", index, buffer[index]);
+	}
+
 	// perform the write
 	if ( status == EXIT_SUCCESS ) {
 #ifdef I2C_ENABLED
