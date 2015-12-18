@@ -97,6 +97,10 @@ int oledClear()
 	int 	charRow, pixelCol;
 
 	onionPrint(ONION_SEVERITY_DEBUG, "> Clearing display\n");
+
+	// set the column addressing for the full width
+	status 	=  oledSetImageColumns();
+
 	// display off
 	status 	= _oledSendCommand(OLED_EXP_DISPLAY_OFF);
 
@@ -256,10 +260,6 @@ int oledSetCursor(int row, int column)
 		return EXIT_FAILURE;
 	}
 
-	//// set the column addressing for text mode
-	status 	= oledSetColumnAddressing(0, OLED_EXP_CHAR_COLUMN_PIXELS-1);
-	_bColumnsSetForText 	= 1;
-
 	//// set the cursor
 	// set page address
 	status	|= _oledSendCommand(OLED_EXP_ADDR_BASE_PAGE_START + row); 
@@ -288,10 +288,34 @@ int oledSetColumnAddressing (int startPixel, int endPixel)
 		return EXIT_FAILURE;
 	}
 
-	// set column addressing to fit 126 characters that are 6 pixels wide
+	// set column addressing
 	status 	=  _oledSendCommand(OLED_EXP_COLUMN_ADDR);
 	status 	|= _oledSendCommand(startPixel);	// start pixel setup
 	status 	|= _oledSendCommand(endPixel);		// end pixel setup
+
+	return status;
+}
+
+// set the horizontal addressing for text (fit 6-pixel wide characters onto 128 pixel line)
+int oledSetTextColumns ()
+{
+	int status;
+
+	// set the column addressing for text mode
+	status 	= oledSetColumnAddressing(0, OLED_EXP_CHAR_COLUMN_PIXELS-1);
+	_bColumnsSetForText 	= 1;
+
+	return status;
+}
+
+// set the horizontal addressing for images (rows go from pixel 0 to 127, full width)
+int oledSetImageColumns ()
+{
+	int status;
+
+	// set the column addressing to full width
+	status 	= oledSetColumnAddressing(0, OLED_EXP_WIDTH-1);
+	_bColumnsSetForText 	= 0;
 
 	return status;
 }
@@ -307,16 +331,6 @@ int oledWriteChar(char c)
 
 	// ensure character is in the table
 	if (charIndex >= 0 && charIndex < sizeof(asciiTable) / sizeof(asciiTable[0])) {
-		/* 	fixed by adjusting column start and end addr in oledWrite 
-		// check where the cursor is in the current row
-		if (_cursorInRow == OLED_EXP_CHAR_COLUMNS - 1) {
-			// last character is cut off, write two pixels of nothing to advance to new line
-			status 	= _oledSendData(0x00);
-			status 	= _oledSendData(0x00);
-
-			// reset the count
-			_cursorInRow 	= 0;
-		}*/
 
 		// write the data for the character
 		for (idx = 0; idx < OLED_EXP_CHAR_LENGTH; idx++) {
@@ -349,8 +363,7 @@ int oledWrite (char *msg)
 
 	// set column addressing to fit 126 characters that are 6 pixels wide
 	if (_bColumnsSetForText == 0) {
-		status 	=  oledSetColumnAddressing(0, OLED_EXP_CHAR_COLUMN_PIXELS-1);
-		_bColumnsSetForText 	= 1;
+		status 	=  oledSetTextColumns();
 	}
 
 	// write each character
@@ -371,8 +384,7 @@ int oledWrite (char *msg)
 	}
 
 	// reset the column addressing
-	status 	=  oledSetColumnAddressing(0, OLED_EXP_WIDTH-1);
-	_bColumnsSetForText 	= 0;
+	status 	=  oledSetImageColumns();
 
 	return status;
 }
@@ -399,8 +411,7 @@ int oledDraw (uint8_t *buffer, int bytes)
 	onionPrint(ONION_SEVERITY_INFO, "> Writing buffer data to display\n");
 
 	// set the column addressing for the full width
-	status 	=  oledSetColumnAddressing(0, OLED_EXP_WIDTH-1);
-	_bColumnsSetForText 	= 0;
+	status 	=  oledSetImageColumns();
 
 	// set addressing mode to horizontal (automatic newline at the end of each line)
 	oledSetMemoryMode(OLED_EXP_MEM_HORIZONTAL_ADDR_MODE);

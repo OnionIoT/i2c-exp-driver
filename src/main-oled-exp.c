@@ -90,6 +90,7 @@ int oledCommand(char *command, char *param)
 		// interpret the parameter
 		sscanf(param, "%d, %d", &val0, &val1);
 		onionPrint(ONION_SEVERITY_INFO, "> Setting cursor to (%d, %d)\n", val0, val1);
+		status 	= oledSetTextColumns();
 		status	= oledSetCursor(val0, val1);
 	}
 	else if (strcmp(command, "draw") == 0 ) {

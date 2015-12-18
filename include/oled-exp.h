@@ -230,7 +230,10 @@ int 		oledSetDim 					(int dim);
 int 		oledSetMemoryMode			(int mode);
 
 int 		oledSetCursor				(int row, int column);
+
 int 		oledSetColumnAddressing 	(int startPixel, int endPixel);
+int 		oledSetTextColumns			();
+int 		oledSetImageColumns 		();
 
 // writing to the display
 int 		oledWriteChar 				(char c);
