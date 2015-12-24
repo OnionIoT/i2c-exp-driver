@@ -164,7 +164,7 @@ int oledCommand(char *command, char *param)
 			status 	= oledScrollDiagonal (	val1, 								// direction
 											OLED_EXP_SCROLL_SPEED_5_FRAMES, 	// scroll speed
 											0, 									// # fixed rows
-											OLED_EXP_HEIGHT-1, 					// # scrolling rows
+											OLED_EXP_HEIGHT, 					// # scrolling rows
 											1, 									// rows to scroll by
 											0, 									// horizontal start page
 											OLED_EXP_CHAR_ROWS-1				// horizontal end page	
