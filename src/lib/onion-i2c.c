@@ -105,7 +105,7 @@ int _i2c_writeBuffer(int devNum, int devAddr, uint8_t *buffer, int size)
 		// write to the i2c device
 		status = write(fd, buffer, size);
 		if (status != size) {
-			onionPrint(ONION_SEVERITY_FATAL, "%s write issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, addr, errno, strerror(errno) );
+			onionPrint(ONION_SEVERITY_FATAL, "%s write issue for register 0x%02x, errno is %d: %s\n", I2C_PRINT_BANNER, buffer[0], errno, strerror(errno) );
 			status 	= EXIT_FAILURE;
 		}
 		else {
