@@ -151,7 +151,7 @@ int main(int argc, char** argv)
 		switch (ch) {
 		case 'v':
 			// verbose output
-			verbose = ONION_VERBOSITY_VERBOSE;
+			verbose++;
 			break;
 		case 'q':
 			// quiet output
