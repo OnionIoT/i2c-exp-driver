@@ -243,6 +243,13 @@ int main(int argc, char** argv)
 	// check if initialized
 	status = relayCheckInit(devAddr, &bInitialized);
 
+	// exit the app if i2c reads fail
+	if (status == EXIT_FAILURE) {
+		onionPrint(ONION_SEVERITY_FATAL, "> ERROR: Relay Expansion not found!\n");
+		return 0;
+	}
+	
+
 	// perform initialization
 	if (init == 1 || bInitialized == 0) {
 		status 	= relayDriverInit(devAddr);

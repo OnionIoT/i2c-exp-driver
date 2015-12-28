@@ -238,6 +238,16 @@ int main(int argc, char** argv)
 
 
 	//// OLED PROGRAMMING
+	// check if OLED Expansion is present
+	status 	= oledCheckInit();
+
+	// exit the app if i2c reads fail
+	if (status == EXIT_FAILURE) {
+		onionPrint(ONION_SEVERITY_FATAL, "> ERROR: OLED Expansion not found!\n");
+		return 0;
+	}
+
+
 	// initialize display
 	if ( init == 1 ) {
 		status 	= oledDriverInit();
