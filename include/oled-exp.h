@@ -220,6 +220,7 @@ int 		_oledSendData				(int data);
 
 // initialization and clearing
 int 		oledDriverInit 				();
+int 		oledCheckInit 				();
 int 		oledClear 					();
 
 // configuration

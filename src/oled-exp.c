@@ -90,6 +90,16 @@ int oledDriverInit ()
 	return EXIT_SUCCESS;
 }
 
+// Check if i2c transmissions to the display work
+int oledCheckInit()
+{
+	int 	status, data;
+
+	status 	= i2c_readByte(OLED_EXP_DEVICE_NUM, OLED_EXP_ADDR, OLED_EXP_REG_COMMAND, &data);
+
+	return status;
+}
+
 // Clear the OLED screen
 int oledClear()
 {
