@@ -44,6 +44,11 @@ int relayCheckInit (int addr, int *bInitialized)
 	// find GPIO0 direction
 	status 	= mcp_getDirection(addr, RELAY_EXP_CHANNEL0, &dirGpio0);
 
+	// exit with failure if read fails
+	if (status != EXIT_SUCCESS) {
+		return status;
+	}
+
 	// find GPIO1 direction
 	status 	|= mcp_getDirection(addr, RELAY_EXP_CHANNEL1, &dirGpio1);
 
