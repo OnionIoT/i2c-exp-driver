@@ -6,6 +6,11 @@ void onionSetVerbosity (int verbosityLevel)
 	onionVerbosityLevel 	= verbosityLevel;
 }
 
+int onionGetVerbosity ()
+{
+	return (onionVerbosityLevel);
+}
+
 void onionPrint (int severity, const char* msg, ...)
 {
 	va_list 	argptr;	
@@ -16,4 +21,3 @@ void onionPrint (int severity, const char* msg, ...)
 		va_end(argptr);
 	}
 }
-

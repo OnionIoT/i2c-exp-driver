@@ -27,6 +27,8 @@ int 	onionVerbosityLevel;
 
 // debug functions
 void 	onionSetVerbosity		(int verbosityLevel);
+int 	onionGetVerbosity 		();
+
 void 	onionPrint 				(int severity, const char* msg, ...);
 
 #ifdef __cplusplus
