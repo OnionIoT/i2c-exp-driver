@@ -5,6 +5,9 @@
 // static object variable for error:
 static PyObject *PyOledExpError;
 
+static char *wrmsg_i2c 		= "I2C transaction failed.";
+static char *wrmsg_file 	= "Reading image file failed.";
+
 
 /*
  * 	Python Analogue for setting verbosity
@@ -13,8 +16,10 @@ static PyObject* pyOledSetVerbosity(PyObject* self, PyObject* args)
 {
 	int 	verbosity;
 
-	// parse the verbosity
-	PyArg_ParseTuple(args, "i", &verbosity);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &verbosity) ) {
+		return NULL;
+	}
 
 	// make the call
 	onionSetVerbosity (verbosity);
@@ -32,6 +37,11 @@ static PyObject* pyOledDriverInit(PyObject* self, PyObject* args)
 	// make the oled-exp call
 	status 	= oledDriverInit ();
 
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
+
 	return Py_BuildValue("i", status);
 }
 
@@ -45,6 +55,11 @@ static PyObject* pyOledClear(PyObject* self, PyObject* args)
 	// make the oled-exp call
 	status 	= oledClear ();
 
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
+
 	return Py_BuildValue("i", status); 
 }
 
@@ -57,11 +72,18 @@ static PyObject* pyOledSetDisplayPower(PyObject* self, PyObject* args)
 {
 	int 	status, bOn;
 
-	// parse the argument
-	PyArg_ParseTuple(args, "i", &bOn);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &bOn) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledSetDisplayPower (bOn);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -73,11 +95,18 @@ static PyObject* pyOledSetDisplayMode(PyObject* self, PyObject* args)
 {
 	int 	status, bInvert;
 
-	// parse the argument
-	PyArg_ParseTuple(args, "i", &bInvert);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &bInvert) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledSetDisplayMode (bInvert);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -89,11 +118,18 @@ static PyObject* pyOledSetBrightness(PyObject* self, PyObject* args)
 {
 	int 	status, brightness;
 
-	// parse the argument
-	PyArg_ParseTuple(args, "i", &brightness);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &brightness) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledSetBrightness (brightness);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -105,11 +141,18 @@ static PyObject* pyOledSetDim(PyObject* self, PyObject* args)
 {
 	int 	status, bDim;
 
-	// parse the argument
-	PyArg_ParseTuple(args, "i", &bDim);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &bDim) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledSetDim (bDim);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -121,11 +164,18 @@ static PyObject* pyOledSetMemoryMode(PyObject* self, PyObject* args)
 {
 	int 	status, mode;
 
-	// parse the argument
-	PyArg_ParseTuple(args, "i", &mode);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &mode) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledSetMemoryMode (mode);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -138,11 +188,18 @@ static PyObject* pyOledSetCursor(PyObject* self, PyObject* args)
 {
 	int 	status, row, col;
 
-	// parse the row and column
-	PyArg_ParseTuple(args, "ii", &row, &col);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "ii", &row, &col) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledSetCursor (row, col);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -154,11 +211,18 @@ static PyObject* pyOledSetCursorByPixel(PyObject* self, PyObject* args)
 {
 	int 	status, row, pixel;
 
-	// parse the row and column
-	PyArg_ParseTuple(args, "ii", &row, &pixel);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "ii", &row, &pixel) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledSetCursorByPixel (row, pixel);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -170,11 +234,18 @@ static PyObject* pyOledSetColumnAddressing(PyObject* self, PyObject* args)
 {
 	int 	status, startPixel, endPixel;
 
-	// parse the start and end
-	PyArg_ParseTuple(args, "ii", &startPixel, &endPixel);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "ii", &startPixel, &endPixel) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledSetColumnAddressing (startPixel, endPixel);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -189,6 +260,11 @@ static PyObject* pyOledSetTextColumns(PyObject* self, PyObject* args)
 	// make the oled-exp call
 	status 	= oledSetTextColumns ();
 
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
+
 	return Py_BuildValue("i", status);
 }
 
@@ -201,6 +277,11 @@ static PyObject* pyOledSetImageColumns(PyObject* self, PyObject* args)
 
 	// make the oled-exp call
 	status 	= oledSetImageColumns ();
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -217,12 +298,20 @@ static PyObject* pyOledWriteChar(PyObject* self, PyObject* args)
 	const char 	*msg;
 	char 		c;
 
-	// parse the character to be written
-	PyArg_ParseTuple(args, "s", &msg);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "s", &msg) ) {
+		return NULL;
+	}
+
 	c 	= (char)msg[0];
 
 	// make the oled-exp call
 	status 	= oledWriteChar (c);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -235,11 +324,18 @@ static PyObject* pyOledWrite(PyObject* self, PyObject* args)
 	int 		status;
 	const char 	*msg;
 
-	// parse the string to be written
-	PyArg_ParseTuple(args, "s", &msg);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "s", &msg) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledWrite ((char*)msg);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -252,11 +348,18 @@ static PyObject* pyOledWriteByte(PyObject* self, PyObject* args)
 	int 		status;
 	int 		byte;
 
-	// parse the string to be written
-	PyArg_ParseTuple(args, "i", &byte);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &byte) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledWriteByte (byte);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -271,9 +374,10 @@ static PyObject* pyOledDrawFromFile(PyObject* self, PyObject* args)
 	uint8_t		*buffer;
 	const char 	*filename;
 
-	// parse the filename argument
-	PyArg_ParseTuple(args, "s", &filename);
-
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "s", &filename) ) {
+		return NULL;
+	}
 
 	// allocate memory for the buffer
 	buffer 	= malloc(OLED_EXP_WIDTH*OLED_EXP_HEIGHT/8 * sizeof *buffer);
@@ -281,14 +385,24 @@ static PyObject* pyOledDrawFromFile(PyObject* self, PyObject* args)
 	// read LCD data from file
 	status 	= oledReadLcdFile ((char*)filename, buffer);
 
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_file);
+		return NULL;
+	}
+
 	// draw data onto screen
 	status 	= oledDraw (buffer, OLED_EXP_WIDTH*OLED_EXP_HEIGHT/8);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 
 	return Py_BuildValue("i", status);
 }
 
-// LAZAR: implement draw from buffer function
+// LAZAR: implement draw from buffer functions
 
 
 
@@ -302,11 +416,18 @@ static PyObject* pyOledScroll(PyObject* self, PyObject* args)
 	int 	status;
 	int 	direction, scrollSpeed, startPage, stopPage;
 
-	// parse the scrolling info
-	PyArg_ParseTuple(args, "iiii", &direction, &scrollSpeed, &startPage, &stopPage);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "iiii", &direction, &scrollSpeed, &startPage, &stopPage) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledScroll (direction, scrollSpeed, startPage, stopPage);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -319,11 +440,18 @@ static PyObject* pyOledScrollDiagonal(PyObject* self, PyObject* args)
 	int 	status;
 	int 	direction, scrollSpeed, fixedRows, scrollRows, verticalOffset, startPage, stopPage;
 
-	// parse the scrolling info
-	PyArg_ParseTuple(args, "iiiiiii", &direction, &scrollSpeed, &fixedRows, &scrollRows, &verticalOffset, &startPage, &stopPage);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "iiiiiii", &direction, &scrollSpeed, &fixedRows, &scrollRows, &verticalOffset, &startPage, &stopPage) ) {
+		return NULL;
+	}
 
 	// make the oled-exp call
 	status 	= oledScrollDiagonal (direction, scrollSpeed, fixedRows, scrollRows, verticalOffset, startPage, stopPage);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -337,6 +465,11 @@ static PyObject* pyOledScrollStop(PyObject* self, PyObject* args)
 
 	// make the oled-exp call
 	status 	= oledScrollStop ();
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }

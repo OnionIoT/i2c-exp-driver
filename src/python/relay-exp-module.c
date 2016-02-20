@@ -5,6 +5,8 @@
 // static object variable for error:
 static PyObject *PyRelayExpError;
 
+static char *wrmsg_i2c 		= "I2C transaction failed.";
+
 
 /*
  * 	Python Analogue for setting verbosity
@@ -13,8 +15,10 @@ static PyObject* pyRelaySetVerbosity(PyObject* self, PyObject* args)
 {
 	int 	verbosity;
 
-	// parse the address
-	PyArg_ParseTuple(args, "i", &verbosity);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &verbosity) ) {
+		return NULL;
+	}
 
 	// make the call
 	onionSetVerbosity (verbosity);
@@ -29,11 +33,18 @@ static PyObject* pyRelayDriverInit(PyObject* self, PyObject* args)
 {
 	int 	status, addr;
 
-	// parse the address
-	PyArg_ParseTuple(args, "i", &addr);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &addr) ) {
+		return NULL;
+	}
 
 	// make the relay-exp call
 	status 	= relayDriverInit (addr);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -45,11 +56,18 @@ static PyObject* pyRelayCheckInit(PyObject* self, PyObject* args)
 {
 	int 	status, addr, bInit;
 
-	// parse the address
-	PyArg_ParseTuple(args, "i", &addr);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "i", &addr) ) {
+		return NULL;
+	}
 
 	// make the relay-exp call
 	status 	= relayCheckInit (addr, &bInit);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", bInit); 
 }
@@ -61,11 +79,18 @@ static PyObject* pyRelaySetChannel(PyObject* self, PyObject* args)
 {
 	int 	status, addr, channel, state;
 
-	// parse the address, channel, and state
-	PyArg_ParseTuple(args, "iii", &addr, &channel, &state);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "iii", &addr, &channel, &state) ) {
+		return NULL;
+	}
 
 	// make the relay-exp call
 	status 	= relaySetChannel (addr, channel, state);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
@@ -77,11 +102,18 @@ static PyObject* pyRelaySetAllChannels(PyObject* self, PyObject* args)
 {
 	int 	status, addr, state;
 
-	// parse the address, channel, and state
-	PyArg_ParseTuple(args, "ii", &addr, &state);
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "ii", &addr, &state) ) {
+		return NULL;
+	}
 
 	// make the relay-exp call
 	status 	= relaySetAllChannels (addr, state);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
 
 	return Py_BuildValue("i", status);
 }
