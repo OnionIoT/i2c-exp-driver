@@ -148,6 +148,22 @@ static PyObject* pyOledSetCursor(PyObject* self, PyObject* args)
 }
 
 /*
+ * 	oledSetCursorByPixel() Python Analogue
+ */
+static PyObject* pyOledSetCursorByPixel(PyObject* self, PyObject* args)
+{
+	int 	status, row, pixel;
+
+	// parse the row and column
+	PyArg_ParseTuple(args, "ii", &row, &pixel);
+
+	// make the oled-exp call
+	status 	= oledSetCursorByPixel (row, pixel);
+
+	return Py_BuildValue("i", status);
+}
+
+/*
  * 	oledSetColumnAddressing() Python Analogue
  */
 static PyObject* pyOledSetColumnAddressing(PyObject* self, PyObject* args)
@@ -159,6 +175,32 @@ static PyObject* pyOledSetColumnAddressing(PyObject* self, PyObject* args)
 
 	// make the oled-exp call
 	status 	= oledSetColumnAddressing (startPixel, endPixel);
+
+	return Py_BuildValue("i", status);
+}
+
+/*
+ * 	oledSetTextColumns() Python Analogue
+ */
+static PyObject* pyOledSetTextColumns(PyObject* self, PyObject* args)
+{
+	int 	status, startPixel, endPixel;
+
+	// make the oled-exp call
+	status 	= oledSetTextColumns ();
+
+	return Py_BuildValue("i", status);
+}
+
+/*
+ * 	oledSetImageColumns() Python Analogue
+ */
+static PyObject* pyOledSetImageColumns(PyObject* self, PyObject* args)
+{
+	int 	status, startPixel, endPixel;
+
+	// make the oled-exp call
+	status 	= oledSetImageColumns ();
 
 	return Py_BuildValue("i", status);
 }
@@ -198,6 +240,23 @@ static PyObject* pyOledWrite(PyObject* self, PyObject* args)
 
 	// make the oled-exp call
 	status 	= oledWrite ((char*)msg);
+
+	return Py_BuildValue("i", status);
+}
+
+/*
+ * 	oledWrite() Python Analogue
+ */
+static PyObject* pyOledWriteByte(PyObject* self, PyObject* args)
+{
+	int 		status;
+	int 		byte;
+
+	// parse the string to be written
+	PyArg_ParseTuple(args, "i", &byte);
+
+	// make the oled-exp call
+	status 	= oledWriteByte (byte);
 
 	return Py_BuildValue("i", status);
 }
@@ -290,22 +349,34 @@ static PyObject* pyOledScrollStop(PyObject* self, PyObject* args)
  * 	Bind Python function names to the C functions
  */
 static PyMethodDef pyOledExpMethods[] = {
-	{"setVerbosity", 		pyOledSetVerbosity, 		METH_VARARGS},
-	{"driverInit", 			pyOledDriverInit, 			METH_VARARGS},
-	{"clear", 				pyOledClear , 				METH_VARARGS},
-	{"setDisplayPower", 	pyOledSetDisplayPower , 	METH_VARARGS},
-	{"setDisplayMode", 		pyOledSetDisplayMode , 		METH_VARARGS},
-	{"setBrightness", 		pyOledSetBrightness , 		METH_VARARGS},
-	{"setDim", 				pyOledSetDim , 				METH_VARARGS},
-	{"setMemoryMode", 		pyOledSetMemoryMode , 		METH_VARARGS},
-	{"setCursor", 			pyOledSetCursor , 			METH_VARARGS},
-	{"setColumnAddressing", pyOledSetColumnAddressing , METH_VARARGS},
-	{"writeChar", 			pyOledWriteChar , 			METH_VARARGS},
-	{"write", 				pyOledWrite , 				METH_VARARGS},
-	{"drawFromFile", 		pyOledDrawFromFile , 		METH_VARARGS},
-	{"scroll", 				pyOledScroll , 				METH_VARARGS},
-	{"scrollDiagonal", 		pyOledScrollDiagonal , 		METH_VARARGS},
-	{"scrollStop", 			pyOledScrollStop , 			METH_VARARGS},
+	{"setVerbosity", 		pyOledSetVerbosity, 			METH_VARARGS},
+	
+	{"driverInit", 			pyOledDriverInit, 				METH_VARARGS},
+	
+	{"clear", 				pyOledClear, 					METH_VARARGS},
+	{"setDisplayPower", 	pyOledSetDisplayPower, 			METH_VARARGS},
+	{"setDisplayMode", 		pyOledSetDisplayMode, 			METH_VARARGS},
+	{"setBrightness", 		pyOledSetBrightness, 			METH_VARARGS},
+	{"setDim", 				pyOledSetDim, 					METH_VARARGS},
+	{"setMemoryMode", 		pyOledSetMemoryMode, 			METH_VARARGS},
+		
+	{"setCursor", 			pyOledSetCursor, 				METH_VARARGS},
+	{"setCursorByPixel", 	pyOledSetCursorByPixel,			METH_VARARGS},
+		
+	{"setColumnAddressing", pyOledSetColumnAddressing, 		METH_VARARGS},
+	{"setImageColumns", 	pyOledSetImageColumns, 			METH_VARARGS},
+	{"setTextColumns", 		pyOledSetTextColumns, 			METH_VARARGS},
+		
+	{"writeChar", 			pyOledWriteChar, 				METH_VARARGS},
+	{"write", 				pyOledWrite, 					METH_VARARGS},
+	{"writeByte", 			pyOledWriteByte,				METH_VARARGS},
+		
+	{"drawFromFile", 		pyOledDrawFromFile, 			METH_VARARGS},
+		
+	{"scroll", 				pyOledScroll, 					METH_VARARGS},
+	{"scrollDiagonal", 		pyOledScrollDiagonal, 			METH_VARARGS},
+	{"scrollStop", 			pyOledScrollStop, 				METH_VARARGS},
+	
 	{NULL, NULL}	/* Sentinel */
 };
 

@@ -77,6 +77,45 @@ time.sleep(2)
 
 
 # clear the display
+ret 	= oledExp.clear()
+print "clear return: ", ret
+if (ret != 0):
+	exit()
+
+# set the cursor by pixel
+ret 	= oledExp.setCursorByPixel(1,64)
+print "setCursorByPixel return: ", ret
+if (ret != 0):
+	exit()
+
+# draw a few bytes 
+ret 	= oledExp.writeByte(0x0f)
+print "writeByte return: ", ret
+ret 	= oledExp.writeByte(0xf0)
+print "writeByte return: ", ret
+ret 	= oledExp.writeByte(0x0f)
+print "writeByte return: ", ret
+ret 	= oledExp.writeByte(0xf0)
+print "writeByte return: ", ret
+time.sleep(2)
+
+ret 	= oledExp.setCursorByPixel(1,127)
+print "setCursorByPixel return: ", ret
+if (ret != 0):
+	exit()
+
+# draw a few bytes 
+ret 	= oledExp.writeByte(0x0f)
+print "writeByte return: ", ret
+ret 	= oledExp.writeByte(0xf0)
+print "writeByte return: ", ret
+ret 	= oledExp.writeByte(0x0f)
+print "writeByte return: ", ret
+ret 	= oledExp.writeByte(0xf0)
+print "writeByte return: ", ret
+
+
+# clear the display
 #ret 	= oledExp.clear()
 #print "clear return: ", ret
 #if (ret != 0):
