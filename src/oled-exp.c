@@ -253,7 +253,8 @@ int oledSetMemoryMode(int mode)
 	return status;
 }
 
-// set the OLED's cursor
+
+// set the OLED's cursor (according to character rows and columns)
 int oledSetCursor(int row, int column)
 {
 	int 	status;
@@ -278,10 +279,42 @@ int oledSetCursor(int row, int column)
 	status	|= _oledSendCommand(OLED_EXP_SET_LOW_COLUMN + (OLED_EXP_CHAR_LENGTH * column & 0x0F) ); 
 
 	// set column higher address
-    status	|= _oledSendCommand(OLED_EXP_SET_HIGH_COLUMN + ((OLED_EXP_CHAR_LENGTH * column >> 4) & 0x0F) );
+	status	|= _oledSendCommand(OLED_EXP_SET_HIGH_COLUMN + ((OLED_EXP_CHAR_LENGTH * column >> 4) & 0x0F) );
 
-    return status;
+	return status;
 }
+
+// set the OLED's cursor (according to character rows and dislay pixels)
+int oledSetCursorByPixel(int row, int pixel)
+{
+	int 	status;
+
+	onionPrint(ONION_SEVERITY_DEBUG, "> Setting cursor to row %d, pixel %d)\n", row, pixel);
+
+	// check the inputs
+	if (row < 0 || row >= OLED_EXP_CHAR_ROWS) {
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set cursor to invalid row '%d'\n", row);
+		return EXIT_FAILURE;
+	}
+	if (pixel < 0 || pixel >= OLED_EXP_WIDTH) {
+		onionPrint(ONION_SEVERITY_FATAL, "ERROR: Attempting to set cursor to invalid pixel '%d'\n", pixel);
+		return EXIT_FAILURE;
+	}
+
+	//// set the cursor
+	// set page address
+	status	|= _oledSendCommand(OLED_EXP_ADDR_BASE_PAGE_START + row); 
+
+	// set pixel lower address
+	status	|= _oledSendCommand(OLED_EXP_SET_LOW_COLUMN + (pixel & 0x0F) ); 
+
+	// set pixel higher address
+	status	|= _oledSendCommand(OLED_EXP_SET_HIGH_COLUMN + ((pixel >> 4) & 0x0F) );
+
+	return status;
+}
+
+
 
 // set the horizontal addressing
 int oledSetColumnAddressing (int startPixel, int endPixel)
@@ -395,6 +428,17 @@ int oledWrite (char *msg)
 
 	// reset the column addressing
 	status 	=  oledSetImageColumns();
+
+	return status;
+}
+
+// Write a byte directly to the OLED display (at the OLED cursor's current position)
+int oledWriteByte(int byte)
+{
+	int 	status;
+	
+	// write the single byte
+	status 	= _oledSendData(byte);
 
 	return status;
 }

@@ -231,6 +231,7 @@ int 		oledSetDim 					(int dim);
 int 		oledSetMemoryMode			(int mode);
 
 int 		oledSetCursor				(int row, int column);
+int 		oledSetCursorByPixel 		(int row, int pixel);
 
 int 		oledSetColumnAddressing 	(int startPixel, int endPixel);
 int 		oledSetTextColumns			();
@@ -239,6 +240,8 @@ int 		oledSetImageColumns 		();
 // writing to the display
 int 		oledWriteChar 				(char c);
 int 		oledWrite 					(char *msg);
+int 		oledWriteByte				(int byte);
+
 int 		oledDraw 					(uint8_t *buffer, int bytes);
 
 // scroll the display

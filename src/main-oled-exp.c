@@ -25,9 +25,11 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, "The following COMMANDs are available:\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  power <on|off>                  Turn the display on or off\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  write <message>                 Write the input string on the display\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  writeByte <byte>                Write the input byte on the display\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  dim <on|off>                    Adjust the screen brightness\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  invert <on|off>                 Invert the colors on the display\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  cursor <row>,<column>           Set the cursor to the specified row and column\n");
+	onionPrint(ONION_SEVERITY_FATAL, "  cursorPixel <row>,<pixel>       Set the cursor to the specified row and pixel\n");
 	onionPrint(ONION_SEVERITY_FATAL, "  scroll <direction>              Enable scrolling of screen content\n");
 	onionPrint(ONION_SEVERITY_FATAL, "         available directions:    left, right, diagonal-left, diagonal-right\n");
 	onionPrint(ONION_SEVERITY_FATAL, "         to stop scrolling:       stop\n");
@@ -58,6 +60,17 @@ int oledCommand(char *command, char *param)
 	onionPrint(ONION_SEVERITY_DEBUG_EXTRA, "command = '%s', param = '%s'\n", command, param);
 	if (strcmp(command, "write") == 0 ) {	
 		status	= oledWrite(param);
+	}
+	if (strcmp(command, "writeByte") == 0 ) {	
+		// parse the byte
+		if (param[0] == '0' && param[1] == 'x') {
+			sscanf(param, "0x%02x", &val0);
+		}
+		else {
+			sscanf(param, "%02x", &val0);
+		}
+		
+		status	= oledWriteByte(val0);
 	}
 	else if (strcmp(command, "brightness") == 0 ) {
 		status	= oledSetBrightness( atoi(param) );
@@ -92,6 +105,13 @@ int oledCommand(char *command, char *param)
 		onionPrint(ONION_SEVERITY_INFO, "> Setting cursor to (%d, %d)\n", val0, val1);
 		status 	= oledSetTextColumns();
 		status	= oledSetCursor(val0, val1);
+	}
+	else if (strcmp(command, "cursorPixel") == 0 ) {
+		// interpret the parameter
+		sscanf(param, "%d, %d", &val0, &val1);
+		onionPrint(ONION_SEVERITY_INFO, "> Setting cursor to row: %d, pixel: %d\n", val0, val1);
+		status 	= oledSetImageColumns();
+		status	= oledSetCursorByPixel(val0, val1);
 	}
 	else if (strcmp(command, "draw") == 0 ) {
 		// allocate memory for the buffer
