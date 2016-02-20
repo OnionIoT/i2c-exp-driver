@@ -26,6 +26,8 @@
 
 #define I2C_BUFFER_SIZE		32
 
+#define I2C_DEFAULT_ADAPTER	0
+
 
 // for debugging
 #ifndef __APPLE__

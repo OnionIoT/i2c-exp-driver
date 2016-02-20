@@ -10,7 +10,7 @@
 
 // Constants
 #define OLED_EXP_ADDR 					0x3C
-#define OLED_EXP_DEVICE_NUM 			0
+#define OLED_EXP_DEVICE_NUM 			(I2C_DEFAULT_ADAPTER)
 #define OLED_EXP_WIDTH 					128
 #define OLED_EXP_HEIGHT 				64
 #define OLED_EXP_PAGES 					8

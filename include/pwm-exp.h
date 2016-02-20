@@ -11,7 +11,7 @@
 
 
 
-#define PWM_I2C_DEVICE_NUM			0
+#define PWM_I2C_DEVICE_NUM			(I2C_DEFAULT_ADAPTER)
 #define PWM_I2C_DEVICE_ADDR			0x5a
 
 

@@ -7,7 +7,7 @@
 #include <onion-i2c.h>
 
 
-#define MCP23008_I2C_DEVICE_NUM		0
+#define MCP23008_I2C_DEVICE_NUM		(I2C_DEFAULT_ADAPTER)
 #define MCP23008_I2C_DEVICE_ADDR	0x20
 
 #define MCP23008_NUM_GPIOS			8
