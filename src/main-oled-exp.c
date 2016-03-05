@@ -61,7 +61,7 @@ int oledCommand(char *command, char *param)
 	if (strcmp(command, "write") == 0 ) {	
 		status	= oledWrite(param);
 	}
-	if (strcmp(command, "writeByte") == 0 ) {	
+	else if (strcmp(command, "writeByte") == 0 ) {	
 		// parse the byte
 		if (param[0] == '0' && param[1] == 'x') {
 			sscanf(param, "0x%02x", &val0);
