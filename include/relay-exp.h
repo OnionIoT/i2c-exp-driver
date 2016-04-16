@@ -16,7 +16,7 @@ typedef enum e_RelayDriverChannels {
 	RELAY_EXP_CHANNEL0 		= 0,
 	RELAY_EXP_CHANNEL1,
 	RELAY_EXP_NUM_CHANNELS,
-} ePwmDriverAddr;
+} eRelayDriverChannels;
 
 
 int 	relayDriverInit 		(int addr);
