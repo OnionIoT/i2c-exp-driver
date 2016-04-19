@@ -18,6 +18,9 @@ typedef enum e_RelayDriverChannels {
 	RELAY_EXP_NUM_CHANNELS,
 } eRelayDriverChannels;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int 	relayDriverInit 		(int addr);
 int 	relayCheckInit 			(int addr, int *bInitialized);
@@ -25,5 +28,7 @@ int 	relayCheckInit 			(int addr, int *bInitialized);
 int 	relaySetChannel			(int addr, int channel, int state);
 int 	relaySetAllChannels		(int addr, int state);
 
-
+#ifdef __cplusplus
+}
+#endif 
 #endif // _RELAY_EXP_H_

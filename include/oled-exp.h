@@ -213,8 +213,9 @@ int 	_cursor;
 
 int 	_cursorInRow;
 int 	_bColumnsSetForText;
+
 #ifdef __cplusplus
-extern "C"{
+extern "C" {
 #endif
 
 //// Functions

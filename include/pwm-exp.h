@@ -78,6 +78,10 @@ struct pwmSetup {
 };
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // helper functions
 void 	_initPwmSetup		(struct pwmSetup *obj);
 int 	_dutyToCount 		(float duty);
@@ -104,5 +108,7 @@ int 	pwmDisableChip 		();
 int 	pwmSetFrequency		(float freq);
 int 	pwmSetupDriver		(int driverNum, float duty, float delay);
 
-
+#ifdef __cplusplus
+}
+#endif 
 #endif // _PWM_EXP_H_
