@@ -231,5 +231,4 @@ case "$1" in
     ;;
 esac
 
-# take care of the log file
-CloseLog
+
