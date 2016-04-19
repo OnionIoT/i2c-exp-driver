@@ -213,7 +213,7 @@ int 	_cursor;
 
 int 	_cursorInRow;
 int 	_bColumnsSetForText;
-#ifdef_cplusplus
+#ifdef _cplusplus
 extern "C"{
 #endif
 
