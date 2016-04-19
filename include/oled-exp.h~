@@ -213,9 +213,6 @@ int 	_cursor;
 
 int 	_cursorInRow;
 int 	_bColumnsSetForText;
-#ifdef_cplusplus
-extern "C"{
-#endif
 
 //// Functions
 int 		_oledSendCommand 			(int command);
@@ -264,8 +261,5 @@ int 		oledLineScroll 				();
 int 		oledNewLine 				();
 int 		oledPrintLine 				();
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _OLED_EXP_H_
