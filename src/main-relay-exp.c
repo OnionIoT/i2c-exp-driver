@@ -21,11 +21,12 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, "\tProgram the CHANNEL to the specified relay state\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
 	onionPrint(ONION_SEVERITY_FATAL, "OPTIONS:\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -q 		quiet: no output\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -v 		verbose: lots of output\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -h 		help: show this prompt\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -i 		initialize the relay chip\n");
-	onionPrint(ONION_SEVERITY_FATAL, " -s <bbb>	dip-switch configuration in binary, not required if 000\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -q 		  quiet: no output\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -v 		  verbose: lots of output\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -h 		  help: show this prompt\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -i 		  initialize the relay chip\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -s <bbb>	  dip-switch configuration in binary, not required if 000\n");
+	onionPrint(ONION_SEVERITY_FATAL, " -a <addr>  relay expansion I2C address (mutually exclusive from -s option)\n");
 	
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
 }
@@ -79,6 +80,27 @@ int processSwitchAddr(char* addrIn, int* addrOut)
 	return status;
 }
 
+int processAddrArgument(char* addrIn, int* addrOut)
+{
+	int 	status 	= EXIT_FAILURE;
+	int 	addr;
+
+	if (strlen(addrIn) >= 2) {
+		// parse the address
+		if (addrIn[0] == '0' && addrIn[1] == 'x') {
+			sscanf(addrIn, "0x%02x", &addr);
+		}
+		else {
+			sscanf(addrIn, "%02x", &addr);
+		}
+
+		*addrOut 	= addr;
+		status 		= EXIT_SUCCESS;
+	}
+
+	return status;
+}
+
 int readChannelArgument (char* channelArgument) 
 {
 	int channel 	= RELAY_EXP_NUM_CHANNELS;		// default value is invalid
@@ -93,14 +115,19 @@ int readChannelArgument (char* channelArgument)
 	return channel;
 }
 
-int validateArguments(int channel, int state)
+int validateArguments(int channel, int state, int bExtended)
 {
-	int status = EXIT_SUCCESS;
+	int status 			= EXIT_SUCCESS;
+	int maxNumChannels 	= RELAY_EXP_NUM_CHANNELS_DEFAULT;
 
-	if (channel < -1 || channel >= RELAY_EXP_NUM_CHANNELS) {
+	if (bExtended == 1) {
+		maxNumChannels 	= RELAY_EXP_NUM_CHANNELS_EXTENDED;
+	}
+
+	if (channel < -1 || channel >= maxNumChannels) {
 		onionPrint(ONION_SEVERITY_FATAL, "ERROR: invalid CHANNEL selection\n");
 		onionPrint(ONION_SEVERITY_FATAL, "Accepted values are:\n");
-		onionPrint(ONION_SEVERITY_FATAL, "\t0-1\n");
+		onionPrint(ONION_SEVERITY_FATAL, "\t0-%d\n", maxNumChannels-1);
 		onionPrint(ONION_SEVERITY_FATAL, "\tall\n");
 		onionPrint(ONION_SEVERITY_FATAL, "\n");
 
@@ -124,6 +151,7 @@ int main(int argc, char** argv)
 {
 	const char *progname;
 	char 	*switchAddr;
+	char 	*deviceAddr 	= NULL;
 	
 	int 	status;
 	int 	verbose;
@@ -135,10 +163,12 @@ int main(int argc, char** argv)
 
 	int 	devAddr;
 	int 	bInitialized;
+	int 	bExtended;
 
 	// set defaults
 	init 		= 0;
 	verbose 	= ONION_VERBOSITY_NORMAL;
+	bExtended 	= 0;
 
 	switchAddr 	= malloc(RELAY_EXP_ADDR_SWITCH_NUM * sizeof *switchAddr);
 	strcpy(switchAddr, RELAY_EXP_ADDR_SWITCH_DEFAULT_VAL);
@@ -147,7 +177,7 @@ int main(int argc, char** argv)
 	progname 	= argv[0];	
 
 	//// parse the option arguments
-	while ((ch = getopt(argc, argv, "vqhis:")) != -1) {
+	while ((ch = getopt(argc, argv, "vqhies:a:")) != -1) {
 		switch (ch) {
 		case 'v':
 			// verbose output
@@ -161,9 +191,18 @@ int main(int argc, char** argv)
 			// perform init sequence
 			init 	= 1;
 			break;
+		case 'e':
+			// enable the extended channels
+			bExtended 	= 1;
+			break;
 		case 's':
 			// capture binary 
 			strcpy (switchAddr, optarg);
+			break;
+		case 'a':
+			// capture the address
+			deviceAddr 	= malloc(strlen(optarg) * sizeof *deviceAddr);
+			strncpy (deviceAddr, optarg, strlen(optarg) );
 			break;
 		default:
 			usage(progname);
@@ -189,6 +228,20 @@ int main(int argc, char** argv)
 	}
 	if (strcmp(switchAddr, RELAY_EXP_ADDR_SWITCH_DEFAULT_VAL) != 0) {
 		onionPrint(ONION_SEVERITY_INFO, "> Switch configuration: %s\n", switchAddr);
+	}
+
+	// process the address argument (overrides the switch address argument)
+	if (deviceAddr != NULL) {
+		status = processAddrArgument(deviceAddr, &devAddr);
+
+		if (devAddr != RELAY_EXP_ADDR_DEFAULT) {
+			onionPrint(ONION_SEVERITY_INFO, "> Using device address: 0x%02x\n", devAddr);
+		}
+		// the mcp23008 function expect an offset from the default 0x20 address
+		devAddr -= MCP23008_I2C_DEVICE_ADDR;
+
+		// clean-up
+		free(deviceAddr);
 	}
 
 
@@ -233,7 +286,7 @@ int main(int argc, char** argv)
 	}
 
 	// validate the arguments
-	status 	= validateArguments(channel, relayState);
+	status 	= validateArguments(channel, relayState, bExtended);
 	if (status == EXIT_FAILURE) {
 		return 0;
 	}
@@ -273,6 +326,10 @@ int main(int argc, char** argv)
 			onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: relay %d setup failed!\n", channel);
 		}
 	}
+
+
+	// clean-up
+	free(switchAddr);
 
 
 	return 0;
