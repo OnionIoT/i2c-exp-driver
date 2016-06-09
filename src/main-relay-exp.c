@@ -1,5 +1,8 @@
 #include <relay-exp.h>
 
+#define 	MAIN_RELAY_EXP_COMMAND_READ		1
+#define 	MAIN_RELAY_EXP_COMMAND_WRITE	2
+
 void usage(const char* progName) 
 {
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
@@ -101,6 +104,18 @@ int processAddrArgument(char* addrIn, int* addrOut)
 	return status;
 }
 
+int checkFirstArgument (char* channelArgument, int *action) {
+	// default action is write
+	*action  = MAIN_RELAY_EXP_COMMAND_WRITE;
+
+	if (strcmp(channelArgument, "read") == 0 ) {
+		// action is read
+		*action  = MAIN_RELAY_EXP_COMMAND_READ;
+	}
+
+	return EXIT_SUCCESS;
+}
+
 int readChannelArgument (char* channelArgument) 
 {
 	int channel 	= RELAY_EXP_NUM_CHANNELS;		// default value is invalid
@@ -158,6 +173,7 @@ int main(int argc, char** argv)
 	int 	init;
 	int 	ch;
 
+	int 	programAction;
 	int 	channel;
 	int 	relayState;
 
@@ -263,32 +279,41 @@ int main(int argc, char** argv)
 
 
 	//// parse the arguments
-	// first arg - channel
-	channel 	= readChannelArgument(argv[0]);
+	// find if reading or writing state
+	checkFirstArgument(argv[0], &programAction);
 
-	// second arg - relay state (on or off)
-	if 	(	strcmp(argv[1], "off") == 0 ||
-			strcmp(argv[1], "Off") == 0 ||
-			strcmp(argv[1], "OFF") == 0
-		) 
-	{
-		relayState 	= 0;
-	}
-	else if (	strcmp(argv[1], "on") == 0 ||
-				strcmp(argv[1], "On") == 0 ||
-				strcmp(argv[1], "ON") == 0
-		) 
-	{
-		relayState 	= 1;
-	}
-	else {
-		relayState 	= (int)strtol(argv[1], NULL, 10);
-	}
+	if (programAction == MAIN_RELAY_EXP_COMMAND_WRITE) {
+		// first arg - channel
+		channel 	= readChannelArgument(argv[0]);
 
-	// validate the arguments
-	status 	= validateArguments(channel, relayState, bExtended);
-	if (status == EXIT_FAILURE) {
-		return 0;
+		// second arg - relay state (on or off)
+		if 	(	strcmp(argv[1], "off") == 0 ||
+				strcmp(argv[1], "Off") == 0 ||
+				strcmp(argv[1], "OFF") == 0
+			) 
+		{
+			relayState 	= 0;
+		}
+		else if (	strcmp(argv[1], "on") == 0 ||
+					strcmp(argv[1], "On") == 0 ||
+					strcmp(argv[1], "ON") == 0
+			) 
+		{
+			relayState 	= 1;
+		}
+		else {
+			relayState 	= (int)strtol(argv[1], NULL, 10);
+		}
+
+		// validate the arguments
+		status 	= validateArguments(channel, relayState, bExtended);
+		if (status == EXIT_FAILURE) {
+			return 0;
+		}
+	}
+	else if (programAction == MAIN_RELAY_EXP_COMMAND_READ) {
+		// first arg - channel
+		channel 	= readChannelArgument(argv[1]);
 	}
 
 
@@ -312,18 +337,26 @@ int main(int argc, char** argv)
 	}
 
 	// set the relay state
-	if (channel < 0) {
-		// program both relays at once
-		status 	= relaySetAllChannels(devAddr, relayState);
-		if (status == EXIT_FAILURE) {
-			onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: all relay setup failed!\n");
+	if (programAction == MAIN_RELAY_EXP_COMMAND_WRITE) {
+		if (channel < 0) {
+			// program both relays at once
+			status 	= relaySetAllChannels(devAddr, relayState);
+			if (status == EXIT_FAILURE) {
+				onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: all relay setup failed!\n");
+			}
+		}
+		else {
+			// program just one relay
+			status 	= relaySetChannel(devAddr, channel, relayState);
+			if (status == EXIT_FAILURE) {
+				onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: relay %d setup failed!\n", channel);
+			}
 		}
 	}
-	else {
-		// program just one relay
-		status 	= relaySetChannel(devAddr, channel, relayState);
+	else if (programAction == MAIN_RELAY_EXP_COMMAND_READ) {
+		status	= relayReadState(devAddr, channel, &relayState);
 		if (status == EXIT_FAILURE) {
-			onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: relay %d setup failed!\n", channel);
+			onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: reading relay %d state failed!\n", channel);
 		}
 	}
 

@@ -93,19 +93,31 @@ RelayExpMain () {
 	# read the command
 	json_get_var cmd "command"
 
-	# only command is 'set'	
-	if [ "$cmd" == "set" ]
-	then
-		# select the arguments object
-		json_select params
-		# parse the arguments object
-		json_get_var channel "channel"
-		json_get_var state "state"
-		json_get_var addr "address"
-		if [ "$addr" != "" ]; then
+	# select the arguments object
+	json_select params
+	# parse the arguments object
+	json_get_var channel "channel"
+	# parse and process the address
+	json_get_var addr "address"
+	if [ "$addr" != "" ]; then
+		local check=$(echo $addr | grep '^0x')
+		Log "address check: $check"
+		if [ "$check" != "" ]; then
+			# address is actual hex address (ex: 0x27)
+			addr="-a $addr"
+		else
+			# address is switch binary (ex: 110)
 			addr="-s $addr"
 		fi
+	fi
+	#Log "relay-exp: "
 
+	# carry out the commands
+	if [ "$cmd" == "set" ]
+	then
+		# SET the relay state
+		json_get_var state "state"
+		
 		# check arguments
 		if 	[ "$channel" == "" ]; then
 			ret="missing channel argument"
@@ -115,6 +127,30 @@ RelayExpMain () {
 			ret=$(/usr/sbin/relay-exp -q $addr $channel $state)
 		fi
 		Log "relay-exp: set $addr $channel $state"
+	elif [ "$cmd" == "get" ]
+	then
+		# GET the relay state
+		# check arguments
+		if 	[ "$channel" == "" ]; then
+			ret="missing channel argument"
+		else
+			ret=$(/usr/sbin/relay-exp $addr read $channel)
+			errorCheck=$(echo $ret | grep -i 'error')
+			Log "relay-exp: get $addr $channel"
+
+			statusOn=$(echo $ret | grep 'ON')
+			statusOff=$(echo $ret | grep 'OFF')
+
+			if [ "$errorCheck" != "" ]; then
+				ret="$errorCheck" 	# return the error
+			elif [ "$statusOn" != "" ]; then
+				state=1
+				ret=""	# clear ret to indicate no error
+			elif [ "$statusOff" != "" ]; then
+				state=0
+				ret=""	# clear ret to indicate no error
+			fi
+		fi
 	else
 		ret="invalid command"
 	fi

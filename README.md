@@ -1,7 +1,7 @@
 # i2c-exp-driver
 Project for drivers to program Omega Expansions that are I2C-based.
 
-## ubus Integration
+# ubus Integration
 The drivers for the I2C-based Onion Expansions have been integrated with the ubus service via RPCD. They can be accessed through the i2c_exp service.
 
 ## pwm-exp ubus Commands
@@ -62,9 +62,9 @@ ubus call i2c_exp pwm-exp '{"command":"set-period", "params":{"channel":9, "puls
 The Relay Expansion can be programmed using the `relay-exp` command in the i2c_exp ubus service:
 
 ### Set Command
-The only command is the `set` command, it allows the relays to be programmed:
+The `set` command allows for programming the relay state:
 ```bash
-ubus call i2c_exp relay-exp '{"command":"set", "params":{"channel":"<CHANNEL>", "state":"RELAY STATE", "address":"<SWITCH STATES>"}}'
+ubus call i2c_exp relay-exp '{"command":"set", "params":{"channel":"<CHANNEL>", "state":"RELAY STATE", "address":"<ADDRESS>"}}'
 ```
 
 The CHANNEL can be one of:
@@ -76,6 +76,11 @@ The RELAY STATE can be one of:
 * off	- relay is switched off
 * on	- relay is switched on
 
+The ADDRESS argument can be either:
+* The DIP-SWITCH STATES 
+* The Hex I2C device address
+
+#### Dip Switch States
 The DIP-SWITCH STATES should reflect the dip switch settings in binary starting with switch 1, then switch 2, then switch 3. The 0 position is when the switch is close the numbers.
 
 Not required when all switches are 0.
@@ -88,12 +93,53 @@ Examples:
 * All switches are 1:
   * `"address":"111"`
 
+#### I2C Device Address 
+The I2C Device Address should be just the hex address.
+
+For example:
+* 0x27
+* 0x23
+
+
+### Get Command
+The `get` command implements reading the current state of a relay:
+```bash
+ubus call i2c_exp relay-exp '{"command":"get", "params":{"channel":"<CHANNEL>", "address":"<ADDRESS>"}}'
+
+The CHANNEL can be one of:
+* 0   - controls Relay0
+* 1   - controls Relay1
+
+The ADDRESS argument can be either:
+* The DIP-SWITCH STATES 
+* The Hex I2C device address
+
+#### Dip Switch States
+The DIP-SWITCH STATES should reflect the dip switch settings in binary starting with switch 1, then switch 2, then switch 3. The 0 position is when the switch is close the numbers.
+
+Not required when all switches are 0.
+
+Examples: 
+* Switches 1 and 2 are 0 (close to the printed numbers), switch 3 is 1:
+  * `"address":"001"`
+* Switches 1 and 3 are 1, switch 2 is 0:
+  * `"address":"101"`
+* All switches are 1:
+  * `"address":"111"`
+
+#### I2C Device Address 
+The I2C Device Address should be just the hex address.
+
+For example:
+* 0x27
+* 0x23
+
 ### Return Values
 The ubus call will return different values based on if the command was successful or not.
 
 Successful Command:
 ```bash
-{"status":"success", "state":"<NEW RELAY STATE>"}
+{"status":"success", "channel":"<CHANNEL>, "state":"<RELAY STATE>"}
 ```
 
 Unsuccessful Command:

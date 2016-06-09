@@ -74,6 +74,18 @@ int relayCheckInit (int addr, int *bInitialized)
 	return status;
 }
 
+// read GPIO calue, ie read the relay state
+int relayReadState (int addr, int channel, int* state)
+{
+	int status;
+
+	// read the relay state
+	status 	= mcp_getGpio(addr, channel, state);
+	onionPrint(ONION_SEVERITY_INFO, "> Reading RELAY%d state: %s\n", channel, ( *state == 1 ? "ON" : "OFF") );
+
+	return status;
+}
+
 // set GPIO value - change the relay state
 int relaySetChannel (int addr, int channel, int state)
 {
