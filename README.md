@@ -52,9 +52,9 @@ Optional parameters:
   * 0% delay by default
 
 ### Set-Period Command
-The `set-period` command is used to generate a PWM signal on a specific channel based on a **PWM period and pulse width** (both can be integer ot floating point numbers):
+The `set-period` command is used to generate a PWM signal on a specific channel based on a **PWM period and pulse width** (both can be integer or floating point numbers):
 ```bash
-ubus call i2c_exp pwm-exp '{"command":"set-period", "params":{"channel":9, "pulse":"1.5", "periods":20}}'
+ubus call i2c_exp pwm-exp '{"command":"set-period", "params":{"channel":9, "pulse":"1.5", "period":20}}'
 ```
 
 
