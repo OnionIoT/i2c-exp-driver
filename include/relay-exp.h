@@ -38,6 +38,8 @@ extern "C" {
 int 	relayDriverInit 		(int addr);
 int 	relayCheckInit 			(int addr, int *bInitialized);
 
+int 	relayReadState			(int addr, int channel, int *state);
+
 int 	relaySetChannel			(int addr, int channel, int state);
 int 	relaySetAllChannels		(int addr, int state);
 

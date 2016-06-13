@@ -4,6 +4,9 @@ Project for drivers to program Omega Expansions that are I2C-based.
 # ubus Integration
 The drivers for the I2C-based Onion Expansions have been integrated with the ubus service via RPCD. They can be accessed through the i2c_exp service.
 
+
+[//]: # (pwm-exp)
+
 ## pwm-exp ubus Commands
 The Servo Expansion can be programmed using the `pwm-exp` command in the i2c_exp ubus service:
 ```bash
@@ -16,17 +19,24 @@ The following commands are available:
 * set
 * set-period
 
+
+[//]: # (pwm-exp: init)
+
 ### Init Command
 The `init` command will reset the chip on the Servo Expansion and enable the oscillator.
 ```bash
 ubus call i2c_exp pwm-exp '{"command":"init"}'
 ```
 
+[//]: # (pwm-exp: sleep)
+
 ### Sleep Command
 The `sleep` command will put the oscillator into sleep mode, disabling all PWM signals
 ```bash
 ubus call i2c_exp pwm-exp '{"command":"sleep"}'
 ```
+
+[//]: # (pwm-exp: set)
 
 ### Set Command
 The `set` command is used to generate a PWM signal on a specific channel based on a **duty cycle percentage**:
@@ -51,6 +61,9 @@ Optional parameters:
   * Adds a delay in the PWM signal, can be an integer or **floating point** number between 0 and 100
   * 0% delay by default
 
+
+[//]: # (pwm-exp: set-period)
+
 ### Set-Period Command
 The `set-period` command is used to generate a PWM signal on a specific channel based on a **PWM period and pulse width** (both can be integer or floating point numbers):
 ```bash
@@ -58,8 +71,14 @@ ubus call i2c_exp pwm-exp '{"command":"set-period", "params":{"channel":9, "puls
 ```
 
 
+
+[//]: # (relay-exp)
+
 ## relay-exp ubus Commands
 The Relay Expansion can be programmed using the `relay-exp` command in the i2c_exp ubus service:
+
+
+[//]: # (relay-exp: set)
 
 ### Set Command
 The `set` command allows for programming the relay state:
@@ -100,6 +119,8 @@ For example:
 * 0x27
 * 0x23
 
+
+[//]: # (relay-exp: get)
 
 ### Get Command
 The `get` command implements reading the current state of a relay:
@@ -148,6 +169,8 @@ Unsuccessful Command:
 ```
 
 
+[//]: # (oled-exp)
+
 ## oled-exp ubus Commands
 The OLED Expansion can be programmed using the `oled-exp` command in the i2c_exp ubus service:
 
@@ -156,6 +179,8 @@ The only command is the `set` command, it allows the relays to be programmed:
 ```bash
 ubus call i2c_exp relay-exp '{"command":"set", "option":"opt" "params":{"<COMMAND>":"<COMMAND PARAMETER>}}'
 ```
+
+[//]: # (oled-exp: options)
 
 #### Options
 Available options are
@@ -170,6 +195,9 @@ Example Usage:
 * Clear the display and then write Onion Omega to it
   * `ubus call i2c_exp oled-exp '{"command":"set", "option":"c", "params":{"write":"Onion Omega"}}'`
 
+
+[//]: # (oled-exp: commands)
+
 #### Commands
 The following are the commands and their parameters as accepted by the oled-exp:
 * `power <on|off>`
@@ -182,11 +210,16 @@ The following are the commands and their parameters as accepted by the oled-exp:
 
 Commands can be strung together!
 
+[//]: # (oled-exp: commands: power)
+
 ##### Power
 Turn the display on or off. Can be used to toggle the display after it has been initialized.
 ```
 "params":{"power":"<on|off>"}
 ```
+
+
+[//]: # (oled-exp: commands: invert)
 
 ##### Invert
 Invert black and white on the display. Setting to `on` will enable the invert, setting to `off` will disable the inversion.
@@ -194,11 +227,17 @@ Invert black and white on the display. Setting to `on` will enable the invert, s
 "params":{"invert":"<on|off>"}
 ```
 
+
+[//]: # (oled-exp: commands: dim)
+
 ##### Dim
 Enable dimming the display. Setting to `on` will dim the display, setting to `off` will restore the default brightness.
 ```
 "params":{"dim":"<on|off>"}
 ```
+
+
+[//]: # (oled-exp: commands: cursor)
 
 ##### Cursor
 Set the cursor position on the display. 
@@ -231,6 +270,9 @@ Set the cursor to the top left (home position):
 "params":{"cursor":"0,0"}
 ```
 
+
+[//]: # (oled-exp: commands: write)
+
 ##### Write
 Write a string to the display. 
 
@@ -257,6 +299,9 @@ Write `Onion Corporation` and then the office address on the lines below:
 "params":{"write":"Onion Corporation\\\\\n187 Denison St\\\\\nMarkham, ON\\\\\nCanada\\\\\nL3R-1B5"}
 ```
 
+
+[//]: # (oled-exp: commands: scroll)
+
 ##### Scroll
 Enable scrolling of whatever is currently on the display.
 
@@ -272,6 +317,9 @@ Available directions:
 * diagonal-right
 * stop
   * To disable scrolling
+
+
+[//]: # (oled-exp: commands: draw)
 
 ##### Draw
 Display an image from an LCD file on the display. 

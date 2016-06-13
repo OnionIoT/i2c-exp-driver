@@ -11,6 +11,7 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, "FUNCTIONALITY:\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\tJust initialize the Relay chip\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n\n");
+
 	onionPrint(ONION_SEVERITY_FATAL, "Usage: relay-exp [-qvi] [-s <bbb>] CHANNEL STATE\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
 	onionPrint(ONION_SEVERITY_FATAL, "CHANNEL is the specified Relay channel on the Expansion\n");
@@ -23,6 +24,16 @@ void usage(const char* progName)
 	onionPrint(ONION_SEVERITY_FATAL, "FUNCTIONALITY:\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\tProgram the CHANNEL to the specified relay state\n");
 	onionPrint(ONION_SEVERITY_FATAL, "\n");
+
+	onionPrint(ONION_SEVERITY_FATAL, "Usage: relay-exp [-qvi] [-s <bbb>] read CHANNEL\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "CHANNEL is the specified Relay channel on the Expansion\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tcan be: 0-1  to control a single channel\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+	onionPrint(ONION_SEVERITY_FATAL, "FUNCTIONALITY:\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\tRead the state of the relay specified by the CHANNEL\n");
+	onionPrint(ONION_SEVERITY_FATAL, "\n");
+
 	onionPrint(ONION_SEVERITY_FATAL, "OPTIONS:\n");
 	onionPrint(ONION_SEVERITY_FATAL, " -q 		  quiet: no output\n");
 	onionPrint(ONION_SEVERITY_FATAL, " -v 		  verbose: lots of output\n");
@@ -367,3 +378,4 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+
