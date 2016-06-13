@@ -119,6 +119,30 @@ static PyObject* pyRelaySetAllChannels(PyObject* self, PyObject* args)
 }
 
 
+/*
+ * 	relayReadChannel() Python Analogue
+ */
+static PyObject* pyRelayReadChannel(PyObject* self, PyObject* args)
+{
+	int 	status, addr, channel, state;
+
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "ii", &addr, &channel) ) {
+		return NULL;
+	}
+
+	// make the relay-exp call
+	status 	= relayReadChannel (addr, channel, &state);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
+
+	return Py_BuildValue("i", state);
+}
+
+
 ////// Python Module Setup //////
 /*
  * 	Bind Python function names to the C functions
@@ -129,6 +153,7 @@ static PyMethodDef pyRelayExpMethods[] = {
 	{"checkInit", 		pyRelayCheckInit, 		METH_VARARGS},
 	{"setChannel", 		pyRelaySetChannel, 		METH_VARARGS},
 	{"setAllChannels", 	pyRelaySetAllChannels, 	METH_VARARGS},
+	{"readChannel",		pyRelayReadChannel, 	METH_VARARGS},
 	{NULL, NULL}	/* Sentinel */
 };
 

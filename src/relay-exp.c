@@ -74,8 +74,8 @@ int relayCheckInit (int addr, int *bInitialized)
 	return status;
 }
 
-// read GPIO calue, ie read the relay state
-int relayReadState (int addr, int channel, int* state)
+// read GPIO value, ie read the relay state
+int relayReadChannel (int addr, int channel, int* state)
 {
 	int status;
 

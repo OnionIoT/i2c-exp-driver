@@ -1,3 +1,9 @@
 test/*
 tmp/*
 tmp*
+
+src/ubus-pwm-exp.c
+
+src/python/onionI2C.py
+
+common_commands.txt

@@ -39,6 +39,11 @@ if (ret != 0):
 	exit()
 time.sleep(2)
 
+# read channel 0 value
+value 	= relayExp.readChannel(addr, 0)
+print "Channel 0 value: ", value
+time.sleep(2)
+
 # set both channels to on
 ret 	= relayExp.setAllChannels(addr, 1)
 print "Result from relaySetAllChannels: ", ret
@@ -51,6 +56,11 @@ ret 	= relayExp.setChannel(addr, 0, 0)
 print "Result from relaySetChannel: ", ret
 if (ret != 0):
 	exit()
+time.sleep(2)
+
+# read channel 0 value
+value 	= relayExp.readChannel(addr, 0)
+print "Channel 0 value: ", value
 time.sleep(2)
 
 

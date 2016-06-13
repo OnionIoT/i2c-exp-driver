@@ -365,7 +365,7 @@ int main(int argc, char** argv)
 		}
 	}
 	else if (programAction == MAIN_RELAY_EXP_COMMAND_READ) {
-		status	= relayReadState(devAddr, channel, &relayState);
+		status	= relayReadChannel(devAddr, channel, &relayState);
 		if (status == EXIT_FAILURE) {
 			onionPrint(ONION_SEVERITY_FATAL, "main-relay-exp:: reading relay %d state failed!\n", channel);
 		}
