@@ -126,6 +126,7 @@ For example:
 The `get` command implements reading the current state of a relay:
 ```bash
 ubus call i2c_exp relay-exp '{"command":"get", "params":{"channel":"<CHANNEL>", "address":"<ADDRESS>"}}'
+```
 
 The CHANNEL can be one of:
 * 0   - controls Relay0
