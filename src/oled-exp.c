@@ -393,7 +393,7 @@ int oledWriteChar(char c)
 	return status;
 }
 
-// Write a string message directly to the displayy
+// Write a string message directly to the display
 int oledWrite (char *msg)
 {
 	int 	status;
