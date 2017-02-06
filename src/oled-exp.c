@@ -443,7 +443,7 @@ int oledWriteByte(int byte)
 	return status;
 }
 
-// function to reverse the bytes in a byte
+// function to reverse the bits in a byte
 uint8_t _reverseByte (uint8_t input) {
 	uint8_t 	i;
 	uint8_t 	rev = 0;;
