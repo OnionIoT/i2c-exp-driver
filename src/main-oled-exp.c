@@ -216,8 +216,8 @@ int main(int argc, char** argv)
 	clear 		= 0;
 	verbose 	= ONION_VERBOSITY_NORMAL;
 
-	command 	= malloc(255 * sizeof *command);
-	param 		= malloc(255 * sizeof *param);
+	command 	= malloc(MAX_COMMAND_LENGTH * sizeof *command);
+	param 		= malloc(MAX_PARAM_LENGTH * sizeof *param);
 
 	// save the program name
 	progname 	= argv[0];	
@@ -298,6 +298,12 @@ int main(int argc, char** argv)
 
 	//// parse the command arguments
 	while ( argc > 0 ) {
+		if(strlen(argv[0]) > MAX_COMMAND_LENGTH || strlen(argv[1]) > MAX_PARAM_LENGTH) {
+			// FIXME: This error needs rewording. Also, the exit status should be less funny.
+			onionPrint(ONION_SEVERITY_FATAL, "Unsupported parameter length\n");
+			exit(13);
+		}
+		
 		// first arg - command
 		strcpy(command, argv[0]);
 
