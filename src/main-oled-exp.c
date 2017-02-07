@@ -116,6 +116,8 @@ int oledCommand(char *command, char *param)
 	else if (strcmp(command, "draw") == 0 ) {
 		// allocate memory for the buffer
 		buffer 	= malloc(OLED_EXP_WIDTH*OLED_EXP_HEIGHT/8 * sizeof *buffer);
+		
+		memset(buffer, 0, OLED_EXP_WIDTH*OLED_EXP_HEIGHT/8 * sizeof *buffer); // FIXME: We should definitely do a #define for the buffer size calculation. This looks ugly.
 
 		// read the parameter
 		if ( strncmp(param, OLED_EXP_READ_LCD_DATA_IDENTIFIER, strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER) ) == 0 ) {
