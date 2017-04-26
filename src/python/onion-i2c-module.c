@@ -167,6 +167,55 @@ onionI2C_readBytes(OnionI2CObject *self, PyObject *args)
 	return list;
 }
 
+PyDoc_STRVAR(onionI2C_read_doc,
+	"read(deviceAddr, numBytes) -> [values]\n\n"
+	"Read 'numBytes' bytes on I2C device with 'deviceAddr' address.\n");
+
+static PyObject *
+onionI2C_read(OnionI2CObject *self, PyObject *args)
+{
+	int 		status, devAddr, bytes, i;
+	uint8_t		buffer[I2C_BUFFER_SIZE];
+	PyObject	*list;
+	char		wrmsg_text[4096];
+
+
+	// parse the arguments
+	if (!PyArg_ParseTuple(args, "ii", &devAddr, &bytes) ) {
+		return NULL;
+	}
+
+	// check the number of bytes
+	if (bytes > I2C_BUFFER_SIZE) {
+		snprintf(wrmsg_text, sizeof (wrmsg_text) - 1, wrmsg_buffer, I2C_BUFFER_SIZE);
+		PyErr_SetString(PyExc_OverflowError, wrmsg_text);
+		return NULL;
+	}
+
+	// perform the read
+	status	= i2c_readRaw	(	self->adapterNum,
+							devAddr,
+							buffer,
+							bytes
+						);
+
+	if (status != EXIT_SUCCESS) {
+		PyErr_SetString(PyExc_IOError, wrmsg_i2c);
+		return NULL;
+	}
+
+	// build the python object to be returned from the buffer
+	list = PyList_New(bytes);
+
+	for (i = 0; i < bytes; i++) {
+		PyObject *val = Py_BuildValue("l", (long)buffer[i]);
+		PyList_SET_ITEM(list, i, val);
+	}
+
+
+	return list;
+}
+
 PyDoc_STRVAR(onionI2C_writeBytes_doc,
 	"writeBytes(deviceAddr, addr, [values]) -> None\n\n"
 	"Write bytes from 'values' list to address 'addr' on I2C device with 'deviceAddr' address.\n");
@@ -326,7 +375,7 @@ onionI2C_write(OnionI2CObject *self, PyObject *args)
 	}
 
 	// perform the write (just writing the buffer, no address argument)
-	status 	= _i2c_writeBuffer	(	self->adapterNum, 
+	status 	= i2c_writeBufferRaw	(	self->adapterNum,
 									devAddr,
 									buffer, 
 									bytes
@@ -427,6 +476,7 @@ static PyMethodDef onionI2C_methods[] = {
 	{"setVerbosity", 	(PyCFunction)onionI2C_setVerbosity, 	METH_VARARGS, 		onionI2C_setVerbosity_doc},
 
 	{"readBytes", 		(PyCFunction)onionI2C_readBytes, 		METH_VARARGS, 		onionI2C_readBytes_doc},
+	{"read", 			(PyCFunction)onionI2C_read, 			METH_VARARGS, 		onionI2C_read_doc},
 
 	{"writeBytes", 		(PyCFunction)onionI2C_writeBytes, 		METH_VARARGS, 		onionI2C_writeBytes_doc},
 	{"writeByte", 		(PyCFunction)onionI2C_writeByte, 		METH_VARARGS, 		onionI2C_writeByte_doc},

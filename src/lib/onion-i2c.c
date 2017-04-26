@@ -143,6 +143,12 @@ int i2c_writeBuffer(int devNum, int devAddr, int addr, uint8_t *buffer, int size
 	return (status);
 }
 
+// generic function to write a buffer to the i2c bus (no in-device address
+int i2c_writeBufferRaw(int devNum, int devAddr, uint8_t *buffer, int size)
+{
+	return _i2c_writeBuffer(devNum, devAddr, buffer, size);
+}
+
 // write n bytes to the i2c bus
 int i2c_write(int devNum, int devAddr, int addr, int val)
 {
@@ -211,7 +217,7 @@ int i2c_writeBytes(int devNum, int devAddr, int addr, int val, int numBytes)
 // read a byte from the i2c bus
 int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 {
-	int 	status, size, index, data, tmp;
+	int 	status, size, index;
 	int 	fd;
 
 	onionPrint(ONION_SEVERITY_DEBUG, "%s Reading %d byte%s from device 0x%02x: addr = 0x%02x", I2C_PRINT_BANNER, numBytes, (numBytes > 1 ? "s": ""), devAddr, addr);
@@ -268,6 +274,67 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 		printf("Done setting buffer... it has length of %d\n", strlen(buffer) );
 		printf("size is %d\n", size);*/
 #endif		
+
+		//// print the data
+		onionPrint(ONION_SEVERITY_DEBUG, "\tread %d byte%s, value: 0x", size, (size > 1 ? "s" : "") );
+
+		for (index = (size-1); index >= 0; index--) {
+			onionPrint(ONION_SEVERITY_DEBUG, "%02x", (buffer[index] & 0xff) );
+		}
+		onionPrint(ONION_SEVERITY_DEBUG, "\n");
+ 	}
+
+ 	// release the device file handle
+ 	status 	|= _i2c_releaseFd(fd);
+
+	return (status);
+}
+
+// read a byte from the i2c bus
+int i2c_readRaw(int devNum, int devAddr, uint8_t *buffer, int numBytes)
+{
+	int 	status, size, index;
+	int 	fd;
+
+	onionPrint(ONION_SEVERITY_DEBUG, "%s Reading %d byte%s from device 0x%02x", I2C_PRINT_BANNER, numBytes, (numBytes > 1 ? "s": ""), devAddr);
+
+	// open the device file handle
+	status 	= _i2c_getFd(devNum, &fd);
+
+	// set the device address
+	if ( status == EXIT_SUCCESS ) {
+		status 	= _i2c_setDevice(fd, devAddr);
+	}
+
+	// perform the read
+	if ( status == EXIT_SUCCESS ) {
+		//// read data
+		// clear the buffer
+		memset( buffer, 0, I2C_BUFFER_SIZE );
+
+#ifdef I2C_ENABLED
+		// read from the i2c device
+		size 	= numBytes;
+		status 	= read(fd, buffer, size);
+		if (status != size) {
+			onionPrint(ONION_SEVERITY_FATAL, "%s read issue, errno is %d: %s\n", I2C_PRINT_BANNER, errno, strerror(errno) );
+			status 	= EXIT_FAILURE;
+		}
+		else {
+			status 	= EXIT_SUCCESS;
+		}
+#else
+		buffer[0]	= 0x0;
+		size 		= 1;
+		/*
+		// for debug
+		printf("Setting buffer... it has length of %d\n", strlen(buffer) );
+		buffer[0] 	= 0x34;
+		buffer[1] 	= 0x12;
+		size = 2;
+		printf("Done setting buffer... it has length of %d\n", strlen(buffer) );
+		printf("size is %d\n", size);*/
+#endif
 
 		//// print the data
 		onionPrint(ONION_SEVERITY_DEBUG, "\tread %d byte%s, value: 0x", size, (size > 1 ? "s" : "") );
