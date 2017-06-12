@@ -148,7 +148,9 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 {
 	int 	status;
 	int 	size, tmp, index;
-	uint8_t	buffer[32];
+	uint8_t	buffer[32]; // TODO: either this should be set to I2C_BUFFER_SIZE
+    // or the memset below should be 32, else this pattern will cause buffer overrun
+    // if one mistakenly sets a smaller buffer
 
 	//// buffer setup
 	// clear the buffer
@@ -228,7 +230,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 	if ( status == EXIT_SUCCESS ) {
 		//// set addr
 		// clear the buffer
-		memset( buffer, 0, I2C_BUFFER_SIZE );
+		memset( buffer, 0, numBytes );
 		// push the address and data values into the buffer
 		buffer[0]	= (addr & 0xff);
 		size 		= 1;
@@ -243,7 +245,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 
 		//// read data
 		// clear the buffer
-		memset( buffer, 0, I2C_BUFFER_SIZE );
+		memset( buffer, 0, numBytes );
 
 #ifdef I2C_ENABLED
 		// read from the i2c device
@@ -288,7 +290,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 {
 	int 	status;
-	uint8_t	buffer[I2C_BUFFER_SIZE];
+	uint8_t	buffer[I2C_BUFFER_SIZE]; // TODO: is allocating an entire buffer needed?
 
 	status	= i2c_read	(	devNum, 
 							devAddr, 
