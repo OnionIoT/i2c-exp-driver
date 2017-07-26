@@ -53,10 +53,12 @@ int 	_i2c_writeBuffer		(int devNum, int devAddr, uint8_t *buffer, int size);
 
 // i2c functions
 int 	i2c_writeBuffer			(int devNum, int devAddr, int addr, uint8_t *buffer, int size);
+int 	i2c_writeBufferRaw		(int devNum, int devAddr, uint8_t *buffer, int size);
 int 	i2c_write	 			(int devNum, int devAddr, int addr, int val);
 int 	i2c_writeBytes 			(int devNum, int devAddr, int addr, int val, int numBytes);
 
 int 	i2c_read 				(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes);
+int 	i2c_readRaw				(int devNum, int devAddr, uint8_t *buffer, int numBytes);
 int 	i2c_readByte 			(int devNum, int devAddr, int addr, int *val);
 
 #ifdef __cplusplus
