@@ -1,6 +1,7 @@
 #ifndef _OLED_EXP_H_
 #define _OLED_EXP_H_
 
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -96,6 +97,8 @@ typedef enum e_OledExpScrollSpeed {
 #define OLED_EXP_READ_LCD_STRING_OPT1					"%2x"
 #define OLED_EXP_READ_LCD_DATA_IDENTIFIER				"data:"
 
+#define MAX_PARAM_LENGTH (strlen(OLED_EXP_READ_LCD_DATA_IDENTIFIER) + (OLED_EXP_WIDTH*OLED_EXP_HEIGHT/8)*2)
+#define MAX_COMMAND_LENGTH 255
 
 // Ascii Table
 static const uint8_t asciiTable[][OLED_EXP_CHAR_LENGTH] = {
