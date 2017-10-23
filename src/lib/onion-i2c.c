@@ -154,9 +154,7 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 {
 	int 	status;
 	int 	size, tmp, index;
-	uint8_t	buffer[32]; // TODO: either this should be set to I2C_BUFFER_SIZE
-    // or the memset below should be 32, else this pattern will cause buffer overrun
-    // if one mistakenly sets a smaller buffer
+	uint8_t	buffer[I2C_BUFFER_SIZE]; 
 
 	//// buffer setup
 	// clear the buffer
@@ -357,7 +355,7 @@ int i2c_readRaw(int devNum, int devAddr, uint8_t *buffer, int numBytes)
 int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 {
 	int 	status;
-	uint8_t	buffer[I2C_BUFFER_SIZE]; // TODO: is allocating an entire buffer needed?
+	uint8_t	buffer[I2C_BUFFER_SIZE];
 
 	status	= i2c_read	(	devNum, 
 							devAddr, 
