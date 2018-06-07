@@ -24,7 +24,7 @@
 #define I2C_DEV_PATH		"/dev/i2c-%d"
 #define I2C_PRINT_BANNER	"onion-i2c::"
 
-#define I2C_BUFFER_SIZE		32
+#define I2C_BUFFER_SIZE		256
 
 #define I2C_DEFAULT_ADAPTER	0
 
@@ -37,7 +37,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
 
 
@@ -63,5 +63,5 @@ int 	i2c_readByte 			(int devNum, int devAddr, int addr, int *val);
 
 #ifdef __cplusplus
 }
-#endif 
-#endif // _ONION_I2C_H_ 
+#endif
+#endif // _ONION_I2C_H_
