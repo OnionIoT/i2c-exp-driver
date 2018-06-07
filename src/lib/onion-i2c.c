@@ -1,7 +1,7 @@
 #include <onion-i2c.h>
 
 
-// get a file handle to the device 
+// get a file handle to the device
 int _i2c_getFd(int adapterNum, int *devHandle)
 {
 	int 	status;
@@ -154,11 +154,11 @@ int i2c_write(int devNum, int devAddr, int addr, int val)
 {
 	int 	status;
 	int 	size, tmp, index;
-	uint8_t	buffer[I2C_BUFFER_SIZE]; 
+	uint8_t	buffer[I2C_BUFFER_SIZE];
 
 	//// buffer setup
 	// clear the buffer
-	memset( buffer, 0, I2C_BUFFER_SIZE );
+	memset( buffer, 0, sizeof(buffer) );
 	// push the address and data values into the buffer
 	buffer[0]	= (addr & 0xff);
 	buffer[1]	= (val & 0xff);
@@ -230,7 +230,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 		status 	= _i2c_setDevice(fd, devAddr);
 	}
 
-	// perform the read 	
+	// perform the read
 	if ( status == EXIT_SUCCESS ) {
 		//// set addr
 		// clear the buffer
@@ -273,7 +273,7 @@ int i2c_read(int devNum, int devAddr, int addr, uint8_t *buffer, int numBytes)
 		size = 2;
 		printf("Done setting buffer... it has length of %d\n", strlen(buffer) );
 		printf("size is %d\n", size);*/
-#endif		
+#endif
 
 		//// print the data
 		onionPrint(ONION_SEVERITY_DEBUG, "\tread %d byte%s, value: 0x", size, (size > 1 ? "s" : "") );
@@ -310,7 +310,7 @@ int i2c_readRaw(int devNum, int devAddr, uint8_t *buffer, int numBytes)
 	if ( status == EXIT_SUCCESS ) {
 		//// read data
 		// clear the buffer
-		memset( buffer, 0, I2C_BUFFER_SIZE );
+		memset( buffer, 0, numBytes );
 
 #ifdef I2C_ENABLED
 		// read from the i2c device
@@ -357,9 +357,9 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 	int 	status;
 	uint8_t	buffer[I2C_BUFFER_SIZE];
 
-	status	= i2c_read	(	devNum, 
-							devAddr, 
-							addr, 
+	status	= i2c_read	(	devNum,
+							devAddr,
+							addr,
 							buffer,
 							1
 						);
@@ -368,4 +368,3 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 
 	return (status);
 }
-
