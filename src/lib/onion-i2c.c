@@ -132,7 +132,7 @@ int i2c_writeBuffer(int devNum, int devAddr, int addr, uint8_t *buffer, int size
 
 	// add the address to the data buffer
 	bufferNew[0]	= addr;
-	memcpy( &bufferNew[1], &buffer[0], size * sizeof *buffer );
+	memcpy( &bufferNew[1], &buffer[0], (size-1) * sizeof *buffer );
 
  	// perform the write
  	status 	= _i2c_writeBuffer(devNum, devAddr, bufferNew, size);
