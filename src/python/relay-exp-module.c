@@ -157,6 +157,26 @@ static PyMethodDef pyRelayExpMethods[] = {
 	{NULL, NULL}	/* Sentinel */
 };
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef relayExp = {
+	PyModuleDef_HEAD_INIT,
+	"relayExp",
+	"Onion Relay Expansion Module",
+	-1,
+	pyRelayExpMethods,
+	NULL, NULL, NULL, NULL
+};
+#endif
+
+PyObject * PyInit_relayExp(void)
+{
+#if PY_MAJOR_VERSION >= 3
+	return PyModule_Create(&relayExp);
+#else
+    return Py_InitModule("relayExp", pyRelayExpMethods);
+#endif
+}
+
 /*
  * 	Python calls this to initialize this module
  */
@@ -164,7 +184,7 @@ void initrelayExp()
 {
 	PyObject *m;
 
-    m = Py_InitModule("relayExp", pyRelayExpMethods);
+    m = PyInit_relayExp();
     if (m == NULL)
         return;
 

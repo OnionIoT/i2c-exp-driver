@@ -13,7 +13,10 @@ devAddr = 0x27
 
 
 print("")
-ret = raw_input('  Ready to read?')
+if sys.version_info[0] < 3:
+    ret = raw_input('  Ready to read?')
+else:
+    ret = input('  Ready to read?')
 
 # perform series of reads
 size 	= 1
@@ -37,7 +40,10 @@ print('   Read returned: %s'%(val))
 
 
 print("")
-ret = raw_input('  Ready to write?')
+if sys.version_info[0] < 3:
+    ret = raw_input('  Ready to write?')
+else:
+    ret = input('  Ready to write?')
 
 # perform series of writes
 size 	= 1
@@ -66,7 +72,10 @@ print('   write returned: %s'%(val))
 
 
 print("")
-ret = raw_input('  Ready to test writing? Part 1')
+if sys.version_info[0] < 3:
+    ret = raw_input('  Ready to test writing? Part 1')
+else:
+    ret = input('  Ready to test writing? Part 1')
 
 # perform write
 size 	= 1
@@ -87,7 +96,10 @@ print('   Read returned: %s'%(val))
 
 
 print("")
-ret = raw_input('  Ready to test writing? Part 2')
+if sys.version_info[0] < 3:
+    ret = raw_input('  Ready to test writing? Part 2')
+else:
+    ret = input('  Ready to test writing? Part 2')
 
 # perform write
 size 	= 1
@@ -108,7 +120,10 @@ print('   Read returned: %s'%(val))
 
 
 print("")
-ret = raw_input('  Ready to test writing? Part 3')
+if sys.version_info[0] < 3:
+    ret = raw_input('  Ready to test writing? Part 3')
+else:
+    ret = input('  Ready to test writing? Part 3')
 
 # perform write
 size 	= 2
@@ -127,7 +142,10 @@ print('   Read returned: %s'%(val))
 
 
 print("")
-ret = raw_input('  Ready finish testing?')
+if sys.version_info[0] < 3:
+    ret= raw_input('  Ready finish testing?')
+else:
+    ret= input('  Ready finish testing?')
 
 # perform write
 size 	= 1
