@@ -513,7 +513,25 @@ static PyMethodDef pyOledExpMethods[] = {
 	{NULL, NULL}	/* Sentinel */
 };
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef oledExp = {
+	PyModuleDef_HEAD_INIT,
+	"relayExp",
+	"Onion OLED Expansio Module",
+	-1,
+	pyOledExpMethods,
+	NULL, NULL, NULL, NULL
+};
+#endif
 
+PyObject * PyInit_oledExp(void)
+{
+#if PY_MAJOR_VERSION >= 3
+	return PyModule_Create(&oledExp);
+#else
+    return Py_InitModule("oledExp", pyOledExpMethods);
+#endif
+}
 
 /*
  * 	Python calls this to initialize this module
@@ -522,7 +540,7 @@ void initoledExp()
 {
 	PyObject *m;
 
-    m = Py_InitModule("oledExp", pyOledExpMethods);
+    m = PyInit_oledExp();
     if (m == NULL)
         return;
 

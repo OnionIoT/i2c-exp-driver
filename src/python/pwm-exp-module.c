@@ -144,6 +144,26 @@ static PyMethodDef pyPwmExpMethods[] = {
 	{NULL, NULL}	/* Sentinel */
 };
 
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef pwmExp = {
+	PyModuleDef_HEAD_INIT,
+	"pwmExp",
+	"Onion PWM Expansion module",
+	-1,
+	pyPwmExpMethods,
+	NULL, NULL, NULL, NULL
+};
+#endif
+
+PyObject * PyInit_pwmExp(void)
+{
+#if PY_MAJOR_VERSION >= 3
+	return PyModule_Create(&pwmExp);
+#else
+    return Py_InitModule("pwmExp", pyPwmExpMethods);
+#endif
+}
+
 /*
  * 	Python calls this to initialize this module
  */
@@ -151,7 +171,7 @@ void initpwmExp()
 {
 	PyObject *m;
 
-    m = Py_InitModule("pwmExp", pyPwmExpMethods);
+    m = PyInit_pwmExp();
     if (m == NULL)
         return;
 
