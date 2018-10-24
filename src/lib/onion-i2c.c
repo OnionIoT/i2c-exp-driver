@@ -368,3 +368,82 @@ int i2c_readByte(int devNum, int devAddr, int addr, int *val)
 
 	return (status);
 }
+
+// read n-bytes from the i2c bus from a m-byte address
+int i2c_readMultiByteAddr (int devNum, int devAddr, uint8_t *addrBuffer, int addrLength, uint8_t *buffer, int dataLength)
+{
+	int 	status, size, index;
+	int 	fd;
+
+	// onionPrint(ONION_SEVERITY_DEBUG, "%s Reading %d byte%s from device 0x%02x: addr = 0x%02x", I2C_PRINT_BANNER, dataLength, (dataLength > 1 ? "s": ""), devAddr, addr);
+	
+
+	// open the device file handle
+	status 	= _i2c_getFd(devNum, &fd);
+
+	// set the device address
+	if ( status == EXIT_SUCCESS ) {
+		status 	= _i2c_setDevice(fd, devAddr);
+	}
+
+	// perform the read
+	if ( status == EXIT_SUCCESS ) {
+#ifdef I2C_ENABLED
+		if (addrLength > 0) {
+			// write to the i2c device
+			status = write(fd, addrBuffer, addrLength);
+			if (status != addrLength) {
+				onionPrint(ONION_SEVERITY_FATAL, "%s write issue, errno is %d: %s\n", I2C_PRINT_BANNER, errno, strerror(errno) );
+			}
+		}
+#endif
+
+		//// read data
+		// clear the buffer
+		memset( buffer, 0, dataLength );
+
+#ifdef I2C_ENABLED
+		// read from the i2c device
+		size 	= dataLength;
+		status 	= read(fd, buffer, size);
+		if (status != size) {
+			onionPrint(ONION_SEVERITY_FATAL, "%s read issue, errno is %d: %s\n", I2C_PRINT_BANNER, errno, strerror(errno) );
+			status 	= EXIT_FAILURE;
+		}
+		else {
+			status 	= EXIT_SUCCESS;
+		}
+#endif
+ 	}
+
+ 	// release the device file handle
+ 	status 	|= _i2c_releaseFd(fd);
+
+	return (status);
+}
+
+// write n-bytes to a m-byte to the i2c bus
+int i2c_writeMultiByteAddr	(int devNum, int devAddr, uint8_t *addrBuffer, int addrLength, uint8_t *buffer, int dataLength)
+{
+	int 	status, i, size;
+	uint8_t *bufferNew;
+
+	// allocate the new buffer
+	size = addrLength + dataLength; // buffer is the size of the address and data bytes combined
+	bufferNew 	= malloc( size * sizeof *bufferNew );
+
+	// add the address to the buffer
+	for (i = 0; i < addrLength; i++) {
+		bufferNew[i] = addrBuffer[i];
+	}
+	// copy the data to the buffer (starting at the first index after the last address byte)
+	memcpy( &bufferNew[i], &buffer[0], (size-1) * sizeof *buffer );
+
+ 	// perform the write
+ 	status 	= _i2c_writeBuffer(devNum, devAddr, bufferNew, size);
+
+ 	// free the allocated memory
+ 	free(bufferNew);
+
+	return (status);
+}
